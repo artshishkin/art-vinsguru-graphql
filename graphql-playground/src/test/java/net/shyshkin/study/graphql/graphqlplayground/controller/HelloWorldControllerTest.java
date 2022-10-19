@@ -33,6 +33,22 @@ class HelloWorldControllerTest {
                     .isEqualTo("Hello World!");
         }
 
+        @Test
+        void sayHelloTo() {
+
+            //given
+            String document = "{sayHelloTo(name:\"Art\")}";
+
+            //when
+            GraphQlTester.Response response = graphQlTester.document(document)
+                    .execute();
+
+            //then
+            response.path("sayHelloTo")
+                    .entity(String.class)
+                    .isEqualTo("Hello Art!");
+        }
+
     }
 
     @Nested
@@ -49,6 +65,33 @@ class HelloWorldControllerTest {
             response.path("sayHello")
                     .entity(String.class)
                     .isEqualTo("Hello World!");
+        }
+
+        @Test
+        void sayHelloTo() {
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("sayHelloToDoc")
+                    .execute();
+
+            //then
+            response.path("sayHelloTo")
+                    .entity(String.class)
+                    .isEqualTo("Hello Art!");
+        }
+
+        @Test
+        void sayHelloTo_throughParam() {
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("sayHelloToParamDoc")
+                    .variable("helloName","Art")
+                    .execute();
+
+            //then
+            response.path("sayHelloTo")
+                    .entity(String.class)
+                    .isEqualTo("Hello Art!");
         }
 
     }
