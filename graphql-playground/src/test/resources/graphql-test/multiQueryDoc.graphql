@@ -1,0 +1,5 @@
+query {
+    sayHello,
+    random,
+    sayHelloTo(name: "Kate")
+}

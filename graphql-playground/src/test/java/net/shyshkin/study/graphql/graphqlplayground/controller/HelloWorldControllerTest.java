@@ -127,4 +127,29 @@ class HelloWorldControllerTest {
         }
     }
 
+    @Nested
+    class MultipleQueriesTests {
+
+        @Test
+        @DisplayName("Querying all the fields should return all the values in single response")
+        void multiQuery() {
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("multiQueryDoc")
+                    .execute();
+
+            //then
+            response.path("sayHello")
+                    .entity(String.class)
+                    .isEqualTo("Hello World!")
+                    .path("random")
+                    .entity(Integer.class)
+                    .satisfies(rnd -> assertThat(rnd).isBetween(1, 100))
+                    .path("sayHelloTo")
+                    .entity(String.class)
+                    .isEqualTo("Hello Kate!");
+        }
+    }
+
+
 }
