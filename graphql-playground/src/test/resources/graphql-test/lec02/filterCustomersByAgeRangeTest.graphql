@@ -1,0 +1,11 @@
+query{
+    customersByAgeRange(filter:{
+        minAge:30,
+        maxAge:55
+    }){
+        id
+        name
+        age
+        city
+    }
+}

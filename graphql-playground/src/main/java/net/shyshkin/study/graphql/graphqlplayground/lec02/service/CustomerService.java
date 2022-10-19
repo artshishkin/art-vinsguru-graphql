@@ -1,5 +1,6 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec02.service;
 
+import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.AgeRangeFilter;
 import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.Customer;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,11 @@ public class CustomerService {
         String lowerName = name.toLowerCase();
         return flux
                 .filter(customer -> customer.getName().toLowerCase().contains(lowerName));
+    }
+
+    public Flux<Customer> getCustomersWithinAge(AgeRangeFilter filter) {
+        return flux
+                .filter(customer -> customer.getAge() >= filter.getMinAge() && customer.getAge() <= filter.getMaxAge());
     }
 
     private Customer mockCustomer(Integer id) {

@@ -2,6 +2,7 @@ package net.shyshkin.study.graphql.graphqlplayground.lec02.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.AgeRangeFilter;
 import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.Customer;
 import net.shyshkin.study.graphql.graphqlplayground.lec02.service.CustomerService;
 import org.springframework.context.annotation.Profile;
@@ -35,6 +36,12 @@ public class CustomerController {
     public Flux<Customer> customerNameContains(@Argument String name) {
         log.debug("filter customers by name");
         return service.customerNameContains(name);
+    }
+
+    @QueryMapping
+    public Flux<Customer> customersByAgeRange(@Argument AgeRangeFilter filter) {
+        log.debug("filter customers by age range");
+        return service.getCustomersWithinAge(filter);
     }
 
 }

@@ -1,0 +1,8 @@
+query($filter:AgeRangeFilter!){
+    customersByAgeRange(filter:$filter){
+        id
+        name
+        age
+        city
+    }
+}

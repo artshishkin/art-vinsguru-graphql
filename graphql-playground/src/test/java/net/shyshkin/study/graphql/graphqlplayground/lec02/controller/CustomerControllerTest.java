@@ -1,6 +1,7 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec02.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.AgeRangeFilter;
 import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.Customer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,6 +155,56 @@ class CustomerControllerTest {
                                         () -> assertThat(c.getCity()).isEqualTo("City03"),
                                         () -> assertThat(c.getName()).contains("Customer_03"),
                                         () -> assertThat(c.getAge()).isBetween(18, 60),
+                                        () -> log.debug("{}", c)
+                                )
+                        )
+                );
+    }
+
+    @Test
+    void filterCustomersByAgeRangeTest() {
+
+        //given
+        Integer minAge = 30;
+        Integer maxAge = 55;
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "filterCustomersByAgeRangeTest")
+                .execute();
+
+        //then
+        response.path("customersByAgeRange")
+                .entityList(Customer.class)
+                .satisfies(list -> assertThat(list)
+                        .allSatisfy(c -> assertAll(
+                                        () -> assertThat(c).hasNoNullFieldsOrProperties(),
+                                        () -> assertThat(c.getAge()).isBetween(minAge, maxAge),
+                                        () -> log.debug("{}", c)
+                                )
+                        )
+                );
+    }
+
+    @Test
+    void filterCustomersByAgeRangeTest_param() {
+
+        //given
+        Integer minAge = 30;
+        Integer maxAge = 55;
+        AgeRangeFilter ageRangeFilter = AgeRangeFilter.builder().minAge(minAge).maxAge(maxAge).build();
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "filterCustomersByAgeRangePTest")
+                .variable("filter", ageRangeFilter)
+                .execute();
+
+        //then
+        response.path("customersByAgeRange")
+                .entityList(Customer.class)
+                .satisfies(list -> assertThat(list)
+                        .allSatisfy(c -> assertAll(
+                                        () -> assertThat(c).hasNoNullFieldsOrProperties(),
+                                        () -> assertThat(c.getAge()).isBetween(minAge, maxAge),
                                         () -> log.debug("{}", c)
                                 )
                         )
