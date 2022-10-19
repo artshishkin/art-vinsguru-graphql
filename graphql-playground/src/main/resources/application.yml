@@ -1,0 +1,12 @@
+logging:
+  level:
+    net.shyshkin: debug
+
+spring:
+  graphql:
+    path: /graphql
+    schema:
+      locations: classpath:graphql
+    graphiql:
+      enabled: true
+      path: /graphiql
