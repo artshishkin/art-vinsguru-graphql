@@ -1,0 +1,8 @@
+query($name:String!){
+    customerNameContains(name:$name){
+        id
+        name
+        age
+        city
+    }
+}

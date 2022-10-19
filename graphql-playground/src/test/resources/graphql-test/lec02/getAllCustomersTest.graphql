@@ -1,0 +1,8 @@
+query{
+    customers{
+        id
+        name
+        age
+        city
+    }
+}

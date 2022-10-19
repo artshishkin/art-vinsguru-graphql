@@ -1,0 +1,8 @@
+query($id:ID!){
+    customerById(id:$id){
+        id
+        name
+        age
+        city
+    }
+}
