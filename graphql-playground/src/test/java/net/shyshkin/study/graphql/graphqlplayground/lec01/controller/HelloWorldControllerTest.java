@@ -1,4 +1,4 @@
-package net.shyshkin.study.graphql.graphqlplayground.controller;
+package net.shyshkin.study.graphql.graphqlplayground.lec01.controller;
 
 import graphql.ErrorType;
 import lombok.extern.slf4j.Slf4j;
@@ -8,13 +8,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
-@GraphQlTest
+@GraphQlTest(
+        value = HelloWorldController.class,
+        properties = {"spring.graphql.schema.locations: classpath:graphql/lec01"}
+)
+@ActiveProfiles("lec01")
 class HelloWorldControllerTest {
+
+    private static final String DOC_LOCATION = "lec01/";
 
     @Autowired
     private GraphQlTester graphQlTester;
@@ -63,7 +70,7 @@ class HelloWorldControllerTest {
         void helloWorld() {
 
             //when
-            GraphQlTester.Response response = graphQlTester.documentName("sayHelloDoc")
+            GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "sayHelloDoc")
                     .execute();
 
             //then
@@ -76,7 +83,7 @@ class HelloWorldControllerTest {
         void sayHelloTo() {
 
             //when
-            GraphQlTester.Response response = graphQlTester.documentName("sayHelloToDoc")
+            GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "sayHelloToDoc")
                     .execute();
 
             //then
@@ -89,7 +96,7 @@ class HelloWorldControllerTest {
         void sayHelloTo_throughParam() {
 
             //when
-            GraphQlTester.Response response = graphQlTester.documentName("sayHelloToParamDoc")
+            GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "sayHelloToParamDoc")
                     .variable("helloName", "Art")
                     .execute();
 
@@ -135,7 +142,7 @@ class HelloWorldControllerTest {
         void multiQuery() {
 
             //when
-            GraphQlTester.Response response = graphQlTester.documentName("multiQueryDoc")
+            GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "multiQueryDoc")
                     .execute();
 
             //then

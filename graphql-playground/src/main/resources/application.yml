@@ -6,7 +6,7 @@ spring:
   graphql:
     path: /graphql
     schema:
-      locations: classpath:graphql
+      locations: classpath:graphql/${spring.profiles.active}
     graphiql:
       enabled: true
       path: /graphiql

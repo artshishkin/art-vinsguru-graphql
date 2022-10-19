@@ -1,6 +1,7 @@
-package net.shyshkin.study.graphql.graphqlplayground.controller;
+package net.shyshkin.study.graphql.graphqlplayground.lec01.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Controller
+@Profile("lec01")
 public class HelloWorldController {
 
     @QueryMapping("sayHello")
