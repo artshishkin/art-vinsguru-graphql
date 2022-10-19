@@ -14,8 +14,8 @@ public class HelloWorldController {
     }
 
     @QueryMapping
-    public Mono<String> sayHelloTo(@Argument String name) {
-        return Mono.just("Hello " + name + "!");
+    public Mono<String> sayHelloTo(@Argument("name") String value) {
+        return Mono.just("Hello " + value + "!");
     }
 
 }
