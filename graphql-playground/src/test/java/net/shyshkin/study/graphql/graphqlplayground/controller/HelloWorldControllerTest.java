@@ -1,11 +1,16 @@
 package net.shyshkin.study.graphql.graphqlplayground.controller;
 
+import graphql.ErrorType;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
 @GraphQlTest
@@ -85,7 +90,7 @@ class HelloWorldControllerTest {
 
             //when
             GraphQlTester.Response response = graphQlTester.documentName("sayHelloToParamDoc")
-                    .variable("helloName","Art")
+                    .variable("helloName", "Art")
                     .execute();
 
             //then
@@ -96,5 +101,30 @@ class HelloWorldControllerTest {
 
     }
 
+    @Nested
+    class SchemaValidationTests {
+
+        @Test
+        @DisplayName("Calling sayHelloTo without argument `name` should return error of ValidationError")
+        void sayHelloTo() {
+
+            //given
+            String query = "{sayHelloTo}";
+
+            //when
+            GraphQlTester.Response response = graphQlTester.document(query)
+                    .execute();
+            //then
+            response.errors()
+                    .satisfy(errors -> assertThat(errors)
+                            .hasSize(1)
+                            .allSatisfy(error -> assertAll(
+                                    () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.ValidationError),
+                                    () -> assertThat(error.getMessage()).isEqualTo("Validation error of type MissingFieldArgument: Missing field argument name @ 'sayHelloTo'"),
+                                    () -> assertThat(error.getMessage()).contains("Missing field argument name"))
+                            )
+                    );
+        }
+    }
 
 }

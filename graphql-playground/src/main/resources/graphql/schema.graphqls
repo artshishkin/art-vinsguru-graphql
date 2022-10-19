@@ -1,4 +1,4 @@
 type Query {
     sayHello : String
-    sayHelloTo(name : String) : String
+    sayHelloTo(name : String!) : String
 }
