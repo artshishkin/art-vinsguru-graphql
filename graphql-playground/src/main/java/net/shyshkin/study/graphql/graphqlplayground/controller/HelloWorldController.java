@@ -7,8 +7,8 @@ import reactor.core.publisher.Mono;
 @Controller
 public class HelloWorldController {
 
-    @QueryMapping
-    public Mono<String> sayHello() {
+    @QueryMapping("sayHello")
+    public Mono<String> helloWorld() {
         return Mono.just("Hello World!");
     }
 
