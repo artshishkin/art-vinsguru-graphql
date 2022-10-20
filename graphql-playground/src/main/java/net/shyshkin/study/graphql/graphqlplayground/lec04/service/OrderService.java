@@ -25,7 +25,7 @@ public class OrderService {
 
     public Flux<List<CustomerOrderDto>> ordersByCustomerIds(List<Integer> list) {
         return Flux.fromIterable(list)
-                .flatMap(id -> fetchOrders(id));
+                .flatMap(id -> fetchOrders(id).defaultIfEmpty(List.of()));
     }
 
     // some source
