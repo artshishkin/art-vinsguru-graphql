@@ -4,6 +4,7 @@ import net.shyshkin.study.graphql.graphqlplayground.lec04.dto.CustomerOrderDto;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,12 @@ public class OrderService {
 
     public Flux<List<CustomerOrderDto>> ordersByCustomerIds(List<Integer> list) {
         return Flux.fromIterable(list)
-                .map(customerId -> db.getOrDefault(customerId, List.of()));
+                .flatMap(id -> fetchOrders(id));
+    }
+
+    // some source
+    private Mono<List<CustomerOrderDto>> fetchOrders(Integer id) {
+        return Mono.justOrEmpty(db.get(id));
     }
 
     private Map<Integer, List<CustomerOrderDto>> createDB() {
