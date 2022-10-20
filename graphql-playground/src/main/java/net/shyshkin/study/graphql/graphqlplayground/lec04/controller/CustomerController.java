@@ -11,8 +11,10 @@ import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,6 +43,11 @@ public class CustomerController {
         return orderService.ordersByCustomerIds(ids);
     }
 
+    @BatchMapping(typeName = "Customer")
+    public Mono<Map<Customer, List<CustomerOrderDto>>> ordersMap(List<Customer> list) {
+        log.debug("fetch all orders for {} customers", list.size());
+        return orderService.fetchOrdersAsMap(list);
+    }
 
 
 }

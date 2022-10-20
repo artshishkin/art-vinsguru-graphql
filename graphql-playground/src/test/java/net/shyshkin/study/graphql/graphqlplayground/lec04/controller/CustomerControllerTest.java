@@ -89,6 +89,53 @@ class CustomerControllerTest {
     }
 
     @Test
+    void getCustomersWithOrdersMapTest_shouldCallOrderService() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getCustomersWithOrdersMapTest")
+                .execute();
+
+        //then
+        response.path("customers")
+                .entityList(Customer.class)
+                .hasSize(5)
+                .satisfies(list -> assertThat(list)
+                        .allSatisfy(c -> assertAll(
+                                        () -> assertThat(c.getCity()).isNull(),
+                                        () -> assertThat(c.getName()).contains("Customer"),
+                                        () -> assertThat(c.getAge()).isBetween(18, 60),
+                                        () -> log.debug("{}", c)
+                                )
+                        )
+                );
+        response.path("customers[0].ordersMap")
+                .entityList(CustomerOrderDto.class)
+                .hasSize(5)
+                .satisfies(orders -> assertThat(orders)
+                        .allSatisfy(o -> assertThat(o).hasNoNullFieldsOrProperties()));
+        response.path("customers[1].ordersMap")
+                .entityList(CustomerOrderDto.class)
+                .hasSize(0);
+        response.path("customers[2].ordersMap")
+                .entityList(CustomerOrderDto.class)
+                .hasSize(5)
+                .satisfies(orders -> assertThat(orders)
+                        .allSatisfy(o -> assertThat(o).hasNoNullFieldsOrProperties()));
+        response.path("customers[3].ordersMap")
+                .entityList(CustomerOrderDto.class)
+                .hasSize(0);
+        response.path("customers[4].ordersMap")
+                .entityList(CustomerOrderDto.class)
+                .hasSize(5)
+                .satisfies(orders -> assertThat(orders)
+                        .allSatisfy(o -> assertThat(o).hasNoNullFieldsOrProperties()));
+
+        then(customerService).should().getAllCustomers();
+        then(orderService).should(times(1)).fetchOrdersAsMap(any());
+        then(orderService).should(never()).ordersByCustomerId(any());
+    }
+
+    @Test
     void getCustomersOnlyTest_should_NOT_CallOrderService() {
 
         //when
