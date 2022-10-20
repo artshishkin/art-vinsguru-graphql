@@ -49,5 +49,9 @@ public class CustomerController {
         return orderService.fetchOrdersAsMap(list);
     }
 
+    @SchemaMapping(typeName = "Customer", field = "age")
+    public Mono<Integer> age() {
+        return Mono.just(39);
+    }
 
 }

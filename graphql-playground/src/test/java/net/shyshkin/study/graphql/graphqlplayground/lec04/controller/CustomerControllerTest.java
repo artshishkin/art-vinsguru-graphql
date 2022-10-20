@@ -57,6 +57,7 @@ class CustomerControllerTest {
                                         () -> assertThat(c.getCity()).isNull(),
                                         () -> assertThat(c.getName()).contains("Customer"),
                                         () -> assertThat(c.getAge()).isBetween(18, 60),
+                                        () -> assertThat(c.getAge()).isEqualTo(39),
                                         () -> log.debug("{}", c)
                                 )
                         )
@@ -104,6 +105,7 @@ class CustomerControllerTest {
                                         () -> assertThat(c.getCity()).isNull(),
                                         () -> assertThat(c.getName()).contains("Customer"),
                                         () -> assertThat(c.getAge()).isBetween(18, 60),
+                                        () -> assertThat(c.getAge()).isEqualTo(39),
                                         () -> log.debug("{}", c)
                                 )
                         )
@@ -151,6 +153,7 @@ class CustomerControllerTest {
                                         () -> assertThat(c.getCity()).isNull(),
                                         () -> assertThat(c.getName()).contains("Customer"),
                                         () -> assertThat(c.getAge()).isBetween(18, 60),
+                                        () -> assertThat(c.getAge()).isEqualTo(39),
                                         () -> log.debug("{}", c)
                                 )
                         )
