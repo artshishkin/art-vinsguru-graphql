@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -25,12 +27,13 @@ public class OrderService {
 
     public Flux<List<CustomerOrderDto>> ordersByCustomerIds(List<Integer> list) {
         return Flux.fromIterable(list)
-                .flatMap(id -> fetchOrders(id).defaultIfEmpty(List.of()));
+                .flatMapSequential(id -> fetchOrders(id).defaultIfEmpty(List.of()));
     }
 
     // some source
     private Mono<List<CustomerOrderDto>> fetchOrders(Integer id) {
-        return Mono.justOrEmpty(db.get(id));
+        return Mono.justOrEmpty(db.get(id))
+                .delayElement(Duration.ofMillis(ThreadLocalRandom.current().nextInt(500)));
     }
 
     private Map<Integer, List<CustomerOrderDto>> createDB() {
