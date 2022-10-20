@@ -104,4 +104,42 @@ class CustomerControllerTest {
         then(orderService).shouldHaveNoInteractions();
     }
 
+    @Test
+    void getCustomersLimitOrdersTest_shouldCallOrderService() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getCustomersLimitOrdersTest")
+                .execute();
+
+        //then
+        response.path("customers")
+                .entityList(Customer.class)
+                .hasSize(5)
+                .satisfies(list -> assertThat(list)
+                        .allSatisfy(c -> assertAll(
+                                        () -> assertThat(c.getCity()).isNull(),
+                                        () -> assertThat(c.getName()).contains("Customer"),
+                                        () -> assertThat(c.getAge()).isBetween(18, 60),
+                                        () -> log.debug("{}", c)
+                                )
+                        )
+                );
+        response.path("customers[0].orders")
+                .entityList(CustomerOrderDto.class)
+                .hasSize(3)
+                .satisfies(orders -> assertThat(orders)
+                        .allSatisfy(o -> assertThat(o).hasNoNullFieldsOrProperties()));
+        response.path("customers[1].orders")
+                .entityList(CustomerOrderDto.class)
+                .hasSize(3)
+                .satisfies(orders -> assertThat(orders)
+                        .allSatisfy(o -> assertThat(o).hasNoNullFieldsOrProperties()));
+        response.path("customers[4].orders")
+                .entityList(CustomerOrderDto.class)
+                .hasSize(0);
+
+        then(customerService).should().getAllCustomers();
+        then(orderService).should(times(5)).ordersByCustomerId(any());
+    }
+
 }

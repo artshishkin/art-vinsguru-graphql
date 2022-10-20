@@ -7,6 +7,7 @@ import net.shyshkin.study.graphql.graphqlplayground.lec03.dto.CustomerOrderDto;
 import net.shyshkin.study.graphql.graphqlplayground.lec03.service.CustomerService;
 import net.shyshkin.study.graphql.graphqlplayground.lec03.service.OrderService;
 import org.springframework.context.annotation.Profile;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
@@ -20,7 +21,7 @@ public class CustomerController {
     private final CustomerService service;
     private final OrderService orderService;
 
-//    @QueryMapping
+    //    @QueryMapping
     @SchemaMapping(
             typeName = "Query"
     )
@@ -32,9 +33,11 @@ public class CustomerController {
     @SchemaMapping(
             typeName = "Customer"
     )
-    public Flux<CustomerOrderDto> orders(Customer customer) {
+    public Flux<CustomerOrderDto> orders(Customer customer, @Argument("limit") Integer maxSize) {
         log.debug("fetch all orders of {}", customer);
-        return orderService.ordersByCustomerId(customer.getId());
+        Flux<CustomerOrderDto> flux = orderService.ordersByCustomerId(customer.getId());
+        if (maxSize != null) flux = flux.take(maxSize);
+        return flux;
     }
 
 }

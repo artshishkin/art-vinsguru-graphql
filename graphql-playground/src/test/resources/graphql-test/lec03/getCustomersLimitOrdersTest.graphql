@@ -1,0 +1,11 @@
+query{
+    customers{
+        id
+        name
+        age
+        orders(limit:3){
+            id
+            description
+        }
+    }
+}
