@@ -1,0 +1,33 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+type Account {
+    accountType: AccountType
+    amount: Int
+    id: ID
+}
+
+type Address {
+    city: String
+    street: String
+}
+
+type Customer {
+    account: Account
+    address: Address
+    age: Int
+    id: ID!
+    name: String
+}
+
+type Query {
+    customers: [Customer]!
+}
+
+enum AccountType {
+    CHECKING
+    SAVING
+}
