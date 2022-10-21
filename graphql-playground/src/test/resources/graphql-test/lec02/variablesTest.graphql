@@ -1,0 +1,21 @@
+query CustomerByIdOperation($customerId: ID! = 1){
+    customerById(id: $customerId){
+        ...CustomerDetails
+    }
+}
+
+query CustomerByAgeRangeOperation{
+    cLow: customersByAgeRange(filter: {minAge: 18, maxAge: 35}){
+        ...CustomerDetails
+    }
+    cHigh: customersByAgeRange(filter: {minAge: 40, maxAge: 60}){
+        ...CustomerDetails
+    }
+}
+
+fragment CustomerDetails on Customer{
+    id
+    name
+    age
+    city
+}

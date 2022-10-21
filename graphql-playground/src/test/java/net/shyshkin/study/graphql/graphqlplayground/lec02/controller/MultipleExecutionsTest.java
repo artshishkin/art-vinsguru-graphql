@@ -137,4 +137,39 @@ class MultipleExecutionsTest {
         then(customerService).should(never()).getCustomersWithinAge(any());
     }
 
+    @Test
+    void variablesTest() {
+
+        //given
+        Integer customerId = 2;
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "variablesTest")
+                .operationName("CustomerByIdOperation")
+                .variable("customerId", customerId)
+                .execute();
+
+        //then
+        response.path("customerById").hasValue();
+        response.path("customerById.id").matchesJson("\"" + customerId + "\"");
+        then(customerService).should().getCustomerById(eq(customerId));
+    }
+
+    @Test
+    void variablesWithDefaultValueTest() {
+
+        //given
+        Integer defaultId = 1;
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "variablesTest")
+                .operationName("CustomerByIdOperation")
+                .execute();
+
+        //then
+        response.path("customerById").hasValue();
+        response.path("customerById.id").matchesJson("\"" + defaultId + "\"");
+        then(customerService).should().getCustomerById(eq(defaultId));
+    }
+
 }
