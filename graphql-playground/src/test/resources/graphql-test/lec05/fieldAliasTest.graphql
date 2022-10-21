@@ -1,0 +1,18 @@
+
+query{
+    customers{
+        id
+        name
+        age
+        AD: address{
+            city
+            street
+        }
+        ac: account{
+            id
+            balance: amount
+            type: accountType
+        }
+
+    }
+}

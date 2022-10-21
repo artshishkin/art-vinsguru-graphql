@@ -2,6 +2,7 @@ package net.shyshkin.study.graphql.graphqlplayground.lec05.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.Account;
+import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.AccountType;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.Address;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.Customer;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,30 @@ class CustomerControllerTest {
                     .entity(Account.class)
                     .satisfies(acc -> assertThat(acc).hasNoNullFieldsOrProperties())
                     .satisfies(acc -> log.debug("{}", acc));
+        }
+    }
+
+    @Test
+    void fieldAliasTest() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "fieldAliasTest")
+                .execute();
+
+        //then
+        response.path("customers")
+                .entityList(Customer.class)
+                .hasSize(5);
+
+        for (int i = 0; i < 5; i++) {
+            response.path("customers[" + i + "].AD").hasValue(); //alias for address
+            response.path("customers[" + i + "].ac").hasValue(); //alias for account
+            response.path("customers[" + i + "].ac.balance")
+                    .entity(Integer.class)
+                    .satisfies(amount -> assertThat(amount).isBetween(0, 1000));
+            response.path("customers[" + i + "].ac.type")
+                    .entity(AccountType.class)
+                    .satisfies(accountType -> assertThat(accountType).isNotNull());
         }
     }
 
