@@ -172,4 +172,25 @@ class MultipleExecutionsTest {
         then(customerService).should().getCustomerById(eq(defaultId));
     }
 
+    @Test
+    void variablesAssignmentTest() {
+
+        //given
+        AgeRangeFilter filterLow = AgeRangeFilter.builder().minAge(5).maxAge(55).build();
+        AgeRangeFilter defaultFilterHigh = AgeRangeFilter.builder().minAge(40).maxAge(60).build();
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "variablesTest")
+                .operationName("CustomerByAgeRangeOperation")
+                .variable("filterL", filterLow)
+                .execute();
+
+        //then
+        response.path("cLow").hasValue();
+        response.path("cHigh").hasValue();
+        then(customerService).should().getCustomersWithinAge(eq(filterLow));
+        then(customerService).should().getCustomersWithinAge(eq(defaultFilterHigh));
+    }
+
+
 }

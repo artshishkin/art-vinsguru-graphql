@@ -4,11 +4,14 @@ query CustomerByIdOperation($customerId: ID! = 1){
     }
 }
 
-query CustomerByAgeRangeOperation{
-    cLow: customersByAgeRange(filter: {minAge: 18, maxAge: 35}){
+query CustomerByAgeRangeOperation(
+    $filterL: AgeRangeFilter! = {minAge: 18, maxAge: 35},
+    $filterH: AgeRangeFilter! = {minAge: 40, maxAge: 60}
+){
+    cLow: customersByAgeRange(filter: $filterL){
         ...CustomerDetails
     }
-    cHigh: customersByAgeRange(filter: {minAge: 40, maxAge: 60}){
+    cHigh: customersByAgeRange(filter: $filterH){
         ...CustomerDetails
     }
 }
