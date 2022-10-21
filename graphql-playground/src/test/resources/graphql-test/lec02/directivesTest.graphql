@@ -1,0 +1,26 @@
+query CustomerByIdOperation($customerId: ID! = 1){
+    customerById(id: $customerId){
+        ...CustomerDetails
+    }
+}
+
+query CustomerByAgeRangeOperation(
+    $filterL: AgeRangeFilter! = {minAge: 18, maxAge: 35},
+    $filterH: AgeRangeFilter! = {minAge: 40, maxAge: 60},
+    $includeLow: Boolean! = true,
+    $skipHigh: Boolean! = false,
+){
+    cLow: customersByAgeRange(filter: $filterL) @include(if: $includeLow){
+        ...CustomerDetails
+    }
+    cHigh: customersByAgeRange(filter: $filterH) @skip(if: $skipHigh){
+        ...CustomerDetails
+    }
+}
+
+fragment CustomerDetails on Customer{
+    id
+    name
+    age
+    city
+}
