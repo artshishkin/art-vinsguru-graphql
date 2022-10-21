@@ -13,8 +13,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -100,6 +103,38 @@ class MultipleExecutionsTest {
         response.path("cHigh").hasValue();
         then(customerService).should().getCustomersWithinAge(eq(filterLow));
         then(customerService).should().getCustomersWithinAge(eq(filterHigh));
+    }
+
+    @Test
+    void operations_1_Test() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "operationsTest")
+                .operationName("CustomerByAgeRangeOperation")
+                .execute();
+
+        //then
+        response.path("cLow").hasValue();
+        response.path("cHigh").hasValue();
+        then(customerService).should(times(2)).getCustomersWithinAge(any());
+        response.path("customerById").pathDoesNotExist();
+        then(customerService).should(never()).getCustomerById(any());
+    }
+
+    @Test
+    void operations_2_Test() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "operationsTest")
+                .operationName("CustomerByIdOperation")
+                .execute();
+
+        //then
+        response.path("customerById").hasValue();
+        then(customerService).should().getCustomerById(eq(1));
+        response.path("cLow").pathDoesNotExist();
+        response.path("cHigh").pathDoesNotExist();
+        then(customerService).should(never()).getCustomersWithinAge(any());
     }
 
 }
