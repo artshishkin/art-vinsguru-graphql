@@ -78,4 +78,28 @@ class MultipleExecutionsTest {
         then(customerService).should().getCustomersWithinAge(eq(filterHigh));
     }
 
+    @Test
+    void fragmentsTest() {
+
+        //given
+        AgeRangeFilter filterLow = AgeRangeFilter.builder()
+                .minAge(18)
+                .maxAge(35)
+                .build();
+        AgeRangeFilter filterHigh = AgeRangeFilter.builder()
+                .minAge(40)
+                .maxAge(60)
+                .build();
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "fragmentsTest")
+                .execute();
+
+        //then
+        response.path("cLow").hasValue();
+        response.path("cHigh").hasValue();
+        then(customerService).should().getCustomersWithinAge(eq(filterLow));
+        then(customerService).should().getCustomersWithinAge(eq(filterHigh));
+    }
+
 }
