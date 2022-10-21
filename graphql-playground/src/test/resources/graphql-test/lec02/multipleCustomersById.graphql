@@ -1,0 +1,14 @@
+query{
+    customer1: customerById(id: 1){
+        id
+        name
+        age
+        city
+    }
+    customer2: customerById(id: 2){
+        id
+        name
+        age
+        city
+    }
+}

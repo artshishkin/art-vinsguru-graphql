@@ -1,0 +1,28 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+type Customer {
+    age: Int
+    city: String
+    id: ID
+    name: String
+}
+
+type Query {
+    " fetch customer by id"
+    customerById(id: ID!): Customer
+    " filter customers by name"
+    customerNameContains(name: String!): [Customer]!
+    " fetch all customers"
+    customers: [Customer]!
+    " filter customers by age range"
+    customersByAgeRange(filter: AgeRangeFilter!): [Customer]!
+}
+
+input AgeRangeFilter {
+    maxAge: Int!
+    minAge: Int!
+}
