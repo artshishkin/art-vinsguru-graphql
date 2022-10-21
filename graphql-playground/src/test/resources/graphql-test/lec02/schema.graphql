@@ -12,14 +12,16 @@ type Customer {
 }
 
 type Query {
+    " filter customers by age range"
+    ageRange(filter: AgeRangeFilter!): [Customer]!
     " fetch customer by id"
     customerById(id: ID!): Customer
     " filter customers by name"
     customerNameContains(name: String!): [Customer]!
     " fetch all customers"
     customers: [Customer]!
-    " filter customers by age range"
-    customersByAgeRange(filter: AgeRangeFilter!): [Customer]!
+    " filter customers by age range (deprecated)"
+    customersByAgeRange(filter: AgeRangeFilter!): [Customer]! @deprecated(reason: "Use ageRange")
 }
 
 input AgeRangeFilter {
