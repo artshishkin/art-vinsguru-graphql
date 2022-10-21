@@ -1,0 +1,14 @@
+query{
+    cLow: customersByAgeRange(filter: {minAge: 18, maxAge: 35}){
+        id
+        name
+        age
+        city
+    }
+    cHigh: customersByAgeRange(filter: {minAge: 40, maxAge: 60}){
+        id
+        name
+        age
+        city
+    }
+}
