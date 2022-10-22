@@ -5,7 +5,7 @@ name: GitHub CI
 
 on:
   push:
-    branches: [ main, getting-started ]
+    branches: [ main, advanced ]
   pull_request:
     branches: [ main ]
 

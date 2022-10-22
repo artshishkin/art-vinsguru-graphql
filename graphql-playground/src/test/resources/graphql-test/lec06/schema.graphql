@@ -1,0 +1,22 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+type Customer {
+    age: Int
+    city: String
+    id: ID!
+    name: String
+    orders: [CustomerOrder]!
+}
+
+type CustomerOrder {
+    description: String
+    id: ID!
+}
+
+type Query {
+    customers: [Customer]!
+}
