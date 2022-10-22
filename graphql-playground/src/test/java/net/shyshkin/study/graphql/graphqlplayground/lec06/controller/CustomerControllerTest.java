@@ -1,8 +1,8 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec06.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.Customer;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.CustomerOrderDto;
+import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.CustomerWithOrdersDto;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.service.CustomerService;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.service.OrderService;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @Slf4j
@@ -41,7 +42,7 @@ class CustomerControllerTest {
     OrderService orderService;
 
     @Test
-    void getCustomersWithOrdersTest_shouldCallOrderService() {
+    void getCustomersWithOrdersTest() {
 
         //when
         GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "customers")
@@ -49,13 +50,14 @@ class CustomerControllerTest {
 
         //then
         response.path("customers")
-                .entityList(Customer.class)
+                .entityList(CustomerWithOrdersDto.class)
                 .hasSize(5)
                 .satisfies(list -> assertThat(list)
                         .allSatisfy(c -> assertAll(
                                         () -> assertThat(c.getCity()).isNull(),
                                         () -> assertThat(c.getName()).contains("Customer"),
                                         () -> assertThat(c.getAge()).isBetween(18, 60),
+                                        () -> assertThat(c.getOrders()).isNotNull(),
                                         () -> log.debug("{}", c)
                                 )
                         )
@@ -76,6 +78,32 @@ class CustomerControllerTest {
 
         then(customerService).should().getAllCustomers();
         then(orderService).should(times(5)).ordersByCustomerId(any());
+    }
+
+    @Test
+    void getCustomersWithoutOrdersTest() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "customersWithoutOrders")
+                .execute();
+
+        //then
+        response.path("customers")
+                .entityList(CustomerWithOrdersDto.class)
+                .hasSize(5)
+                .satisfies(list -> assertThat(list)
+                        .allSatisfy(c -> assertAll(
+                                        () -> assertThat(c.getCity()).isNull(),
+                                        () -> assertThat(c.getName()).contains("Customer"),
+                                        () -> assertThat(c.getAge()).isBetween(18, 60),
+                                        () -> assertThat(c.getOrders()).isNull(),
+                                        () -> log.debug("{}", c)
+                                )
+                        )
+                );
+
+        then(customerService).should().getAllCustomers();
+        then(orderService).should(never()).ordersByCustomerId(any());
     }
 
 }
