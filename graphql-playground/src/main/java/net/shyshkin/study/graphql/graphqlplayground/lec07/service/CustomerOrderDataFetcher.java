@@ -1,5 +1,7 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec07.service;
 
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingFieldSelectionSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +18,15 @@ import java.util.function.UnaryOperator;
 @Service
 @Profile("lec07")
 @RequiredArgsConstructor
-public class CustomerOrderDataFetcher {
+public class CustomerOrderDataFetcher implements DataFetcher<Flux<CustomerWithOrdersDto>> {
 
     private final CustomerService customerService;
     private final OrderService orderService;
+
+    @Override
+    public Flux<CustomerWithOrdersDto> get(DataFetchingEnvironment environment) throws Exception {
+        return customerOrders(environment.getSelectionSet());
+    }
 
     public Flux<CustomerWithOrdersDto> customerOrders(DataFetchingFieldSelectionSet selectionSet) {
         log.debug("Custom Fetcher Service: fetch all customers");
