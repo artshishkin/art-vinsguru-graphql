@@ -1,0 +1,19 @@
+query WithOrders{
+    customers{
+        id
+        name
+        age
+        orders{
+            id
+            description
+        }
+    }
+}
+
+query WithoutOrders{
+    customers{
+        id
+        name
+        age
+    }
+}

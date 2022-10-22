@@ -1,14 +1,12 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec07.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
