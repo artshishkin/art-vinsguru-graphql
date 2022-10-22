@@ -105,4 +105,39 @@ class CustomerOrderDataFetcherTest {
         then(customerService).should().getAllCustomers();
         then(orderService).should(never()).ordersByCustomerId(any());
     }
+
+    @Test
+    void dataFetcherConfig_yearTest() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "data-fetcher")
+                .operationName("Year")
+                .execute();
+
+        //then
+        response.path("year")
+                .entity(Integer.class)
+                .isEqualTo(2022);
+
+        then(customerService).shouldHaveNoInteractions();
+        then(orderService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void dataFetcherConfig_authorTest() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "data-fetcher")
+                .operationName("Author")
+                .execute();
+
+        //then
+        response.path("author")
+                .entity(String.class)
+                .isEqualTo("Art");
+
+        then(customerService).shouldHaveNoInteractions();
+        then(orderService).shouldHaveNoInteractions();
+    }
+
 }

@@ -1,0 +1,7 @@
+query Year{
+    year
+}
+
+query Author{
+    author
+}

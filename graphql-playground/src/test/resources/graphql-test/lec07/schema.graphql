@@ -18,5 +18,7 @@ type CustomerOrder {
 }
 
 type Query {
+    author: String!
     customers: [Customer]!
+    year: Int!
 }
