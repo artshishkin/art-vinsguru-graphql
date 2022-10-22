@@ -1,7 +1,7 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec06.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.CustomerRestDto;
+import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.CustomerWithOrdersDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +34,7 @@ class CustomerRestControllerTest {
 
                 //then
                 .expectStatus().isOk()
-                .expectBodyList(CustomerRestDto.class)
+                .expectBodyList(CustomerWithOrdersDto.class)
                 .hasSize(5)
                 .value(customers -> assertThat(customers)
                         .allSatisfy(c -> assertThat(c)

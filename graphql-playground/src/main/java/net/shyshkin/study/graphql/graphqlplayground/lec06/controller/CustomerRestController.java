@@ -3,7 +3,7 @@ package net.shyshkin.study.graphql.graphqlplayground.lec06.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.Customer;
-import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.CustomerRestDto;
+import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.CustomerWithOrdersDto;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.service.CustomerService;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.service.OrderService;
 import org.springframework.context.annotation.Profile;
@@ -23,7 +23,7 @@ public class CustomerRestController {
     private final OrderService orderService;
 
     @GetMapping
-    public Flux<CustomerRestDto> customers() {
+    public Flux<CustomerWithOrdersDto> customers() {
         log.debug("REST fetch all customers");
         return service.getAllCustomers()
                 .map(this::toRestDto)
@@ -34,8 +34,8 @@ public class CustomerRestController {
                 );
     }
 
-    private CustomerRestDto toRestDto(Customer customer) {
-        return CustomerRestDto.builder()
+    private CustomerWithOrdersDto toRestDto(Customer customer) {
+        return CustomerWithOrdersDto.builder()
                 .id(customer.getId())
                 .age(customer.getAge())
                 .city(customer.getCity())

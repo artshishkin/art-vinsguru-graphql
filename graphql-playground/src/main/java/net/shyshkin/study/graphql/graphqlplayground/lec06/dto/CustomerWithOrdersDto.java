@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class CustomerRestDto extends Customer {
+public class CustomerWithOrdersDto extends Customer {
 
     private List<CustomerOrderDto> orders;
 
