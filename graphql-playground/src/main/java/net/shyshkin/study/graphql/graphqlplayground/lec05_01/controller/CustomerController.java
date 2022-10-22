@@ -1,5 +1,6 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec05_01.controller;
 
+import graphql.schema.DataFetchingFieldSelectionSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec05_01.dto.Customer;
@@ -18,8 +19,9 @@ public class CustomerController {
     private final CustomerService service;
 
     @QueryMapping
-    public Flux<Customer> customers() {
+    public Flux<Customer> customers(DataFetchingFieldSelectionSet selectionSet) {
         log.debug("fetch all customers");
+        log.debug("customers: {}", selectionSet.getFields());
         return service.getAllCustomers();
     }
 

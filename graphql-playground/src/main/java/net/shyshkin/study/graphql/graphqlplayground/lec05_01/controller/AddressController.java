@@ -1,5 +1,6 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec05_01.controller;
 
+import graphql.schema.DataFetchingFieldSelectionSet;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec05_01.dto.Address;
 import net.shyshkin.study.graphql.graphqlplayground.lec05_01.dto.Customer;
@@ -13,10 +14,11 @@ import reactor.core.publisher.Mono;
 @Profile("lec05_01")
 public class AddressController {
 
-//    @SchemaMapping(typeName = "Customer") //we can skip typeName if we have it in method arguments
+    //    @SchemaMapping(typeName = "Customer") //we can skip typeName if we have it in method arguments
     @SchemaMapping
-    public Mono<Address> address(Customer customer) {
+    public Mono<Address> address(Customer customer, DataFetchingFieldSelectionSet selectionSet) {
         log.debug("fetch address of {}", customer);
+        log.debug("address: {}", selectionSet.getFields());
         return Mono.fromSupplier(() -> Address.builder()
                 .city("City" + customer.getId())
                 .street("Street" + customer.getId())
