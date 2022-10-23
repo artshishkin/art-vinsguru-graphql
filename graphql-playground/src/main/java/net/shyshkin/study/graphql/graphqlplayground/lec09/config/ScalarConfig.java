@@ -9,6 +9,7 @@ import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
 import java.util.List;
 
+import static graphql.scalars.ExtendedScalars.Object;
 import static graphql.scalars.ExtendedScalars.*;
 
 @Configuration
@@ -28,7 +29,8 @@ public class ScalarConfig {
                 GraphQLBigInteger,
                 GraphQLByte,
                 GraphQLShort,
-                LocalTime
+                LocalTime,
+                Object
         );
         return c -> qlScalarTypes.forEach(c::scalar);
     }

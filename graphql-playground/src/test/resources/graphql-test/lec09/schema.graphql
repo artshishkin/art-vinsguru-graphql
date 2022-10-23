@@ -21,8 +21,14 @@ type AllTypes {
     time: LocalTime
 }
 
+type Product {
+    attributes: Object
+    name: String
+}
+
 type Query {
     get: AllTypes
+    products: [Product]
 }
 
 enum Car {
@@ -50,6 +56,9 @@ scalar LocalTime
 
 "A 64-bit signed integer"
 scalar Long
+
+"An object scalar"
+scalar Object
 
 "A 16-bit signed integer"
 scalar Short

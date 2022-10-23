@@ -6,9 +6,11 @@ scalar BigInteger
 scalar Date
 scalar LocalTime
 scalar DateTime
+scalar Object
 
 type Query{
     get: AllTypes
+    products: [Product]
 }
 
 type AllTypes{
@@ -26,6 +28,11 @@ type AllTypes{
     time: LocalTime
     dateTime: DateTime
     car: Car
+}
+
+type Product{
+    name: String
+    attributes: Object
 }
 
 enum Car{
