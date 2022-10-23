@@ -1,0 +1,33 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+union Result = Book | Electronics | Fruit
+
+type Book {
+    author: String
+    title: String
+}
+
+type Electronics {
+    brand: Brand
+    description: String
+    id: ID!
+    price: Int
+}
+
+type Fruit {
+    description: String
+    expiryDate: String
+}
+
+type Query {
+    search: [Result]
+}
+
+enum Brand {
+    APPLE
+    SAMSUNG
+}

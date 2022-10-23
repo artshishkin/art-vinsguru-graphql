@@ -1,0 +1,46 @@
+query SearchUnion{
+    search{
+        ... on Book{
+            title
+            author
+        }
+        ... ElectronicsDetails
+        ... on Fruit{
+            description
+            expiryDate
+        }
+    }
+}
+
+query SearchUnionWithoutBook{
+    search{
+        ... ElectronicsDetails
+        ... on Fruit{
+            description
+            expiryDate
+        }
+    }
+}
+
+
+query SearchUnionWithTypename{
+    search{
+        __typename
+        ... on Book{
+            name: title
+        }
+        ... on Electronics{
+            name: description
+        }
+        ... on Fruit{
+            name: description
+        }
+    }
+}
+
+fragment ElectronicsDetails on Electronics{
+    id
+    description
+    brand
+    price
+}
