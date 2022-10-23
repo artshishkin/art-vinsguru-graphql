@@ -1,0 +1,55 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+type AllTypes {
+    ageInMonths: Short
+    ageInYears: Byte
+    bigDecimal: BigDecimal
+    bigInteger: BigInteger
+    car: Car
+    city: String
+    date: Date
+    dateTime: DateTime
+    distance: Long
+    height: Int
+    id: ID
+    isValid: Boolean
+    temperature: Float
+    time: LocalTime
+}
+
+type Query {
+    get: AllTypes
+}
+
+enum Car {
+    BMW
+    HONDA
+}
+
+"An arbitrary precision signed decimal"
+scalar BigDecimal
+
+"An arbitrary precision signed integer"
+scalar BigInteger
+
+"An 8-bit signed integer"
+scalar Byte
+
+"An RFC-3339 compliant Full Date Scalar"
+scalar Date
+
+"An RFC-3339 compliant DateTime Scalar"
+scalar DateTime
+
+"24-hour clock time value string in the format `hh:mm:ss` or `hh:mm:ss.sss`."
+scalar LocalTime
+
+"A 64-bit signed integer"
+scalar Long
+
+"A 16-bit signed integer"
+scalar Short

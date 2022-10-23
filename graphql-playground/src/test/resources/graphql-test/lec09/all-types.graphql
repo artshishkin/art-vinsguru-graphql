@@ -1,0 +1,18 @@
+query {
+    get {
+        id
+        height
+        temperature
+        city
+        isValid
+        distance
+        ageInYears
+        ageInMonths
+        bigDecimal
+        bigInteger
+        date
+        time
+        dateTime
+        car
+    }
+}
