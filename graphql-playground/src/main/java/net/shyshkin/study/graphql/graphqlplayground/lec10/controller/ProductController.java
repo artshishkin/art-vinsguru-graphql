@@ -2,7 +2,7 @@ package net.shyshkin.study.graphql.graphqlplayground.lec10.controller;
 
 import net.shyshkin.study.graphql.graphqlplayground.lec10.dto.Book;
 import net.shyshkin.study.graphql.graphqlplayground.lec10.dto.Electronics;
-import net.shyshkin.study.graphql.graphqlplayground.lec10.dto.Fruit;
+import net.shyshkin.study.graphql.graphqlplayground.lec10.dto.FruitDto;
 import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ public class ProductController {
     @QueryMapping
     public Flux<Object> products(){
         return Flux.just(
-                Fruit.builder()
+                FruitDto.builder()
                         .description("banana")
                         .price(10)
                         .expiryDate(LocalDate.now().plusDays(14))

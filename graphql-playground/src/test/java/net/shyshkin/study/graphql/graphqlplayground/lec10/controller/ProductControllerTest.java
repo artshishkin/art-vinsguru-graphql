@@ -3,12 +3,17 @@ package net.shyshkin.study.graphql.graphqlplayground.lec10.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest;
+import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
 
 @Slf4j
-@GraphQlTest(properties = {"spring.graphql.schema.locations: classpath:graphql/lec10"})
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {"spring.graphql.schema.locations: classpath:graphql/lec10"}
+)
+@AutoConfigureHttpGraphQlTester
 @ActiveProfiles("lec10")
 class ProductControllerTest {
 
