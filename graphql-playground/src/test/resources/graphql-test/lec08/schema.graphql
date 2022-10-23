@@ -1,0 +1,29 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+type Level1 {
+    level2: Level2
+}
+
+type Level2 {
+    level3: Level3
+}
+
+type Level3 {
+    level4: Level4
+}
+
+type Level4 {
+    level5: Level5
+}
+
+type Level5 {
+    id: ID
+}
+
+type Query {
+    level1: Level1
+}
