@@ -1,0 +1,41 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+interface Product {
+    description: String
+    id: ID!
+    price: Int
+}
+
+type Book implements Product {
+    author: String
+    description: String
+    id: ID!
+    price: Int
+}
+
+type Electronics implements Product {
+    brand: Brand
+    description: String
+    id: ID!
+    price: Int
+}
+
+type Fruit implements Product {
+    description: String
+    expiryDate: String
+    id: ID!
+    price: Int
+}
+
+type Query {
+    products: [Product]
+}
+
+enum Brand {
+    APPLE
+    SAMSUNG
+}

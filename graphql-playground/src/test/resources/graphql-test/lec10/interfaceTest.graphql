@@ -1,0 +1,56 @@
+query GetProductInterface{
+    products {
+        id
+        description
+        price
+    }
+}
+
+query GetProductsWithFruitExtensions{
+    products {
+        id
+        description
+        price
+        ... on Fruit{
+            expiryDate
+        }
+    }
+}
+
+query GetProductsWithAllFields{
+    products {
+        id
+        description
+        price
+        ... on Fruit{
+            expiryDate
+        }
+        ... on Electronics{
+            brand
+        }
+        ... on Book{
+            author
+        }
+    }
+}
+
+query getTypename{
+    products {
+        id
+        __typename
+        ... on Fruit{
+            expiryDate
+        }
+    }
+}
+
+query getTypenameWithAlias{
+    products {
+        id
+        typ: __typename
+        ... on Fruit{
+            expiryDate
+        }
+    }
+}
+
