@@ -28,6 +28,7 @@
         <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
         <graphql-java-extended-scalars.version>18.2</graphql-java-extended-scalars.version>
+        <mapstruct.version>1.5.1.Final</mapstruct.version>
     </properties>
     <dependencies>
         <dependency>
@@ -43,6 +44,11 @@
                 <groupId>com.graphql-java</groupId>
                 <artifactId>graphql-java-extended-scalars</artifactId>
                 <version>${graphql-java-extended-scalars.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
