@@ -1,0 +1,3 @@
+query {
+    sayHello(name: "Art")
+}
