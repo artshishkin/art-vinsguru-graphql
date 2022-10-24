@@ -3,7 +3,9 @@ package net.shyshkin.study.graphql.graphqlplayground.lec12.config;
 import graphql.ExecutionInput;
 import graphql.execution.preparsed.PreparsedDocumentEntry;
 import graphql.execution.preparsed.PreparsedDocumentProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.lec12.service.CacheMonitorFakeService;
 import org.springframework.boot.autoconfigure.graphql.GraphQlSourceBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +18,10 @@ import java.util.function.Function;
 @Slf4j
 @Profile("lec12")
 @Configuration
+@RequiredArgsConstructor
 public class OperationCachingConfig {
+
+    private final CacheMonitorFakeService cacheMonitorFakeService;
 
     @Bean
     GraphQlSourceBuilderCustomizer sourceBuilderCustomizer() {
@@ -37,6 +42,7 @@ public class OperationCachingConfig {
                             log.debug("Not found in cache: {}", q);
                             PreparsedDocumentEntry preparsedDocumentEntry = parseAndValidateFunction.apply(executionInput);
                             log.debug("Caching: {}", preparsedDocumentEntry);
+                            cacheMonitorFakeService.confirmParsingAndValidation();
                             return preparsedDocumentEntry;
                         }
                 );

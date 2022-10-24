@@ -1,3 +1,7 @@
-query {
+query Simple{
     sayHello(name: "Art")
+}
+
+query Correct($name: String!){
+    sayHello(name: $name)
 }
