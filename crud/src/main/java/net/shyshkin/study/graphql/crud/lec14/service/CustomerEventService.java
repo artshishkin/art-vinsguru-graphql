@@ -13,7 +13,7 @@ public class CustomerEventService {
             .multicast()
             .onBackpressureBuffer();
 
-    private final Flux<CustomerEvent> flux = sink.asFlux();
+    private final Flux<CustomerEvent> flux = sink.asFlux().cache(0);
 
     public Flux<CustomerEvent> subscribe() {
         return flux;
