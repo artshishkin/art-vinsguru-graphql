@@ -1,9 +1,7 @@
 package net.shyshkin.study.graphql.crud.lec14.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import net.shyshkin.study.graphql.crud.lec14.dto.CustomerDto;
-import net.shyshkin.study.graphql.crud.lec14.dto.DeleteResultDto;
-import net.shyshkin.study.graphql.crud.lec14.dto.Status;
+import net.shyshkin.study.graphql.crud.lec14.dto.*;
 import net.shyshkin.study.graphql.crud.lec14.service.CustomerService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,8 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.graphql.test.tester.GraphQlTester;
+import org.springframework.graphql.test.tester.WebSocketGraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.util.Map;
 
@@ -29,15 +33,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureHttpGraphQlTester
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("lec14")
-class CustomerControllerTest {
+class CustomerEventControllerTest {
 
     private static final String DOC_LOCATION = "lec14/";
 
     @Autowired
     GraphQlTester graphQlTester;
 
+    @LocalServerPort
+    private Integer serverPort;
+
+    WebSocketGraphQlTester webSocketGraphQlTester;
+
     @SpyBean
     CustomerService customerService;
+
+    @BeforeEach
+    void setUp() {
+        WebSocketClient client = new ReactorNettyWebSocketClient();
+        String url = "http://localhost:" + serverPort + "/graphql";
+
+        webSocketGraphQlTester = WebSocketGraphQlTester.builder(url, client).build();
+    }
 
     @Test
     @DisplayName("Query customers should return all customers")
@@ -95,7 +112,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("Mutation CreateCustomer should create new customer")
+    @DisplayName("CREATED: Subscription for CustomerEvents should receive CREATED event during Mutation CreateCustomer")
     @Order(30)
     void createCustomerTest() {
 
@@ -105,6 +122,7 @@ class CustomerControllerTest {
                 "age", 59,
                 "city", "Warsaw"
         );
+        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
         GraphQlTester.Response response = graphQlTester
@@ -118,10 +136,21 @@ class CustomerControllerTest {
         response.path("createCustomer.name").matchesJson("\"Tetyana\"");
         response.path("createCustomer.age").matchesJson("59");
         response.path("createCustomer.city").matchesJson("\"Warsaw\"");
+
+        StepVerifier.create(customerEvents.take(1))
+                .consumeNextWith(event -> assertThat(event)
+                        .hasNoNullFieldsOrProperties()
+                        .hasFieldOrPropertyWithValue("action", Action.CREATED)
+                        .hasFieldOrPropertyWithValue("customer.name", "Tetyana")
+                        .hasFieldOrPropertyWithValue("customer.age", 59)
+                        .hasFieldOrPropertyWithValue("customer.city", "Warsaw")
+                        .satisfies(ev -> log.debug("{}", ev))
+                )
+                .verifyComplete();
     }
 
     @Test
-    @DisplayName("Mutation UpdateCustomer should update customer if customer exists")
+    @DisplayName("UPDATED: Subscription for CustomerEvents should receive UPDATED event during Mutation UpdateCustomer if customer exists")
     @Order(40)
     void updateCustomer_present_Test() {
 
@@ -132,6 +161,7 @@ class CustomerControllerTest {
                 "age", 12,
                 "city", "London"
         );
+        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
         GraphQlTester.Response response = graphQlTester
@@ -146,6 +176,18 @@ class CustomerControllerTest {
         response.path("updateCustomer.name").matchesJson("\"Arina\"");
         response.path("updateCustomer.age").matchesJson("12");
         response.path("updateCustomer.city").matchesJson("\"London\"");
+
+        StepVerifier.create(customerEvents.take(1))
+                .consumeNextWith(event -> assertThat(event)
+                        .hasNoNullFieldsOrProperties()
+                        .hasFieldOrPropertyWithValue("action", Action.UPDATED)
+                        .hasFieldOrPropertyWithValue("customer.id", customerId)
+                        .hasFieldOrPropertyWithValue("customer.name", "Arina")
+                        .hasFieldOrPropertyWithValue("customer.age", 12)
+                        .hasFieldOrPropertyWithValue("customer.city", "London")
+                        .satisfies(ev -> log.debug("{}", ev))
+                )
+                .verifyComplete();
     }
 
     @Test
@@ -174,12 +216,13 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("Mutation DeleteCustomer should return response with SUCCESS status if customer present")
+    @DisplayName("DELETED: Subscription for CustomerEvents should receive DELETED event during Mutation DeleteCustomer if customer exists")
     @Order(50)
     void deleteCustomer_present_Test() {
 
         //given
         Integer customerId = 4;
+        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
         GraphQlTester.Response response = graphQlTester
@@ -196,15 +239,27 @@ class CustomerControllerTest {
                         .hasFieldOrPropertyWithValue("id", customerId)
                         .hasFieldOrPropertyWithValue("status", Status.SUCCESS)
                 );
+        StepVerifier.create(customerEvents.take(1))
+                .consumeNextWith(event -> assertThat(event)
+                        .hasNoNullFieldsOrProperties()
+                        .hasFieldOrPropertyWithValue("action", Action.DELETED)
+                        .hasFieldOrPropertyWithValue("customer.id", customerId)
+                        .hasFieldOrPropertyWithValue("customer.name", null)
+                        .hasFieldOrPropertyWithValue("customer.age", null)
+                        .hasFieldOrPropertyWithValue("customer.city", null)
+                        .satisfies(ev -> log.debug("{}", ev))
+                )
+                .verifyComplete();
     }
 
     @Test
     @DisplayName("Mutation DeleteCustomer should return response with SUCCESS too status if customer absent")
-    @Order(50)
+    @Order(55)
     void deleteCustomer_absent_Test() {
 
         //given
         Integer customerId = 444;
+        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
         GraphQlTester.Response response = graphQlTester
@@ -221,6 +276,69 @@ class CustomerControllerTest {
                         .hasFieldOrPropertyWithValue("id", customerId)
                         .hasFieldOrPropertyWithValue("status", Status.SUCCESS)
                 );
+        StepVerifier.create(customerEvents.take(1))
+                .consumeNextWith(event -> assertThat(event)
+                        .hasNoNullFieldsOrProperties()
+                        .hasFieldOrPropertyWithValue("action", Action.DELETED)
+                        .hasFieldOrPropertyWithValue("customer.id", customerId)
+                        .hasFieldOrPropertyWithValue("customer.name", null)
+                        .hasFieldOrPropertyWithValue("customer.age", null)
+                        .hasFieldOrPropertyWithValue("customer.city", null)
+                        .satisfies(ev -> log.debug("{}", ev))
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Multiple Mutations should produce multiple events")
+    @Order(60)
+    void multipleMutationsExecutionTest() {
+
+        //given
+        Map<String, Object> customerInput = Map.of(
+                "name", "Boris",
+                "age", 58,
+                "city", "London"
+        );
+        Flux<CustomerEvent> customerEvents = subscriptionFlux();
+
+        //when
+        graphQlTester
+                .documentName(DOC_LOCATION + "subscription")
+                .operationName("MultipleMutations")
+                .variable("newCustomer", customerInput)
+                .executeAndVerify();
+
+        //then
+        StepVerifier.create(customerEvents.take(2))
+                .consumeNextWith(event -> assertThat(event)
+                        .hasNoNullFieldsOrProperties()
+                        .hasFieldOrPropertyWithValue("action", Action.CREATED)
+                        .hasFieldOrProperty("customer.id")
+                        .hasFieldOrPropertyWithValue("customer.name", "Boris")
+                        .hasFieldOrPropertyWithValue("customer.age", 58)
+                        .hasFieldOrPropertyWithValue("customer.city", "London")
+                        .satisfies(ev -> log.debug("{}", ev))
+                )
+                .consumeNextWith(event -> assertThat(event)
+                        .hasNoNullFieldsOrProperties()
+                        .hasFieldOrPropertyWithValue("action", Action.UPDATED)
+                        .hasFieldOrPropertyWithValue("customer.id", 3)
+                        .hasFieldOrPropertyWithValue("customer.name", "Anton")
+                        .hasFieldOrPropertyWithValue("customer.age", 44)
+                        .hasFieldOrPropertyWithValue("customer.city", "Las Vegas")
+                        .satisfies(ev -> log.debug("{}", ev))
+                )
+                .verifyComplete();
+    }
+
+    private Flux<CustomerEvent> subscriptionFlux() {
+        GraphQlTester.Subscription customerEventsSub = webSocketGraphQlTester
+                .documentName(DOC_LOCATION + "subscription")
+                .operationName("CustomerEventsSub")
+                .executeSubscription();
+
+        return customerEventsSub.toFlux("customerEvents", CustomerEvent.class);
     }
 
 }

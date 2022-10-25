@@ -36,3 +36,25 @@ mutation DeleteCustomer($customerId: ID!){
     }
 }
 
+mutation MultipleMutations($newCustomer: CustomerInput!){
+    createCustomer(customer: $newCustomer){
+        ...CustomerDetails
+    }
+    updateCustomer(id: 3, customer: {
+        city: "Las Vegas",
+        age: 44,
+        name: "Anton"
+    }){
+        ...CustomerDetails
+    }
+}
+
+subscription CustomerEventsSub{
+    customerEvents {
+        id
+        customer {
+            ...CustomerDetails
+        }
+        action
+    }
+}
