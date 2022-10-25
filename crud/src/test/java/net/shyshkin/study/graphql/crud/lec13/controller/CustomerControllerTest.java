@@ -4,24 +4,31 @@ import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.crud.lec13.dto.CustomerDto;
 import net.shyshkin.study.graphql.crud.lec13.dto.DeleteResultDto;
 import net.shyshkin.study.graphql.crud.lec13.dto.Status;
+import net.shyshkin.study.graphql.crud.lec13.service.CustomerService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @Slf4j
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.graphql.schema.locations: classpath:graphql/lec13"
+                "spring.graphql.schema.locations: classpath:graphql/lec13",
+                "app.mutation.delay: 100ms"
         }
 )
 @AutoConfigureHttpGraphQlTester
@@ -33,6 +40,9 @@ class CustomerControllerTest {
 
     @Autowired
     GraphQlTester graphQlTester;
+
+    @SpyBean
+    CustomerService customerService;
 
     @Test
     @DisplayName("Query customers should return all customers")
@@ -216,6 +226,42 @@ class CustomerControllerTest {
                         .hasFieldOrPropertyWithValue("id", customerId)
                         .hasFieldOrPropertyWithValue("status", Status.SUCCESS)
                 );
+    }
+
+    @Test
+    @DisplayName("Multiple Mutations should execute sequentially")
+    @Order(60)
+    void multipleMutationsExecutionTest() {
+
+        //given
+        Map<String, Object> customerInput = Map.of(
+                "name", "Boris",
+                "age", 58,
+                "city", "London"
+        );
+        InOrder inOrder = Mockito.inOrder(customerService);
+
+        //when
+        GraphQlTester.Response response = graphQlTester
+                .documentName(DOC_LOCATION + "crud")
+                .operationName("MultipleMutations")
+                .variable("newCustomer", customerInput)
+                .execute();
+
+        //then
+        response
+                .path("createCustomer.id").hasValue()
+                .path("createCustomer.name").matchesJson("\"Boris\"")
+                .path("createCustomer.age").matchesJson("58")
+                .path("createCustomer.city").matchesJson("\"London\"");
+        response
+                .path("updateCustomer.id").matchesJson("\"3\"")
+                .path("updateCustomer.name").matchesJson("\"Anton\"")
+                .path("updateCustomer.age").matchesJson("44")
+                .path("updateCustomer.city").matchesJson("\"Las Vegas\"");
+
+        inOrder.verify(customerService).createCustomer(any());
+        inOrder.verify(customerService).updateCustomer(eq(3), any());
     }
 
 }
