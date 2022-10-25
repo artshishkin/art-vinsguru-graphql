@@ -47,8 +47,7 @@ public class CustomerService {
 
     public Mono<DeleteResultDto> deleteCustomer(Integer id) {
         return repository.deleteById(id)
-                .map(v -> DeleteResultDto.builder().id(id).status(Status.SUCCESS).build())
-                .defaultIfEmpty(DeleteResultDto.builder().id(id).status(Status.FAILURE).build())
+                .thenReturn(DeleteResultDto.builder().id(id).status(Status.SUCCESS).build())
                 .onErrorReturn(DeleteResultDto.builder().id(id).status(Status.FAILURE).build());
     }
 

@@ -1,0 +1,40 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Customer {
+    age: Int
+    city: String
+    id: ID!
+    name: String
+}
+
+type DeleteResponse {
+    id: ID!
+    status: Status
+}
+
+type Mutation {
+    createCustomer(customer: CustomerInput!): Customer
+    deleteCustomer(id: ID!): DeleteResponse
+    updateCustomer(customer: CustomerInput!, id: ID!): Customer
+}
+
+type Query {
+    customerById(id: ID!): Customer
+    customers: [Customer]!
+}
+
+enum Status {
+    FAILURE
+    SUCCESS
+}
+
+input CustomerInput {
+    age: Int
+    city: String
+    name: String
+}
