@@ -1,0 +1,15 @@
+type Subscription{
+    customerEvents: CustomerEvent
+}
+
+type CustomerEvent{
+    id: ID!
+    customer: Customer
+    action: Action
+}
+
+enum Action{
+    CREATED
+    UPDATED
+    DELETED
+}
