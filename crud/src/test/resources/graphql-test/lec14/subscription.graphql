@@ -1,0 +1,38 @@
+fragment CustomerDetails on Customer{
+    id
+    name
+    age
+    city
+}
+
+query AllCustomers{
+    customers {
+        ...CustomerDetails
+    }
+}
+
+query CustomerById($customerId: ID!){
+    customerById(id: $customerId) {
+        ...CustomerDetails
+    }
+}
+
+mutation CreateCustomer($customerInput: CustomerInput!){
+    createCustomer(customer: $customerInput){
+        ...CustomerDetails
+    }
+}
+
+mutation UpdateCustomer($customerId: ID!, $customerInput: CustomerInput!){
+    updateCustomer(id: $customerId, customer: $customerInput){
+        ...CustomerDetails
+    }
+}
+
+mutation DeleteCustomer($customerId: ID!){
+    deleteCustomer(id: $customerId){
+        id
+        status
+    }
+}
+

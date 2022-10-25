@@ -3,7 +3,7 @@ package net.shyshkin.study.graphql.crud;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "net.shyshkin.study.graphql.crud.config")
 public class CrudApplication {
 
     public static void main(String[] args) {

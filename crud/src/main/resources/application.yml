@@ -3,6 +3,9 @@ logging:
     net.shyshkin: debug
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
+
   graphql:
     path: /graphql
     schema:
