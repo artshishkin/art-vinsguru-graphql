@@ -5,11 +5,15 @@ import net.shyshkin.study.graphql.errorhandling.lec15.dto.CustomerDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.DeleteResultDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.Status;
 import net.shyshkin.study.graphql.errorhandling.lec15.exception.ApplicationErrors;
+import net.shyshkin.study.graphql.errorhandling.lec15.exception.ApplicationException;
 import net.shyshkin.study.graphql.errorhandling.lec15.mapper.CustomerMapper;
 import net.shyshkin.study.graphql.errorhandling.lec15.repository.CustomerRepository;
+import org.springframework.graphql.execution.ErrorType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,12 @@ public class CustomerService {
     }
 
     public Mono<CustomerDto> createCustomer(CustomerDto dto) {
+        if (dto.getAge() < 18)
+            return Mono.error(new ApplicationException(
+                    ErrorType.BAD_REQUEST,
+                    "Age must be greater then 18",
+                    Map.of("customer", dto))
+            );
         return Mono.just(dto)
                 .map(mapper::toEntity)
                 .flatMap(repository::save)

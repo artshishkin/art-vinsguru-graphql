@@ -144,6 +144,48 @@ class CustomerControllerTest {
     }
 
     @Test
+    @DisplayName("Mutation CreateCustomer with No Valid Age should produce Error")
+    @Order(30)
+    void createCustomerAgeValidationTest() {
+
+        //given
+        Map<String, Object> customerInput = Map.of(
+                "name", "Baby",
+                "age", 5,
+                "city", "Warsaw"
+        );
+
+        //when
+        GraphQlTester.Response response = graphQlTester
+                .documentName(DOC_LOCATION + "crud")
+                .operationName("CreateCustomer")
+                .variable("customerInput", customerInput)
+                .execute();
+
+        //then
+        response.errors()
+                .satisfy(list -> assertThat(list)
+                        .hasSize(1)
+                        .satisfies(error -> assertAll(
+                                        () -> assertThat(error.getMessage()).isEqualTo("Age must be greater then 18"),
+                                        () -> assertThat(error.getPath()).isEqualTo("createCustomer"),
+                                        () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST),
+                                        () -> assertThat(error.getExtensions())
+                                                .hasEntrySatisfying("customer", customer ->
+                                                        assertThat((Map<String, Object>) customer)
+                                                                .hasEntrySatisfying("id", id -> assertThat(id).isNull())
+                                                                .hasEntrySatisfying("age", matching(is(5)))
+                                                                .hasEntrySatisfying("name", matching(is("Baby")))
+                                                                .hasEntrySatisfying("city", matching(is("Warsaw")))
+                                                )
+                                ),
+                                Index.atIndex(0)
+                        )
+                )
+                .path("createCustomer").valueIsNull();
+    }
+
+    @Test
     @DisplayName("Mutation UpdateCustomer should update customer if customer exists")
     @Order(40)
     void updateCustomer_present_Test() {
