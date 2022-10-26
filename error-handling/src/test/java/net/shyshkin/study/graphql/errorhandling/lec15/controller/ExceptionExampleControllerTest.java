@@ -11,7 +11,12 @@ import org.springframework.graphql.execution.ErrorType;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.HamcrestCondition.matching;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
@@ -161,6 +166,35 @@ class ExceptionExampleControllerTest {
                                         () -> assertThat(error.getMessage()).isEqualTo("App Custom Weird Issue"),
                                         () -> assertThat(error.getPath()).isEqualTo("appCustomException"),
                                         () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.INTERNAL_ERROR)
+                                ),
+                                Index.atIndex(0)
+                        )
+                )
+                .path("appCustomException").valueIsNull();
+    }
+
+    @Test
+    @DisplayName("Resolving error with extensions ")
+    void extensionsTest() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester
+                .documentName(DOC_LOCATION + "exceptions")
+                .operationName("AppCustom")
+                .execute();
+
+        //then
+        response.errors()
+                .satisfy(list -> assertThat(list)
+                        .hasSize(1)
+                        .satisfies(error -> assertAll(
+                                        () -> assertThat(error.getMessage()).isEqualTo("App Custom Weird Issue"),
+                                        () -> assertThat(error.getPath()).isEqualTo("appCustomException"),
+                                        () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.INTERNAL_ERROR),
+                                        () -> assertThat(error.getExtensions())
+                                                .hasEntrySatisfying("customerId", matching(is(123)))
+                                                .hasEntrySatisfying("foo", matching(is("bar")))
+                                                .hasEntrySatisfying("timestamp", matching(lessThanOrEqualTo(LocalDateTime.now().toString())))
                                 ),
                                 Index.atIndex(0)
                         )
