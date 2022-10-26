@@ -171,8 +171,8 @@ class CustomerControllerTest {
                                         () -> assertThat(error.getPath()).isEqualTo("createCustomer"),
                                         () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST),
                                         () -> assertThat(error.getExtensions())
-                                                .hasEntrySatisfying("customer", customer ->
-                                                        assertThat((Map<String, Object>) customer)
+                                                .hasEntrySatisfying("input", input ->
+                                                        assertThat((Map<String, Object>) input)
                                                                 .hasEntrySatisfying("id", id -> assertThat(id).isNull())
                                                                 .hasEntrySatisfying("age", matching(is(5)))
                                                                 .hasEntrySatisfying("name", matching(is("Baby")))
