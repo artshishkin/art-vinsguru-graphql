@@ -26,6 +26,7 @@ type Mutation {
 type Query {
     customerById(id: ID!): Customer
     customers: [Customer]!
+    unhandledException: String
 }
 
 enum Status {

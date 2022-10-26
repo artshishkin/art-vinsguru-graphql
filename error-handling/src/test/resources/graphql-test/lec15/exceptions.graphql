@@ -1,0 +1,23 @@
+query Unhandled{
+    unhandledException
+}
+
+query MultiUnhandled{
+    a: unhandledException
+    b: unhandledException
+}
+
+query MixingUnhandledErrorWithNormalResponse{
+    unhandledException
+    customerById(id: 1){
+        ...CustomerDetails
+    }
+}
+
+fragment CustomerDetails on Customer{
+    id
+    name
+    age
+    city
+}
+
