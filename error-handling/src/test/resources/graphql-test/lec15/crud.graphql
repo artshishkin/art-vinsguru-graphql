@@ -17,6 +17,36 @@ query CustomerById($customerId: ID!){
     }
 }
 
+query CustomerByIdUnion($customerId: ID!){
+    customerByIdUnion(id: $customerId) {
+        ...CustomerUnionDetails
+    }
+}
+
+#query CustomerByIdUnion($customerId: ID!){
+#    customerByIdUnion(id: $customerId) {
+#        ...CustomerDetails
+#        ... on CustomerNotFound{
+#            id
+#            message
+#        }
+#    }
+#}
+
+fragment CustomerUnionDetails on CustomerResponse{
+    type: __typename
+    ... on Customer{
+        id
+        name
+        age
+        city
+    }
+    ... on CustomerNotFound{
+        id
+        message
+    }
+}
+
 mutation CreateCustomer($customerInput: CustomerInput!){
     createCustomer(customer: $customerInput){
         ...CustomerDetails

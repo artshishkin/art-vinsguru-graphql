@@ -118,6 +118,54 @@ class CustomerControllerTest {
     }
 
     @Test
+    @DisplayName("Query customer by id with Union output should return correct customer if customer exists")
+    @Order(20)
+    void customerByIdUnion_present_Test() {
+
+        //given
+        Integer customerId = 1;
+
+        //when
+        GraphQlTester.Response response = graphQlTester
+                .documentName(DOC_LOCATION + "crud")
+                .operationName("CustomerByIdUnion")
+                .variable("customerId", customerId)
+                .execute();
+
+        //then
+        response
+                .path("customerByIdUnion.type").matchesJson("\"Customer\"")
+                .path("customerByIdUnion.id").matchesJson("\"" + customerId + "\"")
+                .path("customerByIdUnion.name").matchesJson("\"Art\"")
+                .path("customerByIdUnion.age").matchesJson("39")
+                .path("customerByIdUnion.city").matchesJson("\"Volodymyr\"");
+    }
+
+    @Test
+    @DisplayName("Query customer by id with Union output should return CustomerNotFound output if customer absent")
+    @Order(20)
+    void customerByIdUnion_absent_Test() {
+
+        //given
+        Integer customerId = 100;
+
+        //when
+        GraphQlTester.Response response = graphQlTester
+                .documentName(DOC_LOCATION + "crud")
+                .operationName("CustomerByIdUnion")
+                .variable("customerId", customerId)
+                .execute();
+
+        //then
+        response
+                .path("customerByIdUnion.type").matchesJson("\"CustomerNotFound\"")
+                .path("customerByIdUnion.id").matchesJson("\"" + customerId + "\"")
+                .path("customerByIdUnion.message").matchesJson("\"user not found\"")
+                .path("customerByIdUnion.age").pathDoesNotExist()
+                .path("customerByIdUnion.city").pathDoesNotExist();
+    }
+
+    @Test
     @DisplayName("Mutation CreateCustomer should create new customer")
     @Order(30)
     void createCustomerTest() {
