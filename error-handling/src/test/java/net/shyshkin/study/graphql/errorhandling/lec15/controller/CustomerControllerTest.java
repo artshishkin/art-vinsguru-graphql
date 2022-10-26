@@ -5,6 +5,7 @@ import net.shyshkin.study.graphql.errorhandling.lec15.dto.CustomerDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.DeleteResultDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.Status;
 import net.shyshkin.study.graphql.errorhandling.lec15.service.CustomerService;
+import org.assertj.core.data.Index;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -14,12 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.graphql.execution.ErrorType;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.HamcrestCondition.matching;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
@@ -81,7 +86,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("Query customer by id should return NULL if customer does not exist")
+    @DisplayName("Query customer by id should return ERROR if customer does not exist")
     @Order(20)
     void customerById_absent_Test() {
 
@@ -96,7 +101,20 @@ class CustomerControllerTest {
                 .execute();
 
         //then
-        response.path("customerById").valueIsNull();
+        response.errors()
+                .satisfy(list -> assertThat(list)
+                        .hasSize(1)
+                        .satisfies(error -> assertAll(
+                                        () -> assertThat(error.getMessage()).isEqualTo("No such customer"),
+                                        () -> assertThat(error.getPath()).isEqualTo("customerById"),
+                                        () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST),
+                                        () -> assertThat(error.getExtensions())
+                                                .hasEntrySatisfying("customerId", matching(is(customerId)))
+                                ),
+                                Index.atIndex(0)
+                        )
+                )
+                .path("customerById").valueIsNull();
     }
 
     @Test
@@ -175,7 +193,20 @@ class CustomerControllerTest {
                 .execute();
 
         //then
-        response.path("updateCustomer").valueIsNull();
+        response.errors()
+                .satisfy(list -> assertThat(list)
+                        .hasSize(1)
+                        .satisfies(error -> assertAll(
+                                        () -> assertThat(error.getMessage()).isEqualTo("No such customer"),
+                                        () -> assertThat(error.getPath()).isEqualTo("updateCustomer"),
+                                        () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST),
+                                        () -> assertThat(error.getExtensions())
+                                                .hasEntrySatisfying("customerId", matching(is(customerId)))
+                                ),
+                                Index.atIndex(0)
+                        )
+                )
+                .path("updateCustomer").valueIsNull();
     }
 
     @Test
@@ -204,7 +235,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("Mutation DeleteCustomer should return response with SUCCESS too status if customer absent")
+    @DisplayName("Mutation DeleteCustomer should return response with FAILURE status if customer absent")
     @Order(50)
     void deleteCustomer_absent_Test() {
 
@@ -224,7 +255,7 @@ class CustomerControllerTest {
                 .satisfies(result -> assertThat(result)
                         .hasNoNullFieldsOrProperties()
                         .hasFieldOrPropertyWithValue("id", customerId)
-                        .hasFieldOrPropertyWithValue("status", Status.SUCCESS)
+                        .hasFieldOrPropertyWithValue("status", Status.FAILURE)
                 );
     }
 

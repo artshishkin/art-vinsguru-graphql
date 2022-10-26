@@ -76,7 +76,8 @@ class ExceptionExampleControllerTest {
                 .satisfy(list -> assertThat(list)
                         .hasSize(1)
                         .satisfies(error -> assertAll(
-                                        () -> assertThat(error.getMessage()).startsWith("INTERNAL_ERROR"),
+//                                        () -> assertThat(error.getMessage()).startsWith("INTERNAL_ERROR"),
+                                        () -> assertThat(error.getMessage()).startsWith("Some Weird Issue"),
                                         () -> assertThat(error.getPath()).isEqualTo("unhandledException"),
                                         () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.INTERNAL_ERROR)
                                 ),
@@ -101,14 +102,16 @@ class ExceptionExampleControllerTest {
                 .satisfy(list -> assertThat(list)
                         .hasSize(2)
                         .satisfies(error -> assertAll(
-                                        () -> assertThat(error.getMessage()).startsWith("INTERNAL_ERROR"),
+//                                        () -> assertThat(error.getMessage()).startsWith("INTERNAL_ERROR"),
+                                        () -> assertThat(error.getMessage()).startsWith("Some Weird Issue"),
                                         () -> assertThat(error.getPath()).isEqualTo("a"),
                                         () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.INTERNAL_ERROR)
                                 ),
                                 Index.atIndex(0)
                         )
                         .satisfies(error -> assertAll(
-                                        () -> assertThat(error.getMessage()).startsWith("INTERNAL_ERROR"),
+//                                        () -> assertThat(error.getMessage()).startsWith("INTERNAL_ERROR"),
+                                        () -> assertThat(error.getMessage()).startsWith("Some Weird Issue"),
                                         () -> assertThat(error.getPath()).isEqualTo("b"),
                                         () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.INTERNAL_ERROR)
                                 ),
@@ -134,7 +137,8 @@ class ExceptionExampleControllerTest {
                 .satisfy(list -> assertThat(list)
                         .hasSize(1)
                         .satisfies(error -> assertAll(
-                                        () -> assertThat(error.getMessage()).startsWith("INTERNAL_ERROR"),
+//                                        () -> assertThat(error.getMessage()).startsWith("INTERNAL_ERROR"),
+                                        () -> assertThat(error.getMessage()).startsWith("Some Weird Issue"),
                                         () -> assertThat(error.getPath()).isEqualTo("unhandledException"),
                                         () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.INTERNAL_ERROR)
                                 ),
