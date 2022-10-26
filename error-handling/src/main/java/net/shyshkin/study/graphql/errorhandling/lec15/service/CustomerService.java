@@ -29,6 +29,11 @@ public class CustomerService {
                 .map(mapper::toDto);
     }
 
+    public Mono<CustomerDto> getCustomerByIdNoError(Integer id) {
+        return repository.findById(id)
+                .map(mapper::toDto);
+    }
+
     public Mono<CustomerDto> createCustomer(CustomerDto dto) {
         return Mono.just(dto)
                 .filter(customerDto -> customerDto.getAge() >= 18)

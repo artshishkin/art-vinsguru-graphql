@@ -3,6 +3,7 @@ package net.shyshkin.study.graphql.errorhandling.lec15.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.CustomerDto;
+import net.shyshkin.study.graphql.errorhandling.lec15.dto.CustomerNotFound;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.DeleteResultDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.service.CustomerService;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,16 @@ public class CustomerController {
     @QueryMapping
     public Mono<CustomerDto> customerById(@Argument Integer id) {
         return service.getCustomerById(id);
+    }
+
+    @QueryMapping
+    public Mono<Object> customerByIdUnion(@Argument Integer id) {
+        return service.getCustomerByIdNoError(id)
+                .cast(Object.class)
+                .switchIfEmpty(Mono.just(CustomerNotFound.builder()
+                        .id(id)
+                        .build())
+                );
     }
 
     @MutationMapping

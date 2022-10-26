@@ -5,11 +5,18 @@ schema {
     mutation: Mutation
 }
 
+union CustomerResponse = Customer | CustomerNotFound
+
 type Customer {
     age: Int
     city: String
     id: ID!
     name: String
+}
+
+type CustomerNotFound {
+    id: ID!
+    message: String
 }
 
 type DeleteResponse {
@@ -26,6 +33,7 @@ type Mutation {
 type Query {
     appCustomException: String
     customerById(id: ID!): Customer
+    customerByIdUnion(id: ID!): CustomerResponse!
     customers: [Customer]!
     unhandledException: String
 }

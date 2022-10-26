@@ -1,6 +1,7 @@
 type Query{
     customers: [Customer]!
     customerById(id: ID!): Customer
+    customerByIdUnion(id: ID!): CustomerResponse!
     unhandledException: String
     appCustomException: String
 }
@@ -17,6 +18,13 @@ type Customer{
     age: Int
     city: String
 }
+
+type CustomerNotFound{
+    id: ID!
+    message: String
+}
+
+union CustomerResponse = Customer | CustomerNotFound
 
 input CustomerInput{
     name: String
