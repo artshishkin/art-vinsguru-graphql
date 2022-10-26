@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +15,9 @@ import lombok.NoArgsConstructor;
 public class CustomerDto {
 
     private Integer id;
+    @NotBlank(message = "Name must not be empty")
     private String name;
+    @Min(value = 18L, message = "Age must be greater then 18")
     private Integer age;
     private String city;
 

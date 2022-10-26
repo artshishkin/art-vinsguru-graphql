@@ -167,7 +167,7 @@ class CustomerControllerTest {
                 .satisfy(list -> assertThat(list)
                         .hasSize(1)
                         .satisfies(error -> assertAll(
-                                        () -> assertThat(error.getMessage()).isEqualTo("Age must be greater then 18"),
+                                        () -> assertThat(error.getMessage()).contains("Age must be greater then 18"),
                                         () -> assertThat(error.getPath()).isEqualTo("createCustomer"),
                                         () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.BAD_REQUEST),
                                         () -> assertThat(error.getExtensions())

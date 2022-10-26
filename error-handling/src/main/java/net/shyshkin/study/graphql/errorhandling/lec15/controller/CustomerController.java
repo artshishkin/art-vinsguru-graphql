@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
 import java.time.Duration;
 
 @Slf4j
@@ -36,7 +37,7 @@ public class CustomerController {
     }
 
     @MutationMapping
-    public Mono<CustomerDto> createCustomer(@Argument CustomerDto customer) {
+    public Mono<CustomerDto> createCustomer(@Argument @Valid CustomerDto customer) {
         log.debug("Creating new Customer {}...", customer);
         return service.createCustomer(customer)
                 .delayElement(appMutationDelay)
