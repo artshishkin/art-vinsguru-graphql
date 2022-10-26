@@ -2,6 +2,7 @@ type Query{
     customers: [Customer]!
     customerById(id: ID!): Customer
     unhandledException: String
+    appCustomException: String
 }
 
 type Mutation{

@@ -21,3 +21,6 @@ fragment CustomerDetails on Customer{
     city
 }
 
+query AppCustom{
+    appCustomException
+}

@@ -143,4 +143,29 @@ class ExceptionExampleControllerTest {
                 .path("customerById.city").matchesJson("\"Volodymyr\"");
     }
 
+    @Test
+    @DisplayName("When exception that we handle is thrown then error message should match exception message")
+    void customHandledExceptionTest() {
+
+        //when
+        GraphQlTester.Response response = graphQlTester
+                .documentName(DOC_LOCATION + "exceptions")
+                .operationName("AppCustom")
+                .execute();
+
+        //then
+        response.errors()
+                .satisfy(list -> assertThat(list)
+                        .hasSize(1)
+                        .satisfies(error -> assertAll(
+                                        () -> assertThat(error.getMessage()).isEqualTo("App Custom Weird Issue"),
+                                        () -> assertThat(error.getPath()).isEqualTo("appCustomException"),
+                                        () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.INTERNAL_ERROR)
+                                ),
+                                Index.atIndex(0)
+                        )
+                )
+                .path("appCustomException").valueIsNull();
+    }
+
 }
