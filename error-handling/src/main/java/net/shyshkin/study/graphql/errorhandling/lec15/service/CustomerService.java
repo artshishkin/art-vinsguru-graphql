@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.CustomerDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.DeleteResultDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.Status;
+import net.shyshkin.study.graphql.errorhandling.lec15.exception.ApplicationErrors;
 import net.shyshkin.study.graphql.errorhandling.lec15.mapper.CustomerMapper;
 import net.shyshkin.study.graphql.errorhandling.lec15.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class CustomerService {
 
     public Mono<CustomerDto> getCustomerById(Integer id) {
         return repository.findById(id)
+                .switchIfEmpty(ApplicationErrors.noSuchCustomer(id))
                 .map(mapper::toDto);
     }
 
@@ -36,6 +38,7 @@ public class CustomerService {
 
     public Mono<CustomerDto> updateCustomer(Integer id, CustomerDto dto) {
         return repository.findById(id)
+                .switchIfEmpty(ApplicationErrors.noSuchCustomer(id))
                 .map(a -> dto)
                 .map(mapper::toEntity)
                 .doOnNext(c -> c.setId(id))
@@ -44,7 +47,9 @@ public class CustomerService {
     }
 
     public Mono<DeleteResultDto> deleteCustomer(Integer id) {
-        return repository.deleteById(id)
+        return repository.findById(id)
+                .switchIfEmpty(ApplicationErrors.noSuchCustomer(id))
+                .then(repository.deleteById(id))
                 .thenReturn(DeleteResultDto.builder().id(id).status(Status.SUCCESS).build())
                 .onErrorReturn(DeleteResultDto.builder().id(id).status(Status.FAILURE).build());
     }
