@@ -20,7 +20,9 @@ public class ClientDemo implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        rawQueryDemo().subscribe();
+        rawQueryDemo()
+                .then(getCustomerByIdDemo())
+                .subscribe();
     }
 
     private Mono<Void> rawQueryDemo() {
@@ -45,4 +47,12 @@ public class ClientDemo implements CommandLineRunner {
                 .doOnNext(list -> log.debug("customers: {}", list))
                 .then();
     }
+
+    private Mono<Void> getCustomerByIdDemo() {
+        return customerClient.getCustomerById(1)
+                .doFirst(() -> log.debug("Query Document"))
+                .doOnNext(customerDto -> log.debug("getCustomerById: {}", customerDto))
+                .then();
+    }
+
 }
