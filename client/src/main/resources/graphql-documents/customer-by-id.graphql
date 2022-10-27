@@ -4,6 +4,15 @@ query GetCustomerById($customerId: ID!){
     }
 }
 
+query Get2CustomersById($customer1Id: ID!, $customer2Id: ID!){
+    a: customerById(id: $customer1Id){
+        ...customerDetails
+    }
+    b: customerById(id: $customer2Id){
+        ...customerDetails
+    }
+}
+
 fragment customerDetails on Customer{
     name
     age

@@ -2,10 +2,15 @@ package net.shyshkin.study.graphql.client.lec16.clientapp.client;
 
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerDto;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.graphql.client.ClientGraphQlResponse;
 import org.springframework.graphql.client.HttpGraphQlClient;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class CustomerClient {
@@ -29,6 +34,19 @@ public class CustomerClient {
                 .variable("customerId", id)
                 .retrieve("customerById")
                 .toEntity(CustomerDto.class);
+    }
+
+    public Mono<List<CustomerDto>> get2CustomersById(Integer id1, Integer id2) {
+        return this.client.documentName("customer-by-id")
+                .operationName("Get2CustomersById")
+                .variable("customer1Id", id1)
+                .variable("customer2Id", id2)
+                .execute()
+                .map(cr -> cr.toEntity(new ParameterizedTypeReference<Map<String, CustomerDto>>() {
+                }))
+                .map(Map::values)
+                .map(ArrayList::new);
+
     }
 
 }

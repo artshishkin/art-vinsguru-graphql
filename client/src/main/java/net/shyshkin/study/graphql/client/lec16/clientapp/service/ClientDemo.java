@@ -23,6 +23,7 @@ public class ClientDemo implements CommandLineRunner {
         Mono.delay(Duration.ofSeconds(1))
                 .then(rawQueryDemo())
                 .then(getCustomerByIdDemo())
+                .then(get2CustomersByIdDemo())
                 .subscribe();
     }
 
@@ -50,6 +51,14 @@ public class ClientDemo implements CommandLineRunner {
                 customerClient.getCustomerById(1),
                 "Query Document",
                 "getCustomerById: {}"
+        );
+    }
+
+    private Mono<Void> get2CustomersByIdDemo() {
+        return executor(
+                customerClient.get2CustomersById(1, 2),
+                "Two Queries Assignment",
+                "get2CustomersById: {}"
         );
     }
 
