@@ -28,7 +28,7 @@ public class ClientDemo implements CommandLineRunner {
         log.debug("Starting rawQueryDemo...");
 
         String query = "{\n" +
-                "   customers {\n" +
+                "   c_alias: customers {\n" +
                 "       id \n" +
                 "       name\n" +
                 "       age\n" +
@@ -37,7 +37,7 @@ public class ClientDemo implements CommandLineRunner {
                 "}";
 
         Mono<List<CustomerDto>> mono = customerClient.rawQuery(query)
-                .map(cr -> cr.field("customers").toEntityList(CustomerDto.class));
+                .map(cr -> cr.field("c_alias").toEntityList(CustomerDto.class));
 
         return Mono.delay(Duration.ofSeconds(1))
                 .doFirst(() -> log.debug("RawQuery"))
