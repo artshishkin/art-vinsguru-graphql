@@ -20,7 +20,8 @@ public class ClientDemo implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        rawQueryDemo()
+        Mono.delay(Duration.ofSeconds(1))
+                .then(rawQueryDemo())
                 .then(getCustomerByIdDemo())
                 .subscribe();
     }
@@ -41,17 +42,21 @@ public class ClientDemo implements CommandLineRunner {
         Mono<List<CustomerDto>> mono = customerClient.rawQuery(query)
                 .map(cr -> cr.field("c_alias").toEntityList(CustomerDto.class));
 
-        return Mono.delay(Duration.ofSeconds(1))
-                .doFirst(() -> log.debug("RawQuery"))
-                .then(mono)
-                .doOnNext(list -> log.debug("customers: {}", list))
-                .then();
+        return executor(mono, "RawQuery", "customers: {}");
     }
 
     private Mono<Void> getCustomerByIdDemo() {
-        return customerClient.getCustomerById(1)
-                .doFirst(() -> log.debug("Query Document"))
-                .doOnNext(customerDto -> log.debug("getCustomerById: {}", customerDto))
+        return executor(
+                customerClient.getCustomerById(1),
+                "Query Document",
+                "getCustomerById: {}"
+        );
+    }
+
+    private Mono<Void> executor(Mono<?> method, String preMethodLogMessage, String postMethodLogMessage) {
+        return method
+                .doFirst(() -> log.debug(preMethodLogMessage))
+                .doOnNext(result -> log.debug(postMethodLogMessage, result))
                 .then();
     }
 
