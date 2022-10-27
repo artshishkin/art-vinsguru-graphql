@@ -12,3 +12,4 @@ spring:
       path: /graphiql
     websocket:
       path: /graphql
+app.caller-id-header: caller-id
