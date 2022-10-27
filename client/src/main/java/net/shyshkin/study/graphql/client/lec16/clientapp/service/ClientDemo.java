@@ -25,6 +25,8 @@ public class ClientDemo implements CommandLineRunner {
 
     private Mono<Void> rawQueryDemo() {
 
+        log.debug("Starting rawQueryDemo...");
+
         String query = "{\n" +
                 "   customers {\n" +
                 "       id \n" +
