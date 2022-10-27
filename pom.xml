@@ -19,6 +19,7 @@
         <module>graphql-playground</module>
         <module>crud</module>
         <module>error-handling</module>
+        <module>client</module>
     </modules>
 
     <properties>
