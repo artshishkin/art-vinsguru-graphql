@@ -36,7 +36,7 @@ public class CustomerClient {
                 .toEntity(CustomerDto.class);
     }
 
-    public Mono<List<CustomerDto>> get2CustomersById(Integer id1, Integer id2) {
+    public Mono<List<CustomerDto>> get2CustomersByIdMy(Integer id1, Integer id2) {
         return this.client.documentName("customer-by-id")
                 .operationName("Get2CustomersById")
                 .variable("customer1Id", id1)
@@ -47,6 +47,16 @@ public class CustomerClient {
                 .map(Map::values)
                 .map(ArrayList::new);
 
+    }
+
+    public Mono<List<CustomerDto>> get2CustomersByIdSolution1(Integer id1, Integer id2) {
+        return this.client.documentName("customer-by-id")
+                .operationName("Get2CustomersById")
+                .variable("customer1Id", id1)
+                .variable("customer2Id", id2)
+                .retrieve("")
+                .toEntity(MultiCustomerDto.class)
+                .map(multi -> List.of(multi.getA(), multi.getB()));
     }
 
 }
