@@ -1,15 +1,10 @@
 package net.shyshkin.study.graphql.errorhandling.lec15.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.data.Index;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.graphql.test.tester.GraphQlTester;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 
@@ -19,23 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Slf4j
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "spring.graphql.schema.locations: classpath:graphql/lec15",
-                "app.mutation.delay: 10ms"
-        }
-)
-@AutoConfigureHttpGraphQlTester
-@ActiveProfiles("lec15")
-class ExceptionExampleControllerTest {
-
-
-    private static final String DOC_LOCATION = "lec15/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class ExceptionExampleControllerTest extends GraphQLAbstractTest{
 
     @Test
     @DisplayName("When exception is thrown during query then errors field should be present")

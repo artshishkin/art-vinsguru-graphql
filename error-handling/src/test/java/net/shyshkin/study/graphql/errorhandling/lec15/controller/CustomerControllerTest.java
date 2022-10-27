@@ -1,6 +1,5 @@
 package net.shyshkin.study.graphql.errorhandling.lec15.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.CustomerDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.DeleteResultDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.Status;
@@ -11,13 +10,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.graphql.test.tester.GraphQlTester;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
@@ -28,23 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-@Slf4j
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "spring.graphql.schema.locations: classpath:graphql/lec15",
-                "app.mutation.delay: 10ms"
-        }
-)
-@AutoConfigureHttpGraphQlTester
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ActiveProfiles("lec15")
-class CustomerControllerTest {
-
-    private static final String DOC_LOCATION = "lec15/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class CustomerControllerTest extends GraphQLAbstractTest {
 
     @SpyBean
     CustomerService customerService;
