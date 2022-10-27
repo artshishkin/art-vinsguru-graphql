@@ -1,11 +1,13 @@
 package net.shyshkin.study.graphql.errorhandling.lec15.controller;
 
+import graphql.schema.DataFetchingEnvironment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.CustomerDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.CustomerNotFound;
 import net.shyshkin.study.graphql.errorhandling.lec15.dto.DeleteResultDto;
 import net.shyshkin.study.graphql.errorhandling.lec15.service.CustomerService;
+import net.shyshkin.study.graphql.errorhandling.lec15.service.MonitorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -23,12 +25,16 @@ import java.time.Duration;
 public class CustomerController {
 
     private final CustomerService service;
+    private final MonitorService monitorService;
 
     @Value("${app.mutation.delay:2s}")
     private Duration appMutationDelay;
 
     @QueryMapping
-    public Flux<CustomerDto> customers() {
+    public Flux<CustomerDto> customers(DataFetchingEnvironment environment) {
+        String callerId = environment.getGraphQlContext().get("caller-id");
+        log.debug("Caller ID: {}", callerId);
+        monitorService.call(callerId);
         return service.getAllCustomers();
     }
 
