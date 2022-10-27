@@ -12,3 +12,7 @@ spring:
       path: /graphiql
     websocket:
       path: /graphql
+
+customer:
+  service:
+    url: http://localhost:8080/graphql

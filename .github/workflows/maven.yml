@@ -5,7 +5,7 @@ name: GitHub CI
 
 on:
   push:
-    branches: [ main, validation-error ]
+    branches: [ main, client ]
   pull_request:
     branches: [ main ]
 
