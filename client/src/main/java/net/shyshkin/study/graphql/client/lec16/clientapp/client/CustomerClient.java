@@ -1,5 +1,6 @@
 package net.shyshkin.study.graphql.client.lec16.clientapp.client;
 
+import net.shyshkin.study.graphql.client.lec16.clientapp.dto.GenericResponse;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -34,6 +35,22 @@ public class CustomerClient {
                 .variable("customerId", id)
                 .retrieve("customerById")
                 .toEntity(CustomerDto.class);
+    }
+
+    public Mono<GenericResponse<CustomerDto>> getCustomerByIdGenericResponse(Integer id) {
+        return this.client.documentName("customer-by-id")
+                .operationName("GetCustomerById")
+                .variable("customerId", id)
+                .execute()
+                .map(cr -> {
+                    var field = cr.field("customerById");
+                    var b = GenericResponse.<CustomerDto>builder();
+                    if (field.hasValue())
+                        b.data(field.toEntity(CustomerDto.class));
+                    else
+                        b.error(field.getError());
+                    return b.build();
+                });
     }
 
     public Mono<List<CustomerDto>> get2CustomersByIdMy(Integer id1, Integer id2) {

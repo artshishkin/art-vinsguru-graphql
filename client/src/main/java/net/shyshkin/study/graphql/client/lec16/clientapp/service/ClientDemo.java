@@ -26,6 +26,7 @@ public class ClientDemo implements CommandLineRunner {
                 .then(get2CustomersByIdDemo())
                 .then(get2CustomersByIdSolution1Demo())
                 .then(getCustomerByIdErrorHandlingDemo())
+                .then(getCustomerByIdGenericResponseErrorHandlingDemo())
                 .subscribe();
     }
 
@@ -83,6 +84,18 @@ public class ClientDemo implements CommandLineRunner {
                 .doFirst(() -> log.debug("Error handling for Absent customer"))
                 .doOnNext(result -> log.debug("Absent customerById {}", result))
                 .then();
+    }
+
+    private Mono<Void> getCustomerByIdGenericResponseErrorHandlingDemo() {
+        return executor(
+                customerClient.getCustomerByIdGenericResponse(1),
+                "Handling ClientError through GenericResponse - without error",
+                "without error: {}")
+                .then(executor(
+                        customerClient.getCustomerByIdGenericResponse(100),
+                        "Handling ClientError through GenericResponse - with error",
+                        "with error: {}"
+                ));
     }
 
     private Mono<Void> executor(Mono<?> method, String preMethodLogMessage, String postMethodLogMessage) {
