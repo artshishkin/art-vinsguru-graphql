@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.client.lec16.clientapp.client.CrudClient;
 import net.shyshkin.study.graphql.client.lec16.clientapp.client.CustomerClient;
+import net.shyshkin.study.graphql.client.lec16.clientapp.client.SubscriptionClient;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerDto;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,13 @@ public class ClientDemo implements CommandLineRunner {
 
     private final CustomerClient customerClient;
     private final CrudClient crudClient;
+    private final SubscriptionClient eventsClient;
 
     @Override
     public void run(String... args) throws Exception {
+
+        subscribeToCustomerEvents();
+
         Mono.delay(Duration.ofSeconds(1))
                 .then(rawQueryDemo())
                 .then(getCustomerByIdDemo())
@@ -36,6 +41,15 @@ public class ClientDemo implements CommandLineRunner {
                 .then(createNewCustomerCrudDemo())
                 .then(updateCustomerCrudDemo())
                 .then(deleteCustomerCrudDemo())
+                .subscribe();
+    }
+
+    private void subscribeToCustomerEvents() {
+        eventsClient.subscribeCustomerEvents()
+                .take(Duration.ofSeconds(3))
+                .doFirst(() -> log.debug("Waiting for customer events..."))
+                .doOnNext(ev -> log.debug("event: {}", ev))
+                .doFinally(signalType -> log.debug("Customer Events Subscription closed by me after 3 seconds!))"))
                 .subscribe();
     }
 
