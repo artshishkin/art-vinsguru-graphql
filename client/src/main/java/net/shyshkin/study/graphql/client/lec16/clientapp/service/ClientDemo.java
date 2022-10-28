@@ -76,6 +76,10 @@ public class ClientDemo implements CommandLineRunner {
         Integer absentCustomerId = 100;
         return customerClient
                 .getCustomerById(absentCustomerId)
+
+                //.onErrorComplete();
+                .onErrorReturn(CustomerDto.builder().build()) //One of possible client error handling
+
                 .doFirst(() -> log.debug("Error handling for Absent customer"))
                 .doOnNext(result -> log.debug("Absent customerById {}", result))
                 .then();
