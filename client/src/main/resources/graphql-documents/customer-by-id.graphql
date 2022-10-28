@@ -13,8 +13,22 @@ query Get2CustomersById($customer1Id: ID!, $customer2Id: ID!){
     }
 }
 
+query GetCustomerByIdUnion($customerId: ID!){
+    customerByIdUnion(id: $customerId){
+        ...customerDetails
+        ...errorDetails
+    }
+}
+
 fragment customerDetails on Customer{
+    id
     name
     age
     city
+}
+
+
+fragment errorDetails on CustomerNotFound{
+    id
+    message
 }

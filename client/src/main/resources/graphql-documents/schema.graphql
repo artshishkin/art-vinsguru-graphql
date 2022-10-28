@@ -6,6 +6,8 @@ schema {
     subscription: Subscription
 }
 
+union CustomerResponse = Customer | CustomerNotFound
+
 type Customer {
     age: Int
     city: String
@@ -17,6 +19,11 @@ type CustomerEvent {
     action: Action
     customer: Customer
     id: ID!
+}
+
+type CustomerNotFound {
+    id: ID!
+    message: String
 }
 
 type DeleteResponse {
@@ -32,6 +39,7 @@ type Mutation {
 
 type Query {
     customerById(id: ID!): Customer
+    customerByIdUnion(id: ID!): CustomerResponse!
     customers: [Customer]!
 }
 

@@ -3,6 +3,7 @@ package net.shyshkin.study.graphql.client.lec16.serverapp.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerDto;
+import net.shyshkin.study.graphql.client.lec16.dto.CustomerNotFoundDto;
 import net.shyshkin.study.graphql.client.lec16.dto.DeleteResultDto;
 import net.shyshkin.study.graphql.client.lec16.serverapp.service.CustomerService;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -29,6 +30,17 @@ public class CustomerController {
         return service
                 .getCustomerById(id)
                 .switchIfEmpty(Mono.error(new RuntimeException("user not found")));
+    }
+
+    @QueryMapping
+    public Mono<Object> customerByIdUnion(@Argument Integer id) {  //Can return Mono<CustomerResponse> marker interface
+        return service
+                .getCustomerById(id)
+                .cast(Object.class) //Can be CustomerResponse marker interface
+                .defaultIfEmpty(CustomerNotFoundDto.builder()
+                        .id(id)
+                        .message("Customer not found")
+                        .build());
     }
 
     @MutationMapping
