@@ -2,6 +2,7 @@ package net.shyshkin.study.graphql.client.lec16.clientapp.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.client.lec16.clientapp.client.CrudClient;
 import net.shyshkin.study.graphql.client.lec16.clientapp.client.CustomerClient;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerDto;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ClientDemo implements CommandLineRunner {
 
     private final CustomerClient customerClient;
+    private final CrudClient crudClient;
 
     @Override
     public void run(String... args) throws Exception {
@@ -28,6 +30,7 @@ public class ClientDemo implements CommandLineRunner {
                 .then(getCustomerByIdErrorHandlingDemo())
                 .then(getCustomerByIdGenericResponseErrorHandlingDemo())
                 .then(getCustomerByIdUnionErrorHandlingDemo())
+                .then(getAllCustomersCrudDemo())
                 .subscribe();
     }
 
@@ -109,6 +112,15 @@ public class ClientDemo implements CommandLineRunner {
                         "Handling ClientError through Union - with error",
                         "with error: {}"
                 ));
+    }
+
+    private Mono<Void> getAllCustomersCrudDemo() {
+        String preMethodLogMessage = "GET All Customers CRUD";
+        String postMethodLogMessage = "customer: {}";
+        return crudClient.getAllCustomers()
+                .doFirst(() -> log.debug(preMethodLogMessage))
+                .doOnNext(result -> log.debug(postMethodLogMessage, result))
+                .then();
     }
 
     private Mono<Void> executor(Mono<?> method, String preMethodLogMessage, String postMethodLogMessage) {

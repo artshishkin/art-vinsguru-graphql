@@ -1,10 +1,10 @@
 package net.shyshkin.study.graphql.client.lec16.clientapp.client;
 
+import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.client.lec16.clientapp.dto.GenericResponse;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerDto;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerNotFoundDto;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.graphql.client.ClientGraphQlResponse;
 import org.springframework.graphql.client.HttpGraphQlClient;
@@ -16,15 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class CustomerClient {
 
     private final HttpGraphQlClient client;
-
-    public CustomerClient(@Value("${customer.service.url}") String baseUrl) {
-        this.client = HttpGraphQlClient.builder()
-                .webClient(b -> b.baseUrl(baseUrl))
-                .build();
-    }
 
     public Mono<ClientGraphQlResponse> rawQuery(String query) {
         return this.client.document(query)
