@@ -14,7 +14,10 @@ public class ClientConfig {
     @Bean
     HttpGraphQlClient graphQlClient(@Value("${customer.service.url}") String baseUrl) {
         return HttpGraphQlClient.builder()
-                .webClient(b -> b.baseUrl(baseUrl))
+                .webClient(b -> b
+                        .baseUrl(baseUrl)
+                        .defaultHeader("client-id","SomeClientId")
+                )
                 .build();
     }
 

@@ -41,6 +41,8 @@ public class ClientDemo implements CommandLineRunner {
                 .then(createNewCustomerCrudDemo())
                 .then(updateCustomerCrudDemo())
                 .then(deleteCustomerCrudDemo())
+                //Custom Header
+                .then(getCustomerByIdPassHeaderDemo())
                 .subscribe();
     }
 
@@ -167,6 +169,13 @@ public class ClientDemo implements CommandLineRunner {
                 crudClient.deleteCustomer(5),
                 "Delete Customer CRUD",
                 "deleted: {}");
+    }
+
+    private Mono<Void> getCustomerByIdPassHeaderDemo() {
+        return executor(
+                customerClient.getCustomerByIdPassHeader(1),
+                "Get Customer by Id with passing X-CUSTOMER-ID HttpHeader",
+                "with custom header: {}");
     }
 
     private Mono<Void> executor(Mono<?> method, String preMethodLogMessage, String postMethodLogMessage) {

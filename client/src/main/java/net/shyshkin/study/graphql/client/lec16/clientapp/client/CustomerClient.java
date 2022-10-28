@@ -91,4 +91,14 @@ public class CustomerClient {
                 .map(multi -> List.of(multi.getA(), multi.getB()));
     }
 
+    public Mono<CustomerDto> getCustomerByIdPassHeader(Integer id) {
+        return this.client
+                .mutate().header("X-CUSTOMER-ID", "cool_customer_" + id).build()
+                .documentName("customer-by-id")
+                .operationName("GetCustomerById")
+                .variable("customerId", id)
+                .retrieve("customerById")
+                .toEntity(CustomerDto.class);
+    }
+
 }
