@@ -117,12 +117,11 @@ public class ClientDemo implements CommandLineRunner {
     }
 
     private Mono<Void> getAllCustomersCrudDemo() {
-        String preMethodLogMessage = "GET All Customers CRUD";
-        String postMethodLogMessage = "customer: {}";
-        return crudClient.getAllCustomers()
-                .doFirst(() -> log.debug(preMethodLogMessage))
-                .doOnNext(result -> log.debug(postMethodLogMessage, result))
-                .then();
+        return executor(
+                crudClient.getAllCustomers(),
+                "GET All Customers CRUD",
+                "customers: {}"
+        );
     }
 
     private Mono<Void> getCustomerByIdCrudDemo() {

@@ -6,31 +6,31 @@ fragment CustomerDetails on Customer{
 }
 
 query AllCustomers{
-    customers {
+    response: customers {
         ...CustomerDetails
     }
 }
 
 query CustomerById($customerId: ID!){
-    customerById(id: $customerId) {
+    response: customerById(id: $customerId) {
         ...CustomerDetails
     }
 }
 
 mutation CreateCustomer($customerInput: CustomerInput!){
-    createCustomer(customer: $customerInput){
+    response: createCustomer(customer: $customerInput){
         ...CustomerDetails
     }
 }
 
 mutation UpdateCustomer($customerId: ID!, $customerInput: CustomerInput!){
-    updateCustomer(id: $customerId, customer: $customerInput){
+    response: updateCustomer(id: $customerId, customer: $customerInput){
         ...CustomerDetails
     }
 }
 
 mutation DeleteCustomer($customerId: ID!){
-    deleteCustomer(id: $customerId){
+    response: deleteCustomer(id: $customerId){
         id
         status
     }
