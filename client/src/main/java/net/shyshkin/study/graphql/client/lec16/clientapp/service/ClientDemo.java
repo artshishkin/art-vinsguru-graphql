@@ -27,6 +27,7 @@ public class ClientDemo implements CommandLineRunner {
                 .then(get2CustomersByIdSolution1Demo())
                 .then(getCustomerByIdErrorHandlingDemo())
                 .then(getCustomerByIdGenericResponseErrorHandlingDemo())
+                .then(getCustomerByIdUnionErrorHandlingDemo())
                 .subscribe();
     }
 
@@ -94,6 +95,18 @@ public class ClientDemo implements CommandLineRunner {
                 .then(executor(
                         customerClient.getCustomerByIdGenericResponse(100),
                         "Handling ClientError through GenericResponse - with error",
+                        "with error: {}"
+                ));
+    }
+
+    private Mono<Void> getCustomerByIdUnionErrorHandlingDemo() {
+        return executor(
+                customerClient.getCustomerByIdUnion(1),
+                "Handling ClientError through Union - without error",
+                "without error: {}")
+                .then(executor(
+                        customerClient.getCustomerByIdUnion(100),
+                        "Handling ClientError through Union - with error",
                         "with error: {}"
                 ));
     }

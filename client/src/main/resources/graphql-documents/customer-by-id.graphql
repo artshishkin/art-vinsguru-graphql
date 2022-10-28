@@ -15,6 +15,7 @@ query Get2CustomersById($customer1Id: ID!, $customer2Id: ID!){
 
 query GetCustomerByIdUnion($customerId: ID!){
     customerByIdUnion(id: $customerId){
+        __typename
         ...customerDetails
         ...errorDetails
     }

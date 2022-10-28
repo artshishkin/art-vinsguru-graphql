@@ -2,6 +2,8 @@ package net.shyshkin.study.graphql.client.lec16.clientapp.client;
 
 import net.shyshkin.study.graphql.client.lec16.clientapp.dto.GenericResponse;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerDto;
+import net.shyshkin.study.graphql.client.lec16.dto.CustomerNotFoundDto;
+import net.shyshkin.study.graphql.client.lec16.dto.CustomerResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.graphql.client.ClientGraphQlResponse;
@@ -50,6 +52,24 @@ public class CustomerClient {
                     else
                         b.error(field.getError());
                     return b.build();
+                });
+    }
+
+    public Mono<CustomerResponse> getCustomerByIdUnion(Integer id) {
+        return this.client.documentName("customer-by-id")
+                .operationName("GetCustomerByIdUnion")
+                .variable("customerId", id)
+                .execute()
+                .map(cr -> {
+                    var respType = cr.field("customerByIdUnion.__typename").toEntity(String.class);
+                    switch (respType) {
+                        case "Customer":
+                            return cr.field("customerByIdUnion").toEntity(CustomerDto.class);
+                        case "CustomerNotFound":
+                            return cr.field("customerByIdUnion").toEntity(CustomerNotFoundDto.class);
+                        default:
+                            throw new RuntimeException("Wrong type: " + respType);
+                    }
                 });
     }
 
