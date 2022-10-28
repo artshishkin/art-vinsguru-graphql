@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureH
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.graphql.execution.ErrorType;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.WebSocketGraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,6 +23,7 @@ import reactor.test.StepVerifier;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
 @SpringBootTest(
@@ -93,7 +95,7 @@ class ServerApplicationTest {
     }
 
     @Test
-    @DisplayName("Query customer by id should return NULL if customer does not exist")
+    @DisplayName("Query customer by id should return ERROR if customer does not exist")
     @Order(20)
     void customerById_absent_Test() {
 
@@ -108,7 +110,13 @@ class ServerApplicationTest {
                 .execute();
 
         //then
-        response.path("customerById").valueIsNull();
+        response.errors().satisfy(errors -> assertAll(
+                        () -> assertThat(errors).hasSize(1),
+                        () -> assertThat(errors.get(0).getPath()).isEqualTo("customerById"),
+                        () -> assertThat(errors.get(0).getMessage()).startsWith("INTERNAL_ERROR"),
+                        () -> assertThat(errors.get(0).getErrorType()).isEqualTo(ErrorType.INTERNAL_ERROR)
+                ))
+                .path("customerById").valueIsNull();
     }
 
     @Test
