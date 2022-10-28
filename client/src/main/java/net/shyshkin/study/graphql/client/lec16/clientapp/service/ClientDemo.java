@@ -25,6 +25,7 @@ public class ClientDemo implements CommandLineRunner {
                 .then(getCustomerByIdDemo())
                 .then(get2CustomersByIdDemo())
                 .then(get2CustomersByIdSolution1Demo())
+                .then(getCustomerByIdErrorHandlingDemo())
                 .subscribe();
     }
 
@@ -69,6 +70,15 @@ public class ClientDemo implements CommandLineRunner {
                 "Two Queries Assignment - Solution 1",
                 "get2CustomersById solution through retrieve: {}"
         );
+    }
+
+    private Mono<Void> getCustomerByIdErrorHandlingDemo() {
+        Integer absentCustomerId = 100;
+        return customerClient
+                .getCustomerById(absentCustomerId)
+                .doFirst(() -> log.debug("Error handling for Absent customer"))
+                .doOnNext(result -> log.debug("Absent customerById {}", result))
+                .then();
     }
 
     private Mono<Void> executor(Mono<?> method, String preMethodLogMessage, String postMethodLogMessage) {
