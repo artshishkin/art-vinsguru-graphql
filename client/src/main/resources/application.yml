@@ -16,3 +16,7 @@ spring:
 customer:
   service:
     url: http://localhost:8080/graphql
+  events:
+    subscription:
+      url: ws://localhost:8080/graphql
+#      url: http://localhost:8080/graphql #also work

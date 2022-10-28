@@ -1,0 +1,16 @@
+subscription CustomerEventsSub{
+    customerEvents {
+        id
+        customer {
+            ...CustomerDetails
+        }
+        action
+    }
+}
+
+fragment CustomerDetails on Customer{
+    id
+    name
+    age
+    city
+}
