@@ -30,7 +30,9 @@ public class ClientDemo implements CommandLineRunner {
                 .then(getCustomerByIdErrorHandlingDemo())
                 .then(getCustomerByIdGenericResponseErrorHandlingDemo())
                 .then(getCustomerByIdUnionErrorHandlingDemo())
+                //CRUD
                 .then(getAllCustomersCrudDemo())
+                .then(getCustomerByIdCrudDemo())
                 .subscribe();
     }
 
@@ -121,6 +123,13 @@ public class ClientDemo implements CommandLineRunner {
                 .doFirst(() -> log.debug(preMethodLogMessage))
                 .doOnNext(result -> log.debug(postMethodLogMessage, result))
                 .then();
+    }
+
+    private Mono<Void> getCustomerByIdCrudDemo() {
+        return executor(
+                crudClient.getCustomerById(2),
+                "GET Customer by id CRUD",
+                "by id: {}");
     }
 
     private Mono<Void> executor(Mono<?> method, String preMethodLogMessage, String postMethodLogMessage) {
