@@ -33,6 +33,7 @@ public class ClientDemo implements CommandLineRunner {
                 //CRUD
                 .then(getAllCustomersCrudDemo())
                 .then(getCustomerByIdCrudDemo())
+                .then(createNewCustomerCrudDemo())
                 .subscribe();
     }
 
@@ -129,6 +130,13 @@ public class ClientDemo implements CommandLineRunner {
                 crudClient.getCustomerById(2),
                 "GET Customer by id CRUD",
                 "by id: {}");
+    }
+
+    private Mono<Void> createNewCustomerCrudDemo() {
+        return executor(
+                crudClient.createNewCustomer(CustomerDto.builder().name("Alan").age(33).city("Manchester").build()),
+                "Create NEW Customer CRUD",
+                "created: {}");
     }
 
     private Mono<Void> executor(Mono<?> method, String preMethodLogMessage, String postMethodLogMessage) {

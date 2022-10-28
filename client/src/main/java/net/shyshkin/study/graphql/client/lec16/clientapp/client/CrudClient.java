@@ -29,6 +29,10 @@ public class CrudClient {
         return crud("CustomerById", Map.of("customerId", id), CUSTOMER_TYPE);
     }
 
+    public Mono<CustomerDto> createNewCustomer(CustomerDto customerDto) {
+        return crud("CreateCustomer", Map.of("customerInput", customerDto), CUSTOMER_TYPE);
+    }
+
     private <T> Mono<T> crud(String operationName, Map<String, Object> variables, ParameterizedTypeReference<T> type) {
         return graphQlClient.documentName("crud")
                 .operationName(operationName)
