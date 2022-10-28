@@ -2,6 +2,7 @@ package net.shyshkin.study.graphql.client.lec16.clientapp.client;
 
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.client.lec16.dto.CustomerDto;
+import net.shyshkin.study.graphql.client.lec16.dto.DeleteResultDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.graphql.client.HttpGraphQlClient;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,11 @@ public class CrudClient {
     public Mono<CustomerDto> updateCustomer(Integer id, CustomerDto customerDto) {
         customerDto.setId(null);
         return crud("UpdateCustomer", Map.of("customerInput", customerDto, "customerId", id), CUSTOMER_TYPE);
+    }
+
+    public Mono<DeleteResultDto> deleteCustomer(Integer id) {
+        return crud("DeleteCustomer", Map.of("customerId", id), new ParameterizedTypeReference<DeleteResultDto>() {
+        });
     }
 
     private <T> Mono<T> crud(String operationName, Map<String, Object> variables, ParameterizedTypeReference<T> type) {

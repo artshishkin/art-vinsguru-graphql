@@ -35,6 +35,7 @@ public class ClientDemo implements CommandLineRunner {
                 .then(getCustomerByIdCrudDemo())
                 .then(createNewCustomerCrudDemo())
                 .then(updateCustomerCrudDemo())
+                .then(deleteCustomerCrudDemo())
                 .subscribe();
     }
 
@@ -145,6 +146,13 @@ public class ClientDemo implements CommandLineRunner {
                 crudClient.updateCustomer(4, CustomerDto.builder().name("Alan").age(33).city("Manchester").build()),
                 "Update Customer CRUD",
                 "updated: {}");
+    }
+
+    private Mono<Void> deleteCustomerCrudDemo() {
+        return executor(
+                crudClient.deleteCustomer(5),
+                "Delete Customer CRUD",
+                "deleted: {}");
     }
 
     private Mono<Void> executor(Mono<?> method, String preMethodLogMessage, String postMethodLogMessage) {
