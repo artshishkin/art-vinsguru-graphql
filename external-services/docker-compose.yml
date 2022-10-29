@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  external-services:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${GROUP_ID:-artarkatesoft}/art-vinsguru-graphql-external-services:${SERVICE_VERSION:-latest}
+    ports:
+      - "7070:7070"
