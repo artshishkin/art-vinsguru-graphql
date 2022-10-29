@@ -56,7 +56,7 @@ interface Movie{
     title: String!
     releaseYear: Int!
     genre: Genre!
-    rating: Int!
+    rating: String!
 }
 
 # Movie Summary
@@ -65,7 +65,7 @@ type MovieSummary implements Movie{
     title: String!
     releaseYear: Int!
     genre: Genre!
-    rating: Int!
+    rating: String!
 }
 
 # Movie Detailed Information
@@ -74,7 +74,7 @@ type MovieDetails implements Movie{
     title: String!
     releaseYear: Int!
     genre: Genre!
-    rating: Int!
+    rating: String!
     reviews: [Review]!
     #similarMovies: [MovieSummary]
 }
