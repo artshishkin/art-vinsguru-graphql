@@ -1,7 +1,9 @@
 package net.shyshkin.study.graphql.crud.lec14.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import net.shyshkin.study.graphql.crud.lec14.dto.*;
+import net.shyshkin.study.graphql.crud.lec14.dto.Action;
+import net.shyshkin.study.graphql.crud.lec14.dto.CustomerDto;
+import net.shyshkin.study.graphql.crud.lec14.dto.CustomerEvent;
 import net.shyshkin.study.graphql.crud.lec14.service.CustomerService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -121,22 +123,18 @@ class CustomerEventControllerTest {
                 "age", 59,
                 "city", "Warsaw"
         );
-        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
-        GraphQlTester.Response response = graphQlTester
+        graphQlTester
                 .documentName(docLocation + "/subscription")
                 .operationName("CreateCustomer")
                 .variable("customerInput", customerInput)
-                .execute();
+                .executeAndVerify();
 
         //then
-        response.path("createCustomer.id").hasValue();
-        response.path("createCustomer.name").matchesJson("\"Tetyana\"");
-        response.path("createCustomer.age").matchesJson("59");
-        response.path("createCustomer.city").matchesJson("\"Warsaw\"");
-
-        StepVerifier.create(customerEvents.take(1))
+        subscriptionFlux()
+                .take(1)
+                .as(StepVerifier::create)
                 .consumeNextWith(event -> assertThat(event)
                         .hasNoNullFieldsOrProperties()
                         .hasFieldOrPropertyWithValue("action", Action.CREATED)
@@ -160,23 +158,19 @@ class CustomerEventControllerTest {
                 "age", 12,
                 "city", "London"
         );
-        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
-        GraphQlTester.Response response = graphQlTester
+        graphQlTester
                 .documentName(docLocation + "/subscription")
                 .operationName("UpdateCustomer")
                 .variable("customerId", customerId)
                 .variable("customerInput", customerInput)
-                .execute();
+                .executeAndVerify();
 
         //then
-        response.path("updateCustomer.id").matchesJson("\"" + customerId + "\"");
-        response.path("updateCustomer.name").matchesJson("\"Arina\"");
-        response.path("updateCustomer.age").matchesJson("12");
-        response.path("updateCustomer.city").matchesJson("\"London\"");
-
-        StepVerifier.create(customerEvents.take(1))
+        subscriptionFlux()
+                .take(1).
+                as(StepVerifier::create)
                 .consumeNextWith(event -> assertThat(event)
                         .hasNoNullFieldsOrProperties()
                         .hasFieldOrPropertyWithValue("action", Action.UPDATED)
@@ -221,24 +215,18 @@ class CustomerEventControllerTest {
 
         //given
         Integer customerId = 4;
-        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
-        GraphQlTester.Response response = graphQlTester
+        graphQlTester
                 .documentName(docLocation + "/subscription")
                 .operationName("DeleteCustomer")
                 .variable("customerId", customerId)
-                .execute();
+                .executeAndVerify();
 
         //then
-        response.path("deleteCustomer")
-                .entity(DeleteResultDto.class)
-                .satisfies(result -> assertThat(result)
-                        .hasNoNullFieldsOrProperties()
-                        .hasFieldOrPropertyWithValue("id", customerId)
-                        .hasFieldOrPropertyWithValue("status", Status.SUCCESS)
-                );
-        StepVerifier.create(customerEvents.take(1))
+        subscriptionFlux()
+                .take(1)
+                .as(StepVerifier::create)
                 .consumeNextWith(event -> assertThat(event)
                         .hasNoNullFieldsOrProperties()
                         .hasFieldOrPropertyWithValue("action", Action.DELETED)
@@ -258,24 +246,18 @@ class CustomerEventControllerTest {
 
         //given
         Integer customerId = 444;
-        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
-        GraphQlTester.Response response = graphQlTester
+        graphQlTester
                 .documentName(docLocation + "/subscription")
                 .operationName("DeleteCustomer")
                 .variable("customerId", customerId)
-                .execute();
+                .executeAndVerify();
 
         //then
-        response.path("deleteCustomer")
-                .entity(DeleteResultDto.class)
-                .satisfies(result -> assertThat(result)
-                        .hasNoNullFieldsOrProperties()
-                        .hasFieldOrPropertyWithValue("id", customerId)
-                        .hasFieldOrPropertyWithValue("status", Status.SUCCESS)
-                );
-        StepVerifier.create(customerEvents.take(1))
+        subscriptionFlux()
+                .take(1)
+                .as(StepVerifier::create)
                 .consumeNextWith(event -> assertThat(event)
                         .hasNoNullFieldsOrProperties()
                         .hasFieldOrPropertyWithValue("action", Action.DELETED)
@@ -299,7 +281,6 @@ class CustomerEventControllerTest {
                 "age", 58,
                 "city", "London"
         );
-        Flux<CustomerEvent> customerEvents = subscriptionFlux();
 
         //when
         graphQlTester
@@ -309,7 +290,9 @@ class CustomerEventControllerTest {
                 .executeAndVerify();
 
         //then
-        StepVerifier.create(customerEvents.take(2))
+        subscriptionFlux()
+                .take(2)
+                .as(StepVerifier::create)
                 .consumeNextWith(event -> assertThat(event)
                         .hasNoNullFieldsOrProperties()
                         .hasFieldOrPropertyWithValue("action", Action.CREATED)
