@@ -9,6 +9,35 @@ type Query{
 # add movie into user watchlist
 # update profile with fav genre
 
+# Movie
+interface Movie{
+    id: ID!
+    title: String!
+    releaseYear: Int!
+    genre: Genre!
+    rating: Int!
+}
+
+# Movie Summary
+type MovieSummary implements Movie{
+    id: ID!
+    title: String!
+    releaseYear: Int!
+    genre: Genre!
+    rating: Int!
+}
+
+# Movie Detailed Information
+type MovieDetails implements Movie{
+    id: ID!
+    title: String!
+    releaseYear: Int!
+    genre: Genre!
+    rating: Int!
+    reviews: [Review]!
+#    similarMovies: [MovieSummary]
+}
+
 # Review of the movie
 type Review{
     id: ID!
