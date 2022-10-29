@@ -1,7 +1,3 @@
-type Query{
-    test: String
-}
-
 # home page - movies by genre - basic/summary
 # scroll down - movies by genre - basic/summary
 # load movies by id - detailed - with reviews
@@ -9,9 +5,35 @@ type Query{
 # add movie into user watchlist
 # update profile with fav genre
 
+type Query{
+    # load user profile - fav genre, watchlist
+    userProfile(id: ID!): UserProfile
+    # load movies by id - detailed - with reviews
+    movieDetails(id: ID!): MovieDetails
+    # scroll down - movies by genre - basic/summary
+    moviesByGenre(genre: Genre): [MovieSummary]!
+}
+
+type Mutation{
+    # add movie into user watchlist
+    addToWatchList(input: WatchListInput!): WatchListResponse!
+    # update profile with fav genre
+    setProfile(input: CustomerInput!): UserProfile
+}
+
 input WatchListInput{
     customerId: Int!
     movieId: Int!
+}
+
+type WatchListResponse{
+    status: Status
+    watchList: [MovieSummary]!
+}
+
+enum Status{
+    SUCCESS
+    FAILURE
 }
 
 input CustomerInput{
