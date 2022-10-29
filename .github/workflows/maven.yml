@@ -5,7 +5,7 @@ name: GitHub CI
 
 on:
   push:
-    branches: [ main, integration-test ]
+    branches: [ main, movie-application ]
   pull_request:
     branches: [ main ]
 

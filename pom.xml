@@ -20,6 +20,7 @@
         <module>crud</module>
         <module>error-handling</module>
         <module>client</module>
+        <module>graphql-movie-app</module>
     </modules>
 
     <properties>
