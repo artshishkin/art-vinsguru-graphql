@@ -9,6 +9,25 @@ type Query{
 # add movie into user watchlist
 # update profile with fav genre
 
+input WatchListInput{
+    customerId: Int!
+    movieId: Int!
+}
+
+input CustomerInput{
+    id: ID!
+    name: String!
+    favoriteGenre: Genre!
+}
+
+type UserProfile{
+    id: ID!
+    name: String!
+    favoriteGenre: Genre!
+    watchList: [MovieSummary]!
+    recommended: [MovieSummary]!
+}
+
 # Movie
 interface Movie{
     id: ID!
@@ -35,7 +54,7 @@ type MovieDetails implements Movie{
     genre: Genre!
     rating: Int!
     reviews: [Review]!
-#    similarMovies: [MovieSummary]
+    #similarMovies: [MovieSummary]
 }
 
 # Review of the movie
