@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -27,7 +28,6 @@ import static org.mockito.ArgumentMatchers.eq;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "spring.graphql.schema.locations: classpath:graphql/lec13",
                 "app.mutation.delay: 100ms"
         }
 )
@@ -36,7 +36,8 @@ import static org.mockito.ArgumentMatchers.eq;
 @ActiveProfiles("lec13")
 class CustomerControllerTest {
 
-    private static final String DOC_LOCATION = "lec13/";
+    @Value("${lec}")
+    private String docLocation;
 
     @Autowired
     GraphQlTester graphQlTester;
@@ -51,7 +52,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("AllCustomers")
                 .execute();
 
@@ -71,7 +72,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("CustomerById")
                 .variable("customerId", customerId)
                 .execute();
@@ -90,7 +91,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("CustomerById")
                 .variable("customerId", customerId)
                 .execute();
@@ -113,7 +114,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("CreateCustomer")
                 .variable("customerInput", customerInput)
                 .execute();
@@ -140,7 +141,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("UpdateCustomer")
                 .variable("customerId", customerId)
                 .variable("customerInput", customerInput)
@@ -168,7 +169,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("UpdateCustomer")
                 .variable("customerId", customerId)
                 .variable("customerInput", customerInput)
@@ -188,7 +189,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("DeleteCustomer")
                 .variable("customerId", customerId)
                 .execute();
@@ -213,7 +214,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("DeleteCustomer")
                 .variable("customerId", customerId)
                 .execute();
@@ -243,7 +244,7 @@ class CustomerControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "crud")
+                .documentName(docLocation + "/crud")
                 .operationName("MultipleMutations")
                 .variable("newCustomer", customerInput)
                 .execute();

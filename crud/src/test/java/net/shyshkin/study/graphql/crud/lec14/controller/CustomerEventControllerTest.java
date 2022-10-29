@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -25,17 +26,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "spring.graphql.schema.locations: classpath:graphql/lec14"
-        }
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @AutoConfigureHttpGraphQlTester
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("lec14")
 class CustomerEventControllerTest {
 
-    private static final String DOC_LOCATION = "lec14/";
+    @Value("${lec}")
+    private String docLocation;
 
     @Autowired
     GraphQlTester graphQlTester;
@@ -63,7 +62,7 @@ class CustomerEventControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("AllCustomers")
                 .execute();
 
@@ -83,7 +82,7 @@ class CustomerEventControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("CustomerById")
                 .variable("customerId", customerId)
                 .execute();
@@ -102,7 +101,7 @@ class CustomerEventControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("CustomerById")
                 .variable("customerId", customerId)
                 .execute();
@@ -126,7 +125,7 @@ class CustomerEventControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("CreateCustomer")
                 .variable("customerInput", customerInput)
                 .execute();
@@ -165,7 +164,7 @@ class CustomerEventControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("UpdateCustomer")
                 .variable("customerId", customerId)
                 .variable("customerInput", customerInput)
@@ -205,7 +204,7 @@ class CustomerEventControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("UpdateCustomer")
                 .variable("customerId", customerId)
                 .variable("customerInput", customerInput)
@@ -226,7 +225,7 @@ class CustomerEventControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("DeleteCustomer")
                 .variable("customerId", customerId)
                 .execute();
@@ -263,7 +262,7 @@ class CustomerEventControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("DeleteCustomer")
                 .variable("customerId", customerId)
                 .execute();
@@ -304,7 +303,7 @@ class CustomerEventControllerTest {
 
         //when
         graphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("MultipleMutations")
                 .variable("newCustomer", customerInput)
                 .executeAndVerify();
@@ -334,7 +333,7 @@ class CustomerEventControllerTest {
 
     private Flux<CustomerEvent> subscriptionFlux() {
         GraphQlTester.Subscription customerEventsSub = webSocketGraphQlTester
-                .documentName(DOC_LOCATION + "subscription")
+                .documentName(docLocation + "/subscription")
                 .operationName("CustomerEventsSub")
                 .executeSubscription();
 

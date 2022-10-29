@@ -2,6 +2,8 @@ logging:
   level:
     net.shyshkin: debug
 
+lec: lec13 # by default
+
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -9,9 +11,23 @@ spring:
   graphql:
     path: /graphql
     schema:
-      locations: classpath:graphql/${spring.profiles.active}
+      locations: classpath:graphql/${lec}
     graphiql:
       enabled: true
       path: /graphiql
     websocket:
       path: /graphql
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec13
+lec: lec13
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec14
+lec: lec14
