@@ -2,11 +2,12 @@ logging:
   level:
     net.shyshkin: debug
 
+lec: lec16
 spring:
   graphql:
     path: /graphql
     schema:
-      locations: classpath:graphql/${spring.profiles.active}
+      locations: classpath:graphql/${lec}
     graphiql:
       enabled: true
       path: /graphiql

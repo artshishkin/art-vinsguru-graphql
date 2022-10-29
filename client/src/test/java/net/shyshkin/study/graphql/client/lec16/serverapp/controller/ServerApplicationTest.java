@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -27,17 +28,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "spring.graphql.schema.locations: classpath:graphql/lec16"
-        }
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT        
 )
 @AutoConfigureHttpGraphQlTester
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("lec16")
 class ServerApplicationTest {
 
-    private static final String DOC_LOCATION = "lec16/";
+    @Value("${lec}")
+    private String docLocation;
 
     @Autowired
     GraphQlTester graphQlTester;
@@ -65,7 +64,7 @@ class ServerApplicationTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("AllCustomers")
                 .execute();
 
@@ -85,7 +84,7 @@ class ServerApplicationTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("CustomerById")
                 .variable("customerId", customerId)
                 .execute();
@@ -104,7 +103,7 @@ class ServerApplicationTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("CustomerById")
                 .variable("customerId", customerId)
                 .execute();
@@ -134,7 +133,7 @@ class ServerApplicationTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("CreateCustomer")
                 .variable("customerInput", customerInput)
                 .execute();
@@ -173,7 +172,7 @@ class ServerApplicationTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("UpdateCustomer")
                 .variable("customerId", customerId)
                 .variable("customerInput", customerInput)
@@ -213,7 +212,7 @@ class ServerApplicationTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("UpdateCustomer")
                 .variable("customerId", customerId)
                 .variable("customerInput", customerInput)
@@ -234,7 +233,7 @@ class ServerApplicationTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("DeleteCustomer")
                 .variable("customerId", customerId)
                 .execute();
@@ -271,7 +270,7 @@ class ServerApplicationTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("DeleteCustomer")
                 .variable("customerId", customerId)
                 .execute();
@@ -312,7 +311,7 @@ class ServerApplicationTest {
 
         //when
         graphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("MultipleMutations")
                 .variable("newCustomer", customerInput)
                 .executeAndVerify();
@@ -342,7 +341,7 @@ class ServerApplicationTest {
 
     private Flux<CustomerEvent> subscriptionFlux() {
         GraphQlTester.Subscription customerEventsSub = webSocketGraphQlTester
-                .documentName(DOC_LOCATION + "serverapp")
+                .documentName(docLocation + "/serverapp")
                 .operationName("CustomerEventsSub")
                 .executeSubscription();
 
