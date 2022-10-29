@@ -1,3 +1,18 @@
+logging:
+  level:
+    net.shyshkin: debug
+
 spring:
   application:
     name: movie-app
+  graphql:
+    path: /graphql
+    schema:
+      locations: classpath:graphql
+    graphiql:
+      enabled: true
+      path: /graphiql
+    websocket:
+      path: /graphql
+
+
