@@ -6,7 +6,6 @@ import net.shyshkin.study.graphql.graphqlplayground.lec04.dto.Customer;
 import net.shyshkin.study.graphql.graphqlplayground.lec04.dto.CustomerOrderDto;
 import net.shyshkin.study.graphql.graphqlplayground.lec04.service.CustomerService;
 import net.shyshkin.study.graphql.graphqlplayground.lec04.service.OrderService;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
-@Profile("lec04")
 @RequiredArgsConstructor
 public class CustomerController {
 

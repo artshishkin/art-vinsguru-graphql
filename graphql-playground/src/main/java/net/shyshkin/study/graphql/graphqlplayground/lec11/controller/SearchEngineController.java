@@ -3,7 +3,6 @@ package net.shyshkin.study.graphql.graphqlplayground.lec11.controller;
 import net.shyshkin.study.graphql.graphqlplayground.lec11.dto.Book;
 import net.shyshkin.study.graphql.graphqlplayground.lec11.dto.Electronics;
 import net.shyshkin.study.graphql.graphqlplayground.lec11.dto.FruitDto;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.function.Function;
 
 @Controller
-@Profile("lec11")
 public class SearchEngineController {
 
     private final List<Object> db = List.of(

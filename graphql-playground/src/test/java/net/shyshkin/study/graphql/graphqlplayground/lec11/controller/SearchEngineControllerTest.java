@@ -1,33 +1,21 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec11.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.AbstractGraphQLSpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
 
 @Slf4j
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.graphql.schema.locations: classpath:graphql/lec11"}
-)
-@AutoConfigureHttpGraphQlTester
 @ActiveProfiles("lec11")
-class SearchEngineControllerTest {
-
-    private static final String DOC_LOCATION = "lec11/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class SearchEngineControllerTest extends AbstractGraphQLSpringBootTest {
 
     @Test
     void union_shouldReturnOneOfUnionComponents() {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "unionTest")
+                .documentName(docLocation + "/unionTest")
                 .operationName("SearchUnion")
                 .execute();
 
@@ -46,7 +34,7 @@ class SearchEngineControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "unionTest")
+                .documentName(docLocation + "/unionTest")
                 .operationName("SearchUnionWithTypename")
                 .execute();
 
@@ -61,7 +49,7 @@ class SearchEngineControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "unionTest")
+                .documentName(docLocation + "/unionTest")
                 .operationName("SearchUnionWithTypename")
                 .execute();
 

@@ -4,12 +4,10 @@ import graphql.schema.TypeResolver;
 import net.shyshkin.study.graphql.graphqlplayground.lec11.dto.FruitDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.execution.ClassNameTypeResolver;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
 @Configuration
-@Profile("lec11")
 public class TypeResolverConfig {
 
     @Bean

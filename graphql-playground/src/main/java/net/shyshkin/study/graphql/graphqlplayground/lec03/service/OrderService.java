@@ -1,7 +1,6 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec03.service;
 
 import net.shyshkin.study.graphql.graphqlplayground.lec03.dto.CustomerOrderDto;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -13,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-@Profile("lec03")
 public class OrderService {
 
     private final Map<Integer, List<CustomerOrderDto>> db = createDB();

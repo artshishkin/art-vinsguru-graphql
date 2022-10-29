@@ -1,18 +1,15 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec04.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.AbstractGraphQLSpringBootTest;
 import net.shyshkin.study.graphql.graphqlplayground.lec04.dto.Customer;
 import net.shyshkin.study.graphql.graphqlplayground.lec04.dto.CustomerOrderDto;
 import net.shyshkin.study.graphql.graphqlplayground.lec04.service.CustomerService;
 import net.shyshkin.study.graphql.graphqlplayground.lec04.service.OrderService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -22,18 +19,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("lec04")
-@AutoConfigureHttpGraphQlTester
-@TestPropertySource(
-        properties = {"spring.graphql.schema.locations: classpath:graphql/lec04"}
-)
-class CustomerControllerTest {
-
-    private static final String DOC_LOCATION = "lec04/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class CustomerControllerTest extends AbstractGraphQLSpringBootTest {
 
     @SpyBean
     CustomerService customerService;
@@ -45,7 +32,7 @@ class CustomerControllerTest {
     void getCustomersWithOrdersTest_shouldCallOrderService() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getCustomersWithOrdersTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/getCustomersWithOrdersTest")
                 .execute();
 
         //then
@@ -93,7 +80,7 @@ class CustomerControllerTest {
     void getCustomersWithOrdersMapTest_shouldCallOrderService() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getCustomersWithOrdersMapTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/getCustomersWithOrdersMapTest")
                 .execute();
 
         //then
@@ -141,7 +128,7 @@ class CustomerControllerTest {
     void getCustomersOnlyTest_should_NOT_CallOrderService() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getCustomersOnlyTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/getCustomersOnlyTest")
                 .execute();
 
         //then

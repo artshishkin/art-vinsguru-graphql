@@ -1,40 +1,27 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec05.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.AbstractGraphQLSpringBootTest;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.Account;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.AccountType;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.Address;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.Customer;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("lec05")
-@AutoConfigureHttpGraphQlTester
-@TestPropertySource(
-        properties = {"spring.graphql.schema.locations: classpath:graphql/lec05"}
-)
-class CustomerControllerTest {
-
-    private static final String DOC_LOCATION = "lec05/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class CustomerControllerTest extends AbstractGraphQLSpringBootTest {
 
     @Test
     void getCustomersTest_shouldFetchAllTheData() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getCustomersTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/getCustomersTest")
                 .execute();
 
         //then
@@ -66,7 +53,7 @@ class CustomerControllerTest {
     void fieldAliasTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "fieldAliasTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/fieldAliasTest")
                 .execute();
 
         //then

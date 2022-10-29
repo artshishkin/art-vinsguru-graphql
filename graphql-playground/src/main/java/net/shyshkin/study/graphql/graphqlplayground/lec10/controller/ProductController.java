@@ -3,7 +3,6 @@ package net.shyshkin.study.graphql.graphqlplayground.lec10.controller;
 import net.shyshkin.study.graphql.graphqlplayground.lec10.dto.Book;
 import net.shyshkin.study.graphql.graphqlplayground.lec10.dto.Electronics;
 import net.shyshkin.study.graphql.graphqlplayground.lec10.dto.FruitDto;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
@@ -11,7 +10,6 @@ import reactor.core.publisher.Flux;
 import java.time.LocalDate;
 
 @Controller
-@Profile("lec10")
 public class ProductController {
 
     @QueryMapping

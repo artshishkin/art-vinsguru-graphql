@@ -2,7 +2,6 @@ package net.shyshkin.study.graphql.graphqlplayground.lec06.service;
 
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.CustomerOrderDto;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -16,7 +15,6 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Service
-@Profile("lec06")
 public class OrderService {
 
     private final Map<Integer, List<CustomerOrderDto>> db = createDB();

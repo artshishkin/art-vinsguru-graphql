@@ -2,13 +2,11 @@ package net.shyshkin.study.graphql.graphqlplayground.lec08.controller;
 
 import graphql.schema.DataFetchingFieldSelectionSet;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Slf4j
 @Controller
-@Profile("lec08")
 public class FieldGlobPatternController {
 
     @QueryMapping

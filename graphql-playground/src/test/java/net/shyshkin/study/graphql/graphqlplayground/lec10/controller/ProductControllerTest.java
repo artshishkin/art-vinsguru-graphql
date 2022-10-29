@@ -1,33 +1,21 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec10.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.AbstractGraphQLSpringBootTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
 
 @Slf4j
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.graphql.schema.locations: classpath:graphql/lec10"}
-)
-@AutoConfigureHttpGraphQlTester
 @ActiveProfiles("lec10")
-class ProductControllerTest {
-
-    private static final String DOC_LOCATION = "lec10/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class ProductControllerTest extends AbstractGraphQLSpringBootTest {
 
     @Test
     void interfaceQuery_shouldReturnOnlyInterfacesFields() {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "interfaceTest")
+                .documentName(docLocation + "/interfaceTest")
                 .operationName("GetProductInterface")
                 .execute();
 
@@ -53,7 +41,7 @@ class ProductControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "interfaceTest")
+                .documentName(docLocation + "/interfaceTest")
                 .operationName("GetProductsWithFruitExtensions")
                 .execute();
 
@@ -71,7 +59,7 @@ class ProductControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "interfaceTest")
+                .documentName(docLocation + "/interfaceTest")
                 .operationName("GetProductsWithAllFields")
                 .execute();
 
@@ -89,7 +77,7 @@ class ProductControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "interfaceTest")
+                .documentName(docLocation + "/interfaceTest")
                 .operationName("getTypename")
                 .execute();
 
@@ -104,7 +92,7 @@ class ProductControllerTest {
 
         //when
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "interfaceTest")
+                .documentName(docLocation + "/interfaceTest")
                 .operationName("getTypenameWithAlias")
                 .execute();
 

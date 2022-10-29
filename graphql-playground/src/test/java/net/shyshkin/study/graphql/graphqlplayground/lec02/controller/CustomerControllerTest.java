@@ -1,38 +1,25 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec02.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.AbstractGraphQLSpringBootTest;
 import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.AgeRangeFilter;
 import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.Customer;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("lec02")
-@AutoConfigureHttpGraphQlTester
-@TestPropertySource(
-        properties = {"spring.graphql.schema.locations: classpath:graphql/lec02"}
-)
-class CustomerControllerTest {
-
-    private static final String DOC_LOCATION = "lec02/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class CustomerControllerTest extends AbstractGraphQLSpringBootTest {
 
     @Test
     void getAllCustomersTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getAllCustomersTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/getAllCustomersTest")
                 .execute();
 
         //then
@@ -55,7 +42,7 @@ class CustomerControllerTest {
     void getCustomerByIdTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getCustomerByIdTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/getCustomerByIdTest")
                 .variable("id", "3")
                 .execute();
 
@@ -77,7 +64,7 @@ class CustomerControllerTest {
     void getCustomerByIdTest_JSON() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "getCustomerByIdTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/getCustomerByIdTest")
                 .variable("id", "3")
                 .execute();
 
@@ -92,7 +79,7 @@ class CustomerControllerTest {
     void filterCustomersByNameTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "filterCustomersByNameTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/filterCustomersByNameTest")
                 .variable("name", "04")
                 .execute();
 
@@ -117,7 +104,7 @@ class CustomerControllerTest {
     void multipleFieldsTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "multipleFieldsTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/multipleFieldsTest")
                 .execute();
 
         //then
@@ -169,7 +156,7 @@ class CustomerControllerTest {
         Integer maxAge = 55;
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "filterCustomersByAgeRangeTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/filterCustomersByAgeRangeTest")
                 .execute();
 
         //then
@@ -194,7 +181,7 @@ class CustomerControllerTest {
         AgeRangeFilter ageRangeFilter = AgeRangeFilter.builder().minAge(minAge).maxAge(maxAge).build();
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "filterCustomersByAgeRangePTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/filterCustomersByAgeRangePTest")
                 .variable("filter", ageRangeFilter)
                 .execute();
 

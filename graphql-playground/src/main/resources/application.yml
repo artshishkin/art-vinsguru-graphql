@@ -2,11 +2,104 @@ logging:
   level:
     net.shyshkin: debug
 
+lec: lec01
+
 spring:
   graphql:
     path: /graphql
     schema:
-      locations: classpath:graphql/${spring.profiles.active}
+      locations: classpath:graphql/${lec}
     graphiql:
       enabled: true
       path: /graphiql
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec01
+lec: lec01
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec02
+lec: lec02
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec03
+lec: lec03
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec04
+lec: lec04
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec05
+lec: lec05
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec05_01
+lec: lec05_01
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec06
+lec: lec06
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec07
+lec: lec07
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec08
+lec: lec08
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec09
+lec: lec09
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec10
+lec: lec10
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec11
+lec: lec11
+
+---
+spring:
+  config:
+    activate:
+      on-profile: lec12
+lec: lec12

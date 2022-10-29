@@ -3,14 +3,12 @@ package net.shyshkin.study.graphql.graphqlplayground.lec05.controller;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.Address;
 import net.shyshkin.study.graphql.graphqlplayground.lec05.dto.Customer;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @Controller
-@Profile("lec05")
 public class AddressController {
 
 //    @SchemaMapping(typeName = "Customer") //we can skip typeName if we have it in method arguments

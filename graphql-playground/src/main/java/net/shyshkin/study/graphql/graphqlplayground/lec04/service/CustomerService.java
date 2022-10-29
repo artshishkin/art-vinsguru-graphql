@@ -1,7 +1,6 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec04.service;
 
 import net.shyshkin.study.graphql.graphqlplayground.lec04.dto.Customer;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-@Profile("lec04")
 public class CustomerService {
 
     private final List<Customer> customers = IntStream.rangeClosed(1, 5)

@@ -5,7 +5,7 @@ name: GitHub CI
 
 on:
   push:
-    branches: [ main, client ]
+    branches: [ main, integration-test ]
   pull_request:
     branches: [ main ]
 

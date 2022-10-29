@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.Customer;
 import net.shyshkin.study.graphql.graphqlplayground.lec06.dto.CustomerWithOrdersDto;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,7 +13,6 @@ import java.util.function.UnaryOperator;
 
 @Slf4j
 @Service
-@Profile("lec06")
 @RequiredArgsConstructor
 public class CustomerOrderDataFetcher {
 

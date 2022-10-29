@@ -1,7 +1,6 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec12.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
@@ -9,7 +8,6 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Controller
-@Profile("lec12")
 public class PlayWithCachingController {
 
     @QueryMapping

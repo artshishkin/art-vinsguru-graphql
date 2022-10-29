@@ -4,7 +4,6 @@ import graphql.schema.DataFetchingFieldSelectionSet;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec05_01.dto.Account;
 import net.shyshkin.study.graphql.graphqlplayground.lec05_01.dto.Customer;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
@@ -17,7 +16,6 @@ import static net.shyshkin.study.graphql.graphqlplayground.lec05_01.dto.AccountT
 
 @Slf4j
 @Controller
-@Profile("lec05_01")
 public class AccountController {
 
 //    @SchemaMapping(typeName = "Customer") //we can skip typeName if we have it in method arguments

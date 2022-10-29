@@ -1,37 +1,23 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec12.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.AbstractGraphQLSpringBootTest;
 import net.shyshkin.study.graphql.graphqlplayground.lec12.service.CacheMonitorFakeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @Slf4j
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "spring.graphql.schema.locations: classpath:graphql/lec12",
-                "logging.level.ROOT: debug"
-        }
-)
-@AutoConfigureHttpGraphQlTester
+@TestPropertySource(properties = {"logging.level.ROOT: debug"})
 @ActiveProfiles("lec12")
-
-class PlayWithCachingControllerTest {
-
-    private static final String DOC_LOCATION = "lec12/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class PlayWithCachingControllerTest extends AbstractGraphQLSpringBootTest {
 
     @SpyBean
     CacheMonitorFakeService cacheMonitorFakeService;
@@ -43,7 +29,7 @@ class PlayWithCachingControllerTest {
 
         //first call
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "cachingTest")
+                .documentName(docLocation + "/cachingTest")
                 .operationName("Simple")
                 .execute();
 
@@ -52,7 +38,7 @@ class PlayWithCachingControllerTest {
 
         //second call
         response = graphQlTester
-                .documentName(DOC_LOCATION + "cachingTest")
+                .documentName(docLocation + "/cachingTest")
                 .operationName("Simple")
                 .execute();
         response.path("sayHello").matchesJson("\"Hello Art!\"");
@@ -85,9 +71,9 @@ class PlayWithCachingControllerTest {
 
         //first call
         GraphQlTester.Response response = graphQlTester
-                .documentName(DOC_LOCATION + "cachingTest")
+                .documentName(docLocation + "/cachingTest")
                 .operationName("Correct")
-                .variable("name","Art")
+                .variable("name", "Art")
                 .execute();
 
         response.path("sayHello").matchesJson("\"Hello Art!\"");
@@ -95,9 +81,9 @@ class PlayWithCachingControllerTest {
 
         //second call
         response = graphQlTester
-                .documentName(DOC_LOCATION + "cachingTest")
+                .documentName(docLocation + "/cachingTest")
                 .operationName("Correct")
-                .variable("name","Arina")
+                .variable("name", "Arina")
                 .execute();
         response.path("sayHello").matchesJson("\"Hello Arina!\"");
         then(cacheMonitorFakeService).shouldHaveNoMoreInteractions();

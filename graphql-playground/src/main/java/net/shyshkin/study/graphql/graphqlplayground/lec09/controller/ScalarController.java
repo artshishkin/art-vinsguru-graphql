@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.graphqlplayground.lec09.dto.AllTypes;
 import net.shyshkin.study.graphql.graphqlplayground.lec09.dto.Car;
 import net.shyshkin.study.graphql.graphqlplayground.lec09.dto.Product;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
@@ -21,7 +20,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Controller
-@Profile("lec09")
 public class ScalarController {
 
     public static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();

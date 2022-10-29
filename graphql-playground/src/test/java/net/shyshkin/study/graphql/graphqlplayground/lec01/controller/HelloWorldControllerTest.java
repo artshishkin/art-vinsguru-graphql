@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Slf4j
 @GraphQlTest(
-        value = HelloWorldController.class,
-        properties = {"spring.graphql.schema.locations: classpath:graphql/lec01"}
+        value = HelloWorldController.class
 )
 @ActiveProfiles("lec01")
 class HelloWorldControllerTest {
 
-    private static final String DOC_LOCATION = "lec01/";
+    @Value("${lec}")
+    private String docLocation;
 
     @Autowired
     private GraphQlTester graphQlTester;
@@ -70,7 +71,7 @@ class HelloWorldControllerTest {
         void helloWorld() {
 
             //when
-            GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "sayHelloDoc")
+            GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/sayHelloDoc")
                     .execute();
 
             //then
@@ -83,7 +84,7 @@ class HelloWorldControllerTest {
         void sayHelloTo() {
 
             //when
-            GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "sayHelloToDoc")
+            GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/sayHelloToDoc")
                     .execute();
 
             //then
@@ -96,7 +97,7 @@ class HelloWorldControllerTest {
         void sayHelloTo_throughParam() {
 
             //when
-            GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "sayHelloToParamDoc")
+            GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/sayHelloToParamDoc")
                     .variable("helloName", "Art")
                     .execute();
 
@@ -142,7 +143,7 @@ class HelloWorldControllerTest {
         void multiQuery() {
 
             //when
-            GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "multiQueryDoc")
+            GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/multiQueryDoc")
                     .execute();
 
             //then

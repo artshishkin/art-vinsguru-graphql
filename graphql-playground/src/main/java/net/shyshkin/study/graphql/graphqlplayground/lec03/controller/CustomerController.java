@@ -6,7 +6,6 @@ import net.shyshkin.study.graphql.graphqlplayground.lec03.dto.Customer;
 import net.shyshkin.study.graphql.graphqlplayground.lec03.dto.CustomerOrderDto;
 import net.shyshkin.study.graphql.graphqlplayground.lec03.service.CustomerService;
 import net.shyshkin.study.graphql.graphqlplayground.lec03.service.OrderService;
-import org.springframework.context.annotation.Profile;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import reactor.core.publisher.Flux;
 
 @Slf4j
 @Controller
-@Profile("lec03")
 @RequiredArgsConstructor
 public class CustomerController {
 

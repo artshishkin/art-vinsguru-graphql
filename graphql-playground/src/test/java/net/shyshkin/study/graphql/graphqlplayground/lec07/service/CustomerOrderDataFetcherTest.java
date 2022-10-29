@@ -1,16 +1,13 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec07.service;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.AbstractGraphQLSpringBootTest;
 import net.shyshkin.study.graphql.graphqlplayground.lec07.dto.CustomerOrderDto;
 import net.shyshkin.study.graphql.graphqlplayground.lec07.dto.CustomerWithOrdersDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -20,18 +17,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("lec07")
-@AutoConfigureHttpGraphQlTester
-@TestPropertySource(
-        properties = {"spring.graphql.schema.locations: classpath:graphql/lec07"}
-)
-class CustomerOrderDataFetcherTest {
-
-    private static final String DOC_LOCATION = "lec07/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class CustomerOrderDataFetcherTest extends AbstractGraphQLSpringBootTest {
 
     @SpyBean
     CustomerService customerService;
@@ -43,7 +30,7 @@ class CustomerOrderDataFetcherTest {
     void getCustomersWithOrdersTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "customers")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/customers")
                 .operationName("WithOrders")
                 .execute();
 
@@ -83,7 +70,7 @@ class CustomerOrderDataFetcherTest {
     void getCustomersWithoutOrdersTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "customers")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/customers")
                 .operationName("WithoutOrders")
                 .execute();
 
@@ -110,7 +97,7 @@ class CustomerOrderDataFetcherTest {
     void dataFetcherConfig_yearTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "data-fetcher")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/data-fetcher")
                 .operationName("Year")
                 .execute();
 
@@ -127,7 +114,7 @@ class CustomerOrderDataFetcherTest {
     void dataFetcherConfig_authorTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "data-fetcher")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/data-fetcher")
                 .operationName("Author")
                 .execute();
 

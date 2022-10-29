@@ -9,14 +9,12 @@ import net.shyshkin.study.graphql.graphqlplayground.lec12.service.CacheMonitorFa
 import org.springframework.boot.autoconfigure.graphql.GraphQlSourceBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 @Slf4j
-@Profile("lec12")
 @Configuration
 @RequiredArgsConstructor
 public class OperationCachingConfig {

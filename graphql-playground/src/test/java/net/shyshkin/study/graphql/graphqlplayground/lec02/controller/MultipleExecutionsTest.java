@@ -1,16 +1,13 @@
 package net.shyshkin.study.graphql.graphqlplayground.lec02.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.shyshkin.study.graphql.graphqlplayground.AbstractGraphQLSpringBootTest;
 import net.shyshkin.study.graphql.graphqlplayground.lec02.dto.AgeRangeFilter;
 import net.shyshkin.study.graphql.graphqlplayground.lec02.service.CustomerService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,18 +17,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @Slf4j
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("lec02")
-@AutoConfigureHttpGraphQlTester
-@TestPropertySource(
-        properties = {"spring.graphql.schema.locations: classpath:graphql/lec02"}
-)
-class MultipleExecutionsTest {
-
-    private static final String DOC_LOCATION = "lec02/";
-
-    @Autowired
-    GraphQlTester graphQlTester;
+class MultipleExecutionsTest extends AbstractGraphQLSpringBootTest {
 
     @SpyBean
     CustomerService customerService;
@@ -40,7 +27,7 @@ class MultipleExecutionsTest {
     void multipleCustomersByIdTest() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "multipleCustomersById")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/multipleCustomersById")
                 .execute();
 
         //then
@@ -71,7 +58,7 @@ class MultipleExecutionsTest {
                 .build();
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "multipleCustomersFiltered")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/multipleCustomersFiltered")
                 .execute();
 
         //then
@@ -95,7 +82,7 @@ class MultipleExecutionsTest {
                 .build();
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "fragmentsTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/fragmentsTest")
                 .execute();
 
         //then
@@ -109,7 +96,7 @@ class MultipleExecutionsTest {
     void operations_1_Test() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "operationsTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/operationsTest")
                 .operationName("CustomerByAgeRangeOperation")
                 .execute();
 
@@ -125,7 +112,7 @@ class MultipleExecutionsTest {
     void operations_2_Test() {
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "operationsTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/operationsTest")
                 .operationName("CustomerByIdOperation")
                 .execute();
 
@@ -144,7 +131,7 @@ class MultipleExecutionsTest {
         Integer customerId = 2;
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "variablesTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/variablesTest")
                 .operationName("CustomerByIdOperation")
                 .variable("customerId", customerId)
                 .execute();
@@ -162,7 +149,7 @@ class MultipleExecutionsTest {
         Integer defaultId = 1;
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "variablesTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/variablesTest")
                 .operationName("CustomerByIdOperation")
                 .execute();
 
@@ -180,7 +167,7 @@ class MultipleExecutionsTest {
         AgeRangeFilter defaultFilterHigh = AgeRangeFilter.builder().minAge(40).maxAge(60).build();
 
         //when
-        GraphQlTester.Response response = graphQlTester.documentName(DOC_LOCATION + "variablesTest")
+        GraphQlTester.Response response = graphQlTester.documentName(docLocation + "/variablesTest")
                 .operationName("CustomerByAgeRangeOperation")
                 .variable("filterL", filterLow)
                 .execute();
