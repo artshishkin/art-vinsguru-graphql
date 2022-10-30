@@ -11,5 +11,6 @@ public enum Genre {
     DRAMA,
     FANTASY,
     HORROR,
-    MYSTERY
+    MYSTERY,
+    ABSENT_FOR_TEST
 }

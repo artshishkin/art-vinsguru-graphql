@@ -1,0 +1,25 @@
+### GET movies by ids (EXISTING) - application/json
+GET http://localhost:8081/movie?ids=1&ids=2
+Accept: application/json
+
+### GET movies by ids (EXISTING) - text/event-stream
+GET http://localhost:8081/movie?ids=1&ids=2
+Accept: text/event-stream
+
+### GET movies by ids (ABSENT) - application/json
+GET http://localhost:8081/movie?ids=10000&ids=20000
+Accept: application/json
+
+### GET movies by ids (mix EXISTING + ABSENT) - application/json
+GET http://localhost:8081/movie?ids=100&ids=20000
+Accept: application/json
+
+### GET Movie recommendation (EXISTING) by genre - application/json
+GET http://localhost:8081/movie/ACTION/recommended
+Accept: application/json
+
+### GET Movie recommendation (ABSENT) by genre - application/json (500 Internal Server Error)
+GET http://localhost:8081/movie/FOO/recommended
+Accept: application/json
+
+
