@@ -21,7 +21,7 @@ public class ReviewClient {
     }
 
     public Flux<Review> reviews(Integer movieId) {
-        return webClient.get().uri("{id}", movieId)
+        return webClient.get().uri("/{id}", movieId)
                 .retrieve()
                 .bodyToFlux(Review.class);
     }
