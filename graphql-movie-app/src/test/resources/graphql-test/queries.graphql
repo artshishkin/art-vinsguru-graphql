@@ -27,3 +27,30 @@ query getUserProfileFull($userId: ID!){
         }
     }
 }
+
+query getMovieDetailsCut($movieId: ID!){
+    movieDetails(id: $movieId){
+        id
+        rating
+        releaseYear
+        title
+        genre
+    }
+}
+
+query getMovieDetailsFull($movieId: ID!){
+    movieDetails(id: $movieId){
+        id
+        rating
+        releaseYear
+        title
+        genre
+        reviews {
+            id
+            username
+            comment
+            rating
+        }
+    }
+}
+

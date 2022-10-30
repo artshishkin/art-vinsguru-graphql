@@ -4,6 +4,7 @@ import net.shyshkin.study.graphql.movieapp.client.CustomerClient;
 import net.shyshkin.study.graphql.movieapp.client.MovieClient;
 import net.shyshkin.study.graphql.movieapp.client.ReviewClient;
 import net.shyshkin.study.graphql.movieapp.dto.Movie;
+import net.shyshkin.study.graphql.movieapp.dto.Review;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
@@ -110,4 +111,71 @@ class GraphqlMovieApplicationTests extends BaseTest {
         then(movieClient).should().getMovieRecommendationByGenre(any());
         then(reviewClient).shouldHaveNoInteractions();
     }
+
+    @Test
+    void getMovieDetails_absent() {
+        //given
+        Integer movieId = 10000;
+
+        //when
+        graphQlTester.documentName("queries")
+                .operationName("getMovieDetailsCut")
+                .variable("movieId", movieId)
+                .execute()
+
+                //then
+                .path("movieDetails").valueIsNull();
+
+        then(customerClient).shouldHaveNoInteractions();
+        then(movieClient).should().getMoviesByIds(any());
+        then(reviewClient).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void getMovieDetailsCut_present() {
+        //given
+        Integer movieId = 1;
+
+        //when
+        graphQlTester.documentName("queries")
+                .operationName("getMovieDetailsCut")
+                .variable("movieId", movieId)
+                .execute()
+
+                //then
+                .path("movieDetails").hasValue()
+                .entity(Movie.class)
+                .satisfies(movie -> assertThat(movie).hasNoNullFieldsOrProperties());
+
+        then(customerClient).shouldHaveNoInteractions();
+        then(movieClient).should().getMoviesByIds(any());
+        then(reviewClient).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void getMovieDetailsFull_present() {
+        //given
+        Integer movieId = 1;
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName("queries")
+                .operationName("getMovieDetailsFull")
+                .variable("movieId", movieId)
+                .execute();
+
+        //then
+        response.path("movieDetails").hasValue()
+                .entity(Movie.class)
+                .satisfies(movie -> assertThat(movie).hasNoNullFieldsOrProperties());
+        response.path("movieDetails.reviews")
+                .hasValue()
+                .entityList(Review.class)
+                .satisfies(reviews -> assertThat(reviews)
+                        .allSatisfy(review -> assertThat(review).hasNoNullFieldsOrProperties()));
+
+        then(customerClient).shouldHaveNoInteractions();
+        then(movieClient).should().getMoviesByIds(any());
+        then(reviewClient).should().reviews(eq(movieId));
+    }
+
 }
