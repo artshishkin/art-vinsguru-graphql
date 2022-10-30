@@ -1,0 +1,29 @@
+query getUserProfileCut($userId: ID!){
+    userProfile(id: $userId){
+        id
+        name
+        favoriteGenre
+    }
+}
+
+query getUserProfileFull($userId: ID!){
+    userProfile(id: $userId){
+        id
+        name
+        favoriteGenre
+        watchList {
+            id
+            title
+            genre
+            rating
+            releaseYear
+        }
+        recommended {
+            id
+            title
+            genre
+            releaseYear
+            rating
+        }
+    }
+}
