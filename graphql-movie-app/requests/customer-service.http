@@ -1,0 +1,61 @@
+### GET customer by id (EXISTING) - application/json
+GET http://localhost:8081/customer/3
+Accept: application/json
+
+### GET customer by id (EXISTING) - text/event-stream
+GET http://localhost:8081/customer/1
+Accept: text/event-stream
+
+### GET customer by id (ABSENT) - application/json
+GET http://localhost:8081/customer/300
+Accept: application/json
+
+### UPDATE customer (EXISTING) - application/json
+PUT http://localhost:8081/customer/3
+Accept: application/json
+Content-Type: application/json
+
+{
+  "favoriteGenre": "ACTION",
+  "name": "art"
+}
+
+### UPDATE customer (EXISTING) - text/event-stream
+PUT http://localhost:8081/customer/3
+Accept: text/event-stream
+Content-Type: application/json
+
+{
+  "favoriteGenre": "DRAMA",
+  "name": "nick"
+}
+
+### UPDATE customer (ABSENT) - application/json returns empty body but 200
+PUT http://localhost:8081/customer/300
+Accept: application/json
+Content-Type: application/json
+
+{
+  "favoriteGenre": "ACTION",
+  "name": "art"
+}
+
+### ADD to watchlist (PRESENT customer) - application/json
+POST http://localhost:8081/customer/watchlist
+Accept: application/json
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "movieId": 100
+}
+
+### ADD to watchlist (ABSENT customer) - application/json - 200 and body correct???
+POST http://localhost:8081/customer/watchlist
+Accept: application/json
+Content-Type: application/json
+
+{
+  "customerId": 300,
+  "movieId": 100
+}
