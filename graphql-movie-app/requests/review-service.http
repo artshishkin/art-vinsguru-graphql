@@ -1,0 +1,12 @@
+### GET reviews of EXISTING movie - application/json
+GET http://localhost:8081/review/1
+Accept: application/json
+
+### GET reviews of EXISTING movie - text/event-stream
+GET http://localhost:8081/review/1
+Accept: text/event-stream
+
+### GET reviews of ABSENT movie - application/json
+GET http://localhost:8081/review/10000
+Accept: application/json
+

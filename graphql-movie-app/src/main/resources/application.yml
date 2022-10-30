@@ -1,6 +1,7 @@
 logging:
   level:
     net.shyshkin: debug
+#    root: debug
 
 spring:
   application:
@@ -15,4 +16,5 @@ spring:
     websocket:
       path: /graphql
 
-
+app.service:
+  review.base-url: http://localhost:8081/review
