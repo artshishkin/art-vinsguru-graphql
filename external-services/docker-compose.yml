@@ -6,4 +6,4 @@ services:
       dockerfile: Dockerfile
     image: ${GROUP_ID:-artarkatesoft}/art-vinsguru-graphql-external-services:${SERVICE_VERSION:-latest}
     ports:
-      - "7070:7070"
+      - "8081:7070"
