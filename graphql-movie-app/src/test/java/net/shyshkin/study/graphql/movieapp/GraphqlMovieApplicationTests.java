@@ -3,6 +3,7 @@ package net.shyshkin.study.graphql.movieapp;
 import net.shyshkin.study.graphql.movieapp.client.CustomerClient;
 import net.shyshkin.study.graphql.movieapp.client.MovieClient;
 import net.shyshkin.study.graphql.movieapp.client.ReviewClient;
+import net.shyshkin.study.graphql.movieapp.dto.Genre;
 import net.shyshkin.study.graphql.movieapp.dto.Movie;
 import net.shyshkin.study.graphql.movieapp.dto.Review;
 import org.junit.jupiter.api.Test;
@@ -176,6 +177,27 @@ class GraphqlMovieApplicationTests extends BaseTest {
         then(customerClient).shouldHaveNoInteractions();
         then(movieClient).should().getMoviesByIds(any());
         then(reviewClient).should().reviews(eq(movieId));
+    }
+
+    @Test
+    void getMoviesByGenreTest() {
+        //given
+        Genre genre = Genre.ACTION;
+
+        //when
+        GraphQlTester.Response response = graphQlTester.documentName("queries")
+                .operationName("getMoviesByGenre")
+                .variable("genre", genre)
+                .execute();
+
+        //then
+        response.path("moviesByGenre").hasValue()
+                .entityList(Movie.class)
+                .satisfies(movies -> assertThat(movies)
+                        .allSatisfy(movie -> assertThat(movie).hasNoNullFieldsOrProperties()));
+        then(customerClient).shouldHaveNoInteractions();
+        then(movieClient).should().getMovieRecommendationByGenre(eq(genre));
+        then(reviewClient).shouldHaveNoInteractions();
     }
 
 }

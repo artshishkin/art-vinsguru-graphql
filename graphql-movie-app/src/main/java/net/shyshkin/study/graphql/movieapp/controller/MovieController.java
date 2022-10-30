@@ -3,6 +3,7 @@ package net.shyshkin.study.graphql.movieapp.controller;
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.movieapp.client.MovieClient;
 import net.shyshkin.study.graphql.movieapp.dto.Customer;
+import net.shyshkin.study.graphql.movieapp.dto.Genre;
 import net.shyshkin.study.graphql.movieapp.dto.Movie;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -33,6 +34,11 @@ public class MovieController {
     public Mono<Movie> getMovieDetails(@Argument Integer id) {
         return movieClient.getMoviesByIds(List.of(id))
                 .next();
+    }
+
+    @QueryMapping
+    public Flux<Movie> moviesByGenre(@Argument Genre genre) {
+        return movieClient.getMovieRecommendationByGenre(genre);
     }
 
 }

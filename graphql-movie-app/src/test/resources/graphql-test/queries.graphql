@@ -54,3 +54,12 @@ query getMovieDetailsFull($movieId: ID!){
     }
 }
 
+query getMoviesByGenre($genre: Genre!){
+    moviesByGenre(genre: $genre){
+        id
+        title
+        genre
+        rating
+        releaseYear
+    }
+}
