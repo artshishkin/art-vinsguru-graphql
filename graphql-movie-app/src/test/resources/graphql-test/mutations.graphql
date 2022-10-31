@@ -27,3 +27,18 @@ fragment MovieSummaryFragment on MovieSummary{
     rating
     releaseYear
 }
+
+mutation addMovieToUserWatchListSimple( $watchListInput: WatchListInput!){
+    result: addToWatchList(input: $watchListInput){
+        status
+    }
+}
+
+mutation addMovieToUserWatchListFull( $watchListInput: WatchListInput!){
+    result: addToWatchList(input: $watchListInput){
+        status
+        watchList {
+            ...MovieSummaryFragment
+        }
+    }
+}

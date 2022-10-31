@@ -3,20 +3,21 @@ package net.shyshkin.study.graphql.movieapp;
 import net.shyshkin.study.graphql.movieapp.client.CustomerClient;
 import net.shyshkin.study.graphql.movieapp.client.MovieClient;
 import net.shyshkin.study.graphql.movieapp.client.ReviewClient;
-import net.shyshkin.study.graphql.movieapp.dto.CustomerInput;
-import net.shyshkin.study.graphql.movieapp.dto.Genre;
-import net.shyshkin.study.graphql.movieapp.dto.Movie;
-import net.shyshkin.study.graphql.movieapp.dto.Review;
+import net.shyshkin.study.graphql.movieapp.dto.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
+import reactor.core.publisher.Flux;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 @AutoConfigureHttpGraphQlTester
@@ -300,6 +301,163 @@ class GraphqlMovieApplicationTests extends BaseTest {
             then(movieClient).should().getMovieRecommendationByGenre(any());
             then(reviewClient).shouldHaveNoInteractions();
         }
+
+        @Test
+        @DisplayName("Even if the customer does not exist adding movie to his list will be success???")
+        void addMovieToUserWatchList_absentUser() {
+            //given
+            WatchListInput watchListInput = new WatchListInput() {{
+                setCustomerId(1000);
+                setMovieId(12);
+            }};
+
+            //when
+            graphQlTester.documentName("mutations")
+                    .operationName("addMovieToUserWatchListSimple")
+                    .variable("watchListInput", watchListInput)
+                    .execute()
+
+                    //then
+                    .path("result").hasValue()
+                    .path("result.status").entity(Status.class).isEqualTo(Status.SUCCESS)
+                    .path("result.watchList").pathDoesNotExist();
+
+            then(customerClient).should().addMovieToCustomerWatchlist(eq(watchListInput));
+            then(customerClient).shouldHaveNoMoreInteractions();
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        @DisplayName("If customer exists and movie exists then adding movie to the customer's watchlist should be correct")
+        void addMovieToUserWatchListSimple() {
+            //given
+            WatchListInput watchListInput = new WatchListInput() {{
+                setCustomerId(3);
+                setMovieId(12);
+            }};
+
+            //when
+            graphQlTester.documentName("mutations")
+                    .operationName("addMovieToUserWatchListSimple")
+                    .variable("watchListInput", watchListInput)
+                    .execute()
+
+                    //then
+                    .path("result").hasValue()
+                    .path("result.status").entity(Status.class).isEqualTo(Status.SUCCESS)
+                    .path("result.watchList").pathDoesNotExist();
+
+            then(customerClient).should().addMovieToCustomerWatchlist(eq(watchListInput));
+            then(customerClient).shouldHaveNoMoreInteractions();
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        @DisplayName("When everything is OK then we should see movie in watchlist")
+        void addMovieToUserWatchListFull() {
+            //given
+            int movieId = 124;
+            WatchListInput watchListInput = new WatchListInput() {{
+                setCustomerId(2);
+                setMovieId(movieId);
+            }};
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("mutations")
+                    .operationName("addMovieToUserWatchListFull")
+                    .variable("watchListInput", watchListInput)
+                    .execute();
+
+            //then
+            response.path("result").hasValue();
+
+            response.path("result.status").entity(Status.class).isEqualTo(Status.SUCCESS);
+
+            response.path("result.watchList")
+                    .hasValue()
+                    .entityList(Movie.class)
+                    .satisfies(movies -> assertThat(movies)
+                            .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties())
+                            .anySatisfy(m -> assertThat(m.getId()).isEqualTo(movieId))
+                    );
+            then(customerClient).should().addMovieToCustomerWatchlist(eq(watchListInput));
+            then(customerClient).shouldHaveNoMoreInteractions();
+            then(movieClient).should().getMoviesByIds(any());
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        @DisplayName("Even if the movie does not exist adding it to watchlist will be success but movie will not return in response")
+        void addMovieToUserWatchList_absentMovie() {
+            //given
+            int movieId = 12000;
+            WatchListInput watchListInput = new WatchListInput() {{
+                setCustomerId(3);
+                setMovieId(movieId);
+            }};
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("mutations")
+                    .operationName("addMovieToUserWatchListFull")
+                    .variable("watchListInput", watchListInput)
+                    .execute();
+
+            //then
+            response.path("result").hasValue();
+
+            response.path("result.status").entity(Status.class).isEqualTo(Status.SUCCESS);
+
+            response.path("result.watchList")
+                    .hasValue()
+                    .entityList(Movie.class)
+                    .satisfies(movies -> assertThat(movies)
+                            .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties())
+                            .allSatisfy(m -> assertThat(m.getId()).isNotEqualTo(movieId))
+                    );
+
+            then(customerClient).should().addMovieToCustomerWatchlist(eq(watchListInput));
+            then(customerClient).shouldHaveNoMoreInteractions();
+            then(movieClient).should().getMoviesByIds(any());
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        @Disabled("Can not work with SpyBean. Use separate AddToWatchListErrorTest with SpyBean")
+        @DisplayName("When CustomerClient returns error then addingToWatchlist should have FAILURE status")
+        void addMovieToUserWatchList_errorInCustomerClient() {
+            //given
+            int movieId = 120;
+            WatchListInput watchListInput = new WatchListInput();
+            watchListInput.setCustomerId(3);
+            watchListInput.setMovieId(movieId);
+
+            given(customerClient.addMovieToCustomerWatchlist(eq(watchListInput)))
+                    .willReturn(Flux.error(new RuntimeException("Some Weird Error")));
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("mutations")
+                    .operationName("addMovieToUserWatchListFull")
+                    .variable("watchListInput", watchListInput)
+                    .execute();
+
+            //then
+            response.path("result").hasValue();
+
+            response.path("result.status").entity(Status.class).isEqualTo(Status.FAILURE);
+
+            response.path("result.watchList")
+                    .hasValue()
+                    .entityList(Movie.class)
+                    .hasSize(0);
+
+            then(customerClient).should().addMovieToCustomerWatchlist(eq(watchListInput));
+            then(customerClient).shouldHaveNoMoreInteractions();
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
     }
 
 }
