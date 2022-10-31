@@ -22,6 +22,20 @@ query MovieWithReviews($movieId: ID!){
     }
 }
 
+query LoadUserProfile($userId: ID!){
+    userProfile(id: $userId){
+        ...userDetails
+    }
+}
+
+mutation AddMovieToWatchList($watchListInput: WatchListInput!){
+    addToWatchList(input: $watchListInput){
+        status
+        watchList {
+            ...movieDetails
+        }
+    }
+}
 
 fragment movieDetails on Movie{
     id
@@ -41,4 +55,16 @@ fragment reviewDetails on Review{
     rating
     username
     comment
+}
+
+fragment userDetails on UserProfile{
+    id
+    name
+    favoriteGenre
+    recommended {
+        ...movieDetails
+    }
+    watchList {
+        ...movieDetails
+    }
 }
