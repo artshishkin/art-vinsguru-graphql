@@ -1,0 +1,44 @@
+query HomePageOnLoad{
+    action: moviesByGenre(genre: ACTION){
+        ...movieDetails
+    }
+    adventure: moviesByGenre(genre: ADVENTURE){
+        ...movieDetails
+    }
+    animation: moviesByGenre(genre: ANIMATION){
+        ...movieDetails
+    }
+}
+
+query HomePageOnScroll($genre: Genre!){
+    action: moviesByGenre(genre: $genre){
+        ...movieDetails
+    }
+}
+
+query MovieWithReviews($movieId: ID!){
+    movieDetails(id: $movieId){
+        ...movieDetails
+    }
+}
+
+
+fragment movieDetails on Movie{
+    id
+    title
+    genre
+    releaseYear
+    overallRating: rating
+    ... on MovieDetails{
+        reviews {
+            ...reviewDetails
+        }
+    }
+}
+
+fragment reviewDetails on Review{
+    id
+    rating
+    username
+    comment
+}
