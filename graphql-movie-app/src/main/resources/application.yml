@@ -13,8 +13,6 @@ spring:
     graphiql:
       enabled: true
       path: /graphiql
-    websocket:
-      path: /graphql
 
 app.service:
   review.base-url: http://localhost:8081/review
