@@ -37,6 +37,30 @@ mutation AddMovieToWatchList($watchListInput: WatchListInput!){
     }
 }
 
+mutation AddMultipleMoviesToWatchList($userId: Int!){
+    step1: addToWatchList(input: {customerId: $userId, movieId: 100}){
+        status
+    }
+    step2: addToWatchList(input: {customerId: $userId, movieId: 101}){
+        status
+    }
+    step3: addToWatchList(input: {customerId: $userId, movieId: 102}){
+        status
+    }
+    step4: addToWatchList(input: {customerId: $userId, movieId: 103}){
+        status
+        watchList {
+            ...movieDetails
+        }
+    }
+}
+
+mutation UserProfileUpdate($customerInput: CustomerInput!){
+    setProfile(input: $customerInput){
+        ...userDetails
+    }
+}
+
 fragment movieDetails on Movie{
     id
     title
