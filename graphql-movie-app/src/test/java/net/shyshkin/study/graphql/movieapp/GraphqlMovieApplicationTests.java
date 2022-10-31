@@ -3,9 +3,11 @@ package net.shyshkin.study.graphql.movieapp;
 import net.shyshkin.study.graphql.movieapp.client.CustomerClient;
 import net.shyshkin.study.graphql.movieapp.client.MovieClient;
 import net.shyshkin.study.graphql.movieapp.client.ReviewClient;
+import net.shyshkin.study.graphql.movieapp.dto.CustomerInput;
 import net.shyshkin.study.graphql.movieapp.dto.Genre;
 import net.shyshkin.study.graphql.movieapp.dto.Movie;
 import net.shyshkin.study.graphql.movieapp.dto.Review;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
@@ -36,168 +38,268 @@ class GraphqlMovieApplicationTests extends BaseTest {
     void contextLoads() {
     }
 
-    @Test
-    void getUserProfileById_absent() {
-        //given
-        Integer userId = 1000;
+    @Nested
+    class QueryTests {
 
-        //when
-        graphQlTester.documentName("queries")
-                .operationName("getUserProfileCut")
-                .variable("userId", userId)
-                .execute()
+        @Test
+        void getUserProfileById_absent() {
+            //given
+            Integer userId = 1000;
 
-                //then
-                .path("userProfile").valueIsNull();
+            //when
+            graphQlTester.documentName("queries")
+                    .operationName("getUserProfileCut")
+                    .variable("userId", userId)
+                    .execute()
 
-        then(customerClient).should().getCustomerById(eq(userId));
-        then(movieClient).shouldHaveNoInteractions();
-        then(reviewClient).shouldHaveNoInteractions();
+                    //then
+                    .path("userProfile").valueIsNull();
+
+            then(customerClient).should().getCustomerById(eq(userId));
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        void getUserProfileByIdCut_present() {
+            //given
+            Integer userId = 1;
+
+            //when
+            graphQlTester.documentName("queries")
+                    .operationName("getUserProfileCut")
+                    .variable("userId", userId)
+                    .execute()
+
+                    //then
+                    .path("userProfile").hasValue()
+                    .path("userProfile.id").entity(Integer.class).isEqualTo(userId)
+                    .path("userProfile.name").entity(String.class).satisfies(name -> assertThat(name).isNotEmpty())
+                    .path("userProfile.favoriteGenre").hasValue()
+                    .path("userProfile.watchList").pathDoesNotExist()
+                    .path("userProfile.recommended").pathDoesNotExist();
+
+            then(customerClient).should().getCustomerById(eq(userId));
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        void getUserProfileByIdFull_present() {
+            //given
+            Integer userId = 1;
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("queries")
+                    .operationName("getUserProfileFull")
+                    .variable("userId", userId)
+                    .execute();
+
+            //then
+            response.path("userProfile").hasValue()
+                    .path("userProfile.id").entity(Integer.class).isEqualTo(userId)
+                    .path("userProfile.name").entity(String.class).satisfies(name -> assertThat(name).isNotEmpty())
+                    .path("userProfile.favoriteGenre").hasValue();
+            response.path("userProfile.watchList")
+                    .hasValue()
+                    .entityList(Movie.class)
+                    .satisfies(movies -> assertThat(movies)
+                            .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties()));
+            response.path("userProfile.recommended")
+                    .hasValue()
+                    .entityList(Movie.class)
+                    .hasSizeGreaterThan(1)
+                    .satisfies(movies -> assertThat(movies)
+                            .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties()));
+
+            then(customerClient).should().getCustomerById(eq(userId));
+            then(movieClient).should().getMoviesByIds(any());
+            then(movieClient).should().getMovieRecommendationByGenre(any());
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        void getMovieDetails_absent() {
+            //given
+            Integer movieId = 10000;
+
+            //when
+            graphQlTester.documentName("queries")
+                    .operationName("getMovieDetailsCut")
+                    .variable("movieId", movieId)
+                    .execute()
+
+                    //then
+                    .path("movieDetails").valueIsNull();
+
+            then(customerClient).shouldHaveNoInteractions();
+            then(movieClient).should().getMoviesByIds(any());
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        void getMovieDetailsCut_present() {
+            //given
+            Integer movieId = 1;
+
+            //when
+            graphQlTester.documentName("queries")
+                    .operationName("getMovieDetailsCut")
+                    .variable("movieId", movieId)
+                    .execute()
+
+                    //then
+                    .path("movieDetails").hasValue()
+                    .entity(Movie.class)
+                    .satisfies(movie -> assertThat(movie).hasNoNullFieldsOrProperties());
+
+            then(customerClient).shouldHaveNoInteractions();
+            then(movieClient).should().getMoviesByIds(any());
+            then(reviewClient).shouldHaveNoInteractions();
+        }
+
+        @Test
+        void getMovieDetailsFull_present() {
+            //given
+            Integer movieId = 1;
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("queries")
+                    .operationName("getMovieDetailsFull")
+                    .variable("movieId", movieId)
+                    .execute();
+
+            //then
+            response.path("movieDetails").hasValue()
+                    .entity(Movie.class)
+                    .satisfies(movie -> assertThat(movie).hasNoNullFieldsOrProperties());
+            response.path("movieDetails.reviews")
+                    .hasValue()
+                    .entityList(Review.class)
+                    .satisfies(reviews -> assertThat(reviews)
+                            .allSatisfy(review -> assertThat(review).hasNoNullFieldsOrProperties()));
+
+            then(customerClient).shouldHaveNoInteractions();
+            then(movieClient).should().getMoviesByIds(any());
+            then(reviewClient).should().reviews(eq(movieId));
+        }
+
+        @Test
+        void getMoviesByGenreTest() {
+            //given
+            Genre genre = Genre.ACTION;
+
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("queries")
+                    .operationName("getMoviesByGenre")
+                    .variable("genre", genre)
+                    .execute();
+
+            //then
+            response.path("moviesByGenre").hasValue()
+                    .entityList(Movie.class)
+                    .satisfies(movies -> assertThat(movies)
+                            .allSatisfy(movie -> assertThat(movie).hasNoNullFieldsOrProperties()));
+            then(customerClient).shouldHaveNoInteractions();
+            then(movieClient).should().getMovieRecommendationByGenre(eq(genre));
+            then(reviewClient).shouldHaveNoInteractions();
+        }
     }
 
-    @Test
-    void getUserProfileByIdCut_present() {
-        //given
-        Integer userId = 1;
+    @Nested
+    class MutationTests {
 
-        //when
-        graphQlTester.documentName("queries")
-                .operationName("getUserProfileCut")
-                .variable("userId", userId)
-                .execute()
+        @Test
+        void updateUserProfile_absent() {
+            //given
+            CustomerInput customerInput = new CustomerInput() {{
+                setId(1000);
+                setName("Abs");
+                setFavoriteGenre(Genre.ADVENTURE);
+            }};
 
-                //then
-                .path("userProfile").hasValue()
-                .path("userProfile.id").entity(Integer.class).isEqualTo(userId)
-                .path("userProfile.name").entity(String.class).satisfies(name -> assertThat(name).isNotEmpty())
-                .path("userProfile.favoriteGenre").hasValue()
-                .path("userProfile.watchList").pathDoesNotExist()
-                .path("userProfile.recommended").pathDoesNotExist();
+            //when
+            graphQlTester.documentName("mutations")
+                    .operationName("updateUserProfileCut")
+                    .variable("customerInput", customerInput)
+                    .execute()
 
-        then(customerClient).should().getCustomerById(eq(userId));
-        then(movieClient).shouldHaveNoInteractions();
-        then(reviewClient).shouldHaveNoInteractions();
-    }
+                    //then
+                    .path("result").valueIsNull();
 
-    @Test
-    void getUserProfileByIdFull_present() {
-        //given
-        Integer userId = 1;
+            then(customerClient).should().updateCustomer(eq(customerInput));
+            then(customerClient).shouldHaveNoMoreInteractions();
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
+        }
 
-        //when
-        GraphQlTester.Response response = graphQlTester.documentName("queries")
-                .operationName("getUserProfileFull")
-                .variable("userId", userId)
-                .execute();
+        @Test
+        void updateUserProfileCut_present() {
+            //given
+            CustomerInput customerInput = new CustomerInput() {{
+                setId(1);
+                setName("Arina");
+                setFavoriteGenre(Genre.ADVENTURE);
+            }};
 
-        //then
-        response.path("userProfile").hasValue()
-                .path("userProfile.id").entity(Integer.class).isEqualTo(userId)
-                .path("userProfile.name").entity(String.class).satisfies(name -> assertThat(name).isNotEmpty())
-                .path("userProfile.favoriteGenre").hasValue();
-        response.path("userProfile.watchList")
-                .hasValue()
-                .entityList(Movie.class)
-                .satisfies(movies -> assertThat(movies)
-                        .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties()));
-        response.path("userProfile.recommended")
-                .hasValue()
-                .entityList(Movie.class)
-                .hasSizeGreaterThan(1)
-                .satisfies(movies -> assertThat(movies)
-                        .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties()));
+            //when
+            graphQlTester.documentName("mutations")
+                    .operationName("updateUserProfileCut")
+                    .variable("customerInput", customerInput)
+                    .execute()
 
-        then(customerClient).should().getCustomerById(eq(userId));
-        then(movieClient).should().getMoviesByIds(any());
-        then(movieClient).should().getMovieRecommendationByGenre(any());
-        then(reviewClient).shouldHaveNoInteractions();
-    }
+                    //then
+                    .path("result").hasValue()
+                    .path("result.id").entity(Integer.class).isEqualTo(1)
+                    .path("result.name").entity(String.class).isEqualTo("Arina")
+                    .path("result.favoriteGenre").entity(Genre.class).isEqualTo(Genre.ADVENTURE)
+                    .path("result.watchList").pathDoesNotExist()
+                    .path("result.recommended").pathDoesNotExist();
 
-    @Test
-    void getMovieDetails_absent() {
-        //given
-        Integer movieId = 10000;
+            then(customerClient).should().updateCustomer(eq(customerInput));
+            then(customerClient).shouldHaveNoMoreInteractions();
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
+        }
 
-        //when
-        graphQlTester.documentName("queries")
-                .operationName("getMovieDetailsCut")
-                .variable("movieId", movieId)
-                .execute()
+        @Test
+        void updateUserProfileFull_present() {
+            //given
+            CustomerInput customerInput = new CustomerInput() {{
+                setId(2);
+                setName("Mike");
+                setFavoriteGenre(Genre.COMEDY);
+            }};
 
-                //then
-                .path("movieDetails").valueIsNull();
+            //when
+            GraphQlTester.Response response = graphQlTester.documentName("mutations")
+                    .operationName("updateUserProfileFull")
+                    .variable("customerInput", customerInput)
+                    .execute();
 
-        then(customerClient).shouldHaveNoInteractions();
-        then(movieClient).should().getMoviesByIds(any());
-        then(reviewClient).shouldHaveNoInteractions();
-    }
+            //then
+            response.path("result").hasValue()
+                    .path("result.id").entity(Integer.class).isEqualTo(2)
+                    .path("result.name").entity(String.class).isEqualTo("Mike")
+                    .path("result.favoriteGenre").entity(Genre.class).isEqualTo(Genre.COMEDY);
+            response.path("result.watchList")
+                    .hasValue()
+                    .entityList(Movie.class)
+                    .satisfies(movies -> assertThat(movies)
+                            .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties()));
+            response.path("result.recommended")
+                    .hasValue()
+                    .entityList(Movie.class)
+                    .hasSizeGreaterThan(1)
+                    .satisfies(movies -> assertThat(movies)
+                            .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties()));
 
-    @Test
-    void getMovieDetailsCut_present() {
-        //given
-        Integer movieId = 1;
-
-        //when
-        graphQlTester.documentName("queries")
-                .operationName("getMovieDetailsCut")
-                .variable("movieId", movieId)
-                .execute()
-
-                //then
-                .path("movieDetails").hasValue()
-                .entity(Movie.class)
-                .satisfies(movie -> assertThat(movie).hasNoNullFieldsOrProperties());
-
-        then(customerClient).shouldHaveNoInteractions();
-        then(movieClient).should().getMoviesByIds(any());
-        then(reviewClient).shouldHaveNoInteractions();
-    }
-
-    @Test
-    void getMovieDetailsFull_present() {
-        //given
-        Integer movieId = 1;
-
-        //when
-        GraphQlTester.Response response = graphQlTester.documentName("queries")
-                .operationName("getMovieDetailsFull")
-                .variable("movieId", movieId)
-                .execute();
-
-        //then
-        response.path("movieDetails").hasValue()
-                .entity(Movie.class)
-                .satisfies(movie -> assertThat(movie).hasNoNullFieldsOrProperties());
-        response.path("movieDetails.reviews")
-                .hasValue()
-                .entityList(Review.class)
-                .satisfies(reviews -> assertThat(reviews)
-                        .allSatisfy(review -> assertThat(review).hasNoNullFieldsOrProperties()));
-
-        then(customerClient).shouldHaveNoInteractions();
-        then(movieClient).should().getMoviesByIds(any());
-        then(reviewClient).should().reviews(eq(movieId));
-    }
-
-    @Test
-    void getMoviesByGenreTest() {
-        //given
-        Genre genre = Genre.ACTION;
-
-        //when
-        GraphQlTester.Response response = graphQlTester.documentName("queries")
-                .operationName("getMoviesByGenre")
-                .variable("genre", genre)
-                .execute();
-
-        //then
-        response.path("moviesByGenre").hasValue()
-                .entityList(Movie.class)
-                .satisfies(movies -> assertThat(movies)
-                        .allSatisfy(movie -> assertThat(movie).hasNoNullFieldsOrProperties()));
-        then(customerClient).shouldHaveNoInteractions();
-        then(movieClient).should().getMovieRecommendationByGenre(eq(genre));
-        then(reviewClient).shouldHaveNoInteractions();
+            then(customerClient).should().updateCustomer(eq(customerInput));
+            then(customerClient).shouldHaveNoMoreInteractions();
+            then(movieClient).should().getMoviesByIds(any());
+            then(movieClient).should().getMovieRecommendationByGenre(any());
+            then(reviewClient).shouldHaveNoInteractions();
+        }
     }
 
 }

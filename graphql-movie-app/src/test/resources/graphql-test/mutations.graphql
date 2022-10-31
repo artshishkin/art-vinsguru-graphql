@@ -1,0 +1,29 @@
+mutation updateUserProfileCut( $customerInput: CustomerInput!){
+    result: setProfile(input: $customerInput){
+        id
+        name
+        favoriteGenre
+    }
+}
+
+mutation updateUserProfileFull( $customerInput: CustomerInput!){
+    result: setProfile(input: $customerInput){
+        id
+        name
+        favoriteGenre
+        watchList {
+            ...MovieSummaryFragment
+        }
+        recommended {
+            ...MovieSummaryFragment
+        }
+    }
+}
+
+fragment MovieSummaryFragment on MovieSummary{
+    id
+    title
+    genre
+    rating
+    releaseYear
+}
