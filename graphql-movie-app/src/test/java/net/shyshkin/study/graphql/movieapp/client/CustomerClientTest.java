@@ -120,7 +120,7 @@ class CustomerClientTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Adding Movie to a watchlist (ABSENT customer) should return watchlist with only 1 movie id???")
+    @DisplayName("Adding Movie to a watchlist (even ABSENT customer) should return watchlist with this movie id (external services feature???)")
     void addMovieToCustomerWatchlist_absentTest() {
 
         //given
@@ -135,8 +135,11 @@ class CustomerClientTest extends BaseTest {
         customerClient.addMovieToCustomerWatchlist(watchListInput)
 
                 //then
+                .collectList()
                 .as(StepVerifier::create)
-                .expectNext(movieId)
+                .consumeNextWith(ids->assertThat(ids)
+                        .hasSizeGreaterThanOrEqualTo(1)
+                        .contains(movieId))
                 .verifyComplete();
     }
 
