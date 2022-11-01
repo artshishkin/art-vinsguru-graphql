@@ -8,7 +8,7 @@
     - To stop keycloak run
     - `docker-compose --env-file .env --profile=import-realm down`
 2. Log in
-    - [http://localhost:8081/admin](http://localhost:8081/admin)
+    - [http://localhost:8181/admin](http://localhost:8181/admin)
     - Username: `admin`
     - Password: `Pa55w0rd`
 3. Create realm `graphql-movie-app`
@@ -78,3 +78,15 @@
     - Credentials &rarr;
     - Client Authenticator: Client Id and Secret
     - Secret: `NRNT4zeO5yTGBhnbb8eFqpRmAd2VbNAT`
+
+### 2. Export Realm
+
+- Start exporting with profile `export-realm`
+    - From folder ./docker-compose run
+    - `docker-compose --env-file .env --profile=export-realm up -d`
+
+### 3. Import realm
+
+- Start import with profile `import-realm`
+    - From folder ./docker-compose run
+    - `docker-compose --env-file .env --profile=import-realm up -d`
