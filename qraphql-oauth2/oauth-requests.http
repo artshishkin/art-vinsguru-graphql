@@ -1,0 +1,59 @@
+
+### Get openid-configuration
+GET http://localhost:8181/realms/graphql-movie-app/.well-known/openid-configuration
+Accept: application/json
+
+# To get JWT access token we can use
+# 1 Password Grant Type (simpler, just for testing)
+# or
+# 2 Authorization code Grant Type
+
+> {%
+   client.global.set("client_id", "graphql-movie-app-client");
+   client.global.set("client_secret", "NRNT4zeO5yTGBhnbb8eFqpRmAd2VbNAT");
+   client.global.set("username", "app.user");
+   client.global.set("password", "123");
+%}
+
+### Fake call openid-configuration to set up IntelliJ Http Client global variables
+GET http://localhost:8181/realms/graphql-movie-app/.well-known/openid-configuration
+Accept: application/json
+
+> {%
+   client.global.set("client_id", "graphql-movie-app-client");
+   client.global.set("client_secret", "NRNT4zeO5yTGBhnbb8eFqpRmAd2VbNAT");
+   client.global.set("username", "app.admin");
+   client.global.set("password", "234");
+%}
+
+### 1 GET Access Token - Password grant_type
+POST http://localhost:8181/realms/graphql-movie-app/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id={{client_id}}&client_secret={{client_secret}}&scope=openid profile roles&username={{username}}&password={{password}}
+
+> {% client.global.set("access_token", response.body.access_token); %}
+
+### 2 GET Authorization code (Authorization code Grant Type) - manually in browser
+GET http://localhost:8181/realms/graphql-movie-app/protocol/openid-connect/auth?response_type=code&client_id=graphql-movie-app-client&scope=openid profile&state=jskd879sdkj&redirect_uri=http://localhost:8083/no_matter_callback
+Accept: */*
+
+# Sign In using
+# username = app.user
+# password = 123
+
+# Copy code from redirect URI
+
+### 2 Get Access token (Authorization code Grant Type)
+POST http://localhost:8181/realms/graphql-movie-app/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+#Authorization: Basic {{client_id}} {{client_secret}}
+
+grant_type=authorization_code&client_id={{client_id}}&client_secret={{client_secret}}&scope=openid%20profile&redirect_uri=http://localhost:8083/no_matter_callback&code=1239e0e2-2938-4d2e-b1cb-2839316f07c4.d4690dd5-ac5a-4893-b303-0ede6581b541.034866c5-f131-4019-a63c-877df0908cfc
+
+> {% client.global.set("access_token", response.body.access_token); %}
+
+### Get userinfo
+GET http://localhost:8181/realms/graphql-movie-app/protocol/openid-connect/userinfo
+Accept: application/json
+Authorization: Bearer {{access_token}}
