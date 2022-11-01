@@ -18,3 +18,16 @@ app.service:
   review.base-url: http://localhost:8081/review
   movie.base-url: http://localhost:8081/movie
   customer.base-url: http://localhost:8081/customer
+
+---
+spring:
+  config:
+    activate:
+      on-profile: secure
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/realms/graphql-movie-app
+
+
