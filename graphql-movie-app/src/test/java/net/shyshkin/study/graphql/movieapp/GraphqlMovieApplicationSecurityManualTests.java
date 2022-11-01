@@ -4,6 +4,7 @@ import net.shyshkin.study.graphql.movieapp.client.CustomerClient;
 import net.shyshkin.study.graphql.movieapp.client.MovieClient;
 import net.shyshkin.study.graphql.movieapp.client.ReviewClient;
 import net.shyshkin.study.graphql.movieapp.dto.*;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
@@ -13,6 +14,7 @@ import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
@@ -23,7 +25,7 @@ import static org.mockito.BDDMockito.then;
         " Then get accessToken (through qraphql-oauth2/oauth-requests.http) and paste it into ACCESS_TOKEN")
 class GraphqlMovieApplicationSecurityManualTests extends BaseTest {
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1TFd2a1NTVjZPRmw3STMwT0p1UmZ1Z0tRQVlJXy1CZ0Y5cERJRGRuU3pjIn0.eyJleHAiOjE2NjcyOTY2MjYsImlhdCI6MTY2NzI5NjMyNiwianRpIjoiZGQwYWNjNjItZDZhMS00MjJhLWI1YmQtMzgzMjMyMDM2ZTgxIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MTgxL3JlYWxtcy9ncmFwaHFsLW1vdmllLWFwcCIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJmMjIyMDE4OS0zNjZmLTRlYjktYmY5Yy01NzcxYzdmMDE1YTgiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJncmFwaHFsLW1vdmllLWFwcC1jbGllbnQiLCJzZXNzaW9uX3N0YXRlIjoiY2QyMDgxMGMtMWI3NC00NmE4LThkMjUtMDRiNDliMDk2YmE4IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLWdyYXBocWwtbW92aWUtYXBwIiwiYXBwX3VzZXJfcm9sZSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiY2QyMDgxMGMtMWI3NC00NmE4LThkMjUtMDRiNDliMDk2YmE4IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQXBwIFVzZXIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhcHAudXNlciIsImdpdmVuX25hbWUiOiJBcHAiLCJmYW1pbHlfbmFtZSI6IlVzZXIiLCJlbWFpbCI6ImFwcC51c2VyQGdtYWlsLmNvbSJ9.B3LDwFLnz1Vqfte2gVHSkLFOm__nYK75tgeIHS26bDgS-lDI4K8CfoFzhZi4W_xillhKfufV_wdpDHybfUDScEvrhgbgHCv006bNe6USCfrjbyA-K1wcE4XFfxsGJTFoq0TwlguSv9fYL1aNw2GwRipPnhW043BW54FdeJvJFEYpN_sHop97CQLsgT77VLKG9BMbOigLkaoKtSHOuQad5xlwVmXECtStHvkK9BIXMKXudr7mz6YmMSVhPX61jnBWIlyzO4i2Rv0gQuMTYXpvb3xpFyc5QdIn4GS5SinO0phBHXyPdlo32NTQLdl0j2Q5snbx7vOU1b69CzRUNkQc6A";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1TFd2a1NTVjZPRmw3STMwT0p1UmZ1Z0tRQVlJXy1CZ0Y5cERJRGRuU3pjIn0.eyJleHAiOjE2NjcyOTczODAsImlhdCI6MTY2NzI5NzA4MSwiYXV0aF90aW1lIjowLCJqdGkiOiI2NjAzZTcwYi01YWYyLTQzZDMtYmQwZi0yODY1ODYxYjZlNTciLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgxODEvcmVhbG1zL2dyYXBocWwtbW92aWUtYXBwIiwiYXVkIjoiZ3JhcGhxbC1tb3ZpZS1hcHAtY2xpZW50Iiwic3ViIjoiZjIyMjAxODktMzY2Zi00ZWI5LWJmOWMtNTc3MWM3ZjAxNWE4IiwidHlwIjoiSUQiLCJhenAiOiJncmFwaHFsLW1vdmllLWFwcC1jbGllbnQiLCJzZXNzaW9uX3N0YXRlIjoiZjVjNzk3OWUtYzVmNS00ZjVkLThlNjgtMzVjMWEwM2RmOTA0IiwiYXRfaGFzaCI6Im02ZlBvNjk1TnE0N3FQNTZwXzBHbVEiLCJhY3IiOiIxIiwic2lkIjoiZjVjNzk3OWUtYzVmNS00ZjVkLThlNjgtMzVjMWEwM2RmOTA0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiQXBwIFVzZXIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhcHAudXNlciIsImdpdmVuX25hbWUiOiJBcHAiLCJmYW1pbHlfbmFtZSI6IlVzZXIiLCJlbWFpbCI6ImFwcC51c2VyQGdtYWlsLmNvbSJ9.o826Gyc97A3WBkz0-YbhCL68zc6gZ0y07uVD9krsKOkv0QEtf1J7NIfY_nfheFYzO_H5mUxxifpAaKKO5yz62UNP8ykXsPP2gvEYg95VKKFMUpvwXTvDqXTitAfKUPPYwmzFGUukFLVTGUfJ4w2c5EwcLVhS9DC4zpcmPUzLy35snNEcoRiSJsVC03x-GQAz2qTpv75ckW7wwB_Qif3UQLY_TWpE9ATcQ3Gxac-VnFyAt-GUxhsq06Lm0lGc8XcROVu_xSF5p0tvYmTd07v5_wdJEw0YZsKSVA1CHWoqIp7Gq8UMziaf-y7fparULswEfZgEZQ0uC2_Rg0Pei0LEJw";
 
     @Autowired
     HttpGraphQlTester graphQlTester;
@@ -41,7 +43,7 @@ class GraphqlMovieApplicationSecurityManualTests extends BaseTest {
 
     @BeforeEach
     void setUp() {
-        graphQlSecuredTester=graphQlTester
+        graphQlSecuredTester = graphQlTester
                 .mutate()
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(ACCESS_TOKEN))
                 .build();
@@ -49,6 +51,33 @@ class GraphqlMovieApplicationSecurityManualTests extends BaseTest {
 
     @Test
     void contextLoads() {
+    }
+
+    @Nested
+    class UnauthorizedTests {
+
+        @Test
+        void getUserProfileByIdCut_unauthorized() {
+            //given
+            Integer userId = 1;
+
+            //when
+            ThrowableAssert.ThrowingCallable execution = () -> {
+                GraphQlTester.Response response = graphQlTester.documentName("queries")
+                        .operationName("getUserProfileCut")
+                        .variable("userId", userId)
+                        .execute();
+            };
+
+            //then
+            assertThatThrownBy(execution)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContaining("Status expected:<200 OK> but was:<403 FORBIDDEN>");
+
+            then(customerClient).shouldHaveNoInteractions();
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
+        }
     }
 
     @Nested
