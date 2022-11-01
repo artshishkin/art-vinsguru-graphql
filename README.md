@@ -11,11 +11,16 @@
 # art-vinsguru-graphql
 Tutorial - GraphQL With Spring WebFlux - from Vinoth Selvaraj (Udemy)
 
+---
 #### Section 10: Movie Application with GraphQL
 
 External Services
 - Run `docker-compose up`
 - Swagger-UI [http://localhost:8081/swagger-ui/](http://localhost:8081/swagger-ui/)
+
+---
+####  GraphQL Security with Keycloak
+- [Configure Keycloak](/instructions/configure-keycloak.md)
 
 ---
 
