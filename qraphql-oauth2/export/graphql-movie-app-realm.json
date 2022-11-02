@@ -421,6 +421,9 @@
     "firstName" : "AppKate",
     "lastName" : "Admin",
     "email" : "app.admin@gmail.com",
+    "attributes" : {
+      "movie_app_user_id" : [ "2" ]
+    },
     "credentials" : [ {
       "id" : "200fc666-ca28-4a3b-ac62-0564309ab7cb",
       "type" : "password",
@@ -444,6 +447,9 @@
     "firstName" : "AppArt",
     "lastName" : "SuperUser",
     "email" : "app.superuser@gmail.com",
+    "attributes" : {
+      "movie_app_user_id" : [ "3" ]
+    },
     "credentials" : [ {
       "id" : "f3572e3f-61b0-48e3-a97f-94edfe68671e",
       "type" : "password",
@@ -467,6 +473,9 @@
     "firstName" : "App",
     "lastName" : "User",
     "email" : "app.user@gmail.com",
+    "attributes" : {
+      "movie_app_user_id" : [ "1" ]
+    },
     "credentials" : [ {
       "id" : "9ba03348-255e-47a5-9b3c-637f591a5019",
       "type" : "password",
@@ -668,6 +677,22 @@
     "fullScopeAllowed" : true,
     "nodeReRegistrationTimeout" : -1,
     "protocolMappers" : [ {
+      "id" : "00848429-7cf0-44e0-9f01-e35f830c6c0a",
+      "name" : "Path customer userId as custom claim",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usermodel-attribute-mapper",
+      "consentRequired" : false,
+      "config" : {
+        "aggregate.attrs" : "false",
+        "userinfo.token.claim" : "true",
+        "multivalued" : "false",
+        "user.attribute" : "movie_app_user_id",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "movie_app_user_id",
+        "jsonType.label" : "int"
+      }
+    }, {
       "id" : "83f37029-ea6c-4547-ab08-808f44ef44e2",
       "name" : "Client ID",
       "protocol" : "openid-connect",

@@ -213,4 +213,27 @@ curl --location --request POST 'http://localhost:8181/realms/graphql-movie-app/p
 
 ```
 
+### 6. Provide custom claim in Keycloak
+
+- Add custom attribute for `app.user`
+  - Users &rarr; `app.user` &rarr; Attributes
+  - Key: `movie_app_user_id`
+  - Value: `1`
+  - Save
+- Add custom attribute for `app.admin`
+- Add custom attribute for `app.superuser`
+- Add custom claim
+  - Clients &rarr; `graphql-movie-app-client` &rarr; Client scopes &rarr;
+  - `graphql-movie-app-client-dedicated` &rarr; Add Mapper &rarr; By configuration
+  - User Attribute
+    - Name: `Path customer userId as custom claim`
+    - User Attribute: `movie_app_user_id`
+    - Token Claim Name: `movie_app_user_id`
+    - Claim JSON Type: `int`
+    - Add to ID token: `on`
+    - Add to access token: `on`
+    - Add to userinfo: `on`
+    - Multivalued: `off`
+    - Aggregate attribute values: `off`
+    - Save
 
