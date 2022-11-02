@@ -7,9 +7,8 @@ import net.shyshkin.study.graphql.movieapp.dto.WatchListInput;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -28,8 +27,8 @@ public class CustomerClient {
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_app_admin_role') or hasRole('app_super_user_role')")
     public Mono<Customer> getCustomerById(Integer id) {
-        SecurityContext context = SecurityContextHolder.getContext();
         return ReactiveSecurityContextHolder.getContext()
                 .doOnNext(securityContext -> {
                     log.debug("Security context: {}", securityContext);

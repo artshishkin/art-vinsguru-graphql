@@ -15,7 +15,7 @@ Accept: application/json
    client.global.set("password", "123");
 %}
 
-### Fake call openid-configuration to set up IntelliJ Http Client global variables
+### Fake call openid-configuration to set up IntelliJ Http Client global variables - ADMIN ROLE
 GET http://localhost:8181/realms/graphql-movie-app/.well-known/openid-configuration
 Accept: application/json
 
@@ -24,6 +24,17 @@ Accept: application/json
    client.global.set("client_secret", "NRNT4zeO5yTGBhnbb8eFqpRmAd2VbNAT");
    client.global.set("username", "app.admin");
    client.global.set("password", "234");
+%}
+
+### Fake call openid-configuration to set up IntelliJ Http Client global variables - SUPER USER ROLE
+GET http://localhost:8181/realms/graphql-movie-app/.well-known/openid-configuration
+Accept: application/json
+
+> {%
+   client.global.set("client_id", "graphql-movie-app-client");
+   client.global.set("client_secret", "NRNT4zeO5yTGBhnbb8eFqpRmAd2VbNAT");
+   client.global.set("username", "app.superuser");
+   client.global.set("password", "345");
 %}
 
 ### 1 GET Access Token - Password grant_type
