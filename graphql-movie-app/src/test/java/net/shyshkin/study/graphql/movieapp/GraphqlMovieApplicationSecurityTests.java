@@ -37,6 +37,7 @@ import org.testcontainers.utility.MountableFile;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -948,22 +949,7 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
                         .execute();
 
                 //then
-                response.errors()
-                        .satisfy(errs -> assertThat(errs).hasSize(1)
-                                .satisfies(
-                                        error -> assertAll(
-                                                () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.FORBIDDEN),
-                                                () -> assertThat(error.getMessage()).isEqualTo("Forbidden"),
-                                                () -> assertThat(error.getPath()).isEqualTo("userProfile")
-                                        ),
-                                        Index.atIndex(0)
-                                )
-                        );
-
-
-                then(customerClient).shouldHaveNoInteractions();
-                then(movieClient).shouldHaveNoInteractions();
-                then(reviewClient).shouldHaveNoInteractions();
+                checkForbidden(response, "userProfile");
             }
 
             @Test
@@ -973,27 +959,10 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
                 Integer userId = 2;
 
                 //when
-                graphQlSecuredTester.documentName("queries")
+                checkForbidden(graphQlSecuredTester.documentName("queries")
                         .operationName("getUserProfileCut")
                         .variable("userId", userId)
-                        .execute()
-
-                        //then
-                        .errors()
-                        .satisfy(errs -> assertThat(errs).hasSize(1)
-                                .satisfies(
-                                        error -> assertAll(
-                                                () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.FORBIDDEN),
-                                                () -> assertThat(error.getMessage()).isEqualTo("Forbidden"),
-                                                () -> assertThat(error.getPath()).isEqualTo("userProfile")
-                                        ),
-                                        Index.atIndex(0)
-                                )
-                        );
-
-                then(customerClient).shouldHaveNoInteractions();
-                then(movieClient).shouldHaveNoInteractions();
-                then(reviewClient).shouldHaveNoInteractions();
+                        .execute(), "userProfile");
             }
 
             @Test
@@ -1034,21 +1003,7 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
                         .execute();
 
                 //then
-                response.errors()
-                        .satisfy(errs -> assertThat(errs).hasSize(1)
-                                .satisfies(
-                                        error -> assertAll(
-                                                () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.FORBIDDEN),
-                                                () -> assertThat(error.getMessage()).isEqualTo("Forbidden"),
-                                                () -> assertThat(error.getPath()).isEqualTo("userProfile")
-                                        ),
-                                        Index.atIndex(0)
-                                )
-                        );
-
-                then(customerClient).shouldHaveNoInteractions();
-                then(movieClient).shouldHaveNoInteractions();
-                then(reviewClient).shouldHaveNoInteractions();
+                checkForbidden(response, "userProfile");
             }
 
             @Test
@@ -1191,22 +1146,14 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
                 }};
 
                 //when
-                graphQlSecuredTester.documentName("mutations")
+                checkForbidden(graphQlSecuredTester.documentName("mutations")
                         .operationName("updateUserProfileCut")
                         .variable("customerInput", customerInput)
-                        .execute()
-
-                        //then
-                        .path("result").valueIsNull();
-
-                then(customerClient).should().updateCustomer(eq(customerInput));
-                then(customerClient).shouldHaveNoMoreInteractions();
-                then(movieClient).shouldHaveNoInteractions();
-                then(reviewClient).shouldHaveNoInteractions();
+                        .execute(), "result");
             }
 
             @Test
-            void updateUserProfileCut_present() {
+            void updateUserProfileCut_present_correctCustomerId() {
                 //given
                 CustomerInput customerInput = new CustomerInput() {{
                     setId(1);
@@ -1235,10 +1182,27 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
             }
 
             @Test
-            void updateUserProfileFull_present() {
+            void updateUserProfileCut_present_differentCustomerId() {
                 //given
                 CustomerInput customerInput = new CustomerInput() {{
                     setId(2);
+                    setName("Arina");
+                    setFavoriteGenre(Genre.ADVENTURE);
+                }};
+
+                //when
+                checkForbidden(graphQlSecuredTester.documentName("mutations")
+                        .operationName("updateUserProfileCut")
+                        .variable("customerInput", customerInput)
+                        .execute(), "result");
+            }
+
+            @Test
+            @DisplayName("User should be able to modify his account")
+            void updateUserProfileFull_present_correctCustomerId() {
+                //given
+                CustomerInput customerInput = new CustomerInput() {{
+                    setId(1);
                     setName("Mike");
                     setFavoriteGenre(Genre.COMEDY);
                 }};
@@ -1251,7 +1215,7 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
 
                 //then
                 response.path("result").hasValue()
-                        .path("result.id").entity(Integer.class).isEqualTo(2)
+                        .path("result.id").entity(Integer.class).isEqualTo(1)
                         .path("result.name").entity(String.class).isEqualTo("Mike")
                         .path("result.favoriteGenre").entity(Genre.class).isEqualTo(Genre.COMEDY);
                 response.path("result.watchList")
@@ -1274,7 +1238,27 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
             }
 
             @Test
-            @DisplayName("Even if the customer does not exist adding movie to his list will be success???")
+            @DisplayName("User should NOT be able to modify other accounts")
+            void updateUserProfileFull_present_differentCustomerId() {
+                //given
+                CustomerInput customerInput = new CustomerInput() {{
+                    setId(2);
+                    setName("Mike");
+                    setFavoriteGenre(Genre.COMEDY);
+                }};
+
+                //when
+                GraphQlTester.Response response = graphQlSecuredTester.documentName("mutations")
+                        .operationName("updateUserProfileFull")
+                        .variable("customerInput", customerInput)
+                        .execute();
+
+                //then
+                checkForbidden(response, "result");
+            }
+
+            @Test
+            @DisplayName("If the customer does not exist another user with role USER should not add movie to watchlist")
             void addMovieToUserWatchList_absentUser() {
                 //given
                 WatchListInput watchListInput = new WatchListInput() {{
@@ -1290,21 +1274,20 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
 
                         //then
                         .path("result").hasValue()
-                        .path("result.status").entity(Status.class).isEqualTo(Status.SUCCESS)
+                        .path("result.status").entity(Status.class).isEqualTo(Status.FAILURE)
                         .path("result.watchList").pathDoesNotExist();
 
-                then(customerClient).should().addMovieToCustomerWatchlist(eq(watchListInput));
-                then(customerClient).shouldHaveNoMoreInteractions();
+                then(customerClient).shouldHaveNoInteractions();
                 then(movieClient).shouldHaveNoInteractions();
                 then(reviewClient).shouldHaveNoInteractions();
             }
 
             @Test
             @DisplayName("If customer exists and movie exists then adding movie to the customer's watchlist should be correct")
-            void addMovieToUserWatchListSimple() {
+            void addMovieToUserWatchListSimple_correctCustomerId() {
                 //given
                 WatchListInput watchListInput = new WatchListInput() {{
-                    setCustomerId(3);
+                    setCustomerId(1);
                     setMovieId(12);
                 }};
 
@@ -1326,12 +1309,37 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
             }
 
             @Test
+            @DisplayName("Customer should not be able to modify another  user's watchlist")
+            void addMovieToUserWatchListSimple_differentCustomerId() {
+                //given
+                WatchListInput watchListInput = new WatchListInput() {{
+                    setCustomerId(3);
+                    setMovieId(12);
+                }};
+
+                //when
+                GraphQlTester.Response response = graphQlSecuredTester.documentName("mutations")
+                        .operationName("addMovieToUserWatchListSimple")
+                        .variable("watchListInput", watchListInput)
+                        .execute();
+
+                //then
+                response.path("result").hasValue()
+                        .path("result.status").entity(Status.class).isEqualTo(Status.FAILURE)
+                        .path("result.watchList").pathDoesNotExist();
+
+                then(customerClient).shouldHaveNoInteractions();
+                then(movieClient).shouldHaveNoInteractions();
+                then(reviewClient).shouldHaveNoInteractions();
+            }
+
+            @Test
             @DisplayName("When everything is OK then we should see movie in watchlist")
-            void addMovieToUserWatchListFull() {
+            void addMovieToUserWatchListFull_correctCustomerId() {
                 //given
                 int movieId = 124;
                 WatchListInput watchListInput = new WatchListInput() {{
-                    setCustomerId(2);
+                    setCustomerId(1);
                     setMovieId(movieId);
                 }};
 
@@ -1360,12 +1368,40 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
             }
 
             @Test
+            @DisplayName("When user tries to add Movie to other customer's watchlist he should be FORBIDDEN")
+            void addMovieToUserWatchListFull_differentCustomerId() {
+                //given
+                int movieId = 124;
+                WatchListInput watchListInput = new WatchListInput() {{
+                    setCustomerId(2);
+                    setMovieId(movieId);
+                }};
+
+                //when
+                GraphQlTester.Response response = graphQlSecuredTester.documentName("mutations")
+                        .operationName("addMovieToUserWatchListFull")
+                        .variable("watchListInput", watchListInput)
+                        .execute();
+
+                //then
+                response.path("result").hasValue();
+
+                response.path("result.status").entity(Status.class).isEqualTo(Status.FAILURE);
+
+                response.path("result.watchList").entityList(Movie.class).hasSize(0);
+
+                then(customerClient).shouldHaveNoInteractions();
+                then(movieClient).should().getMoviesByIds(eq(List.of())); //BAD approach with Status.FAILURE
+                then(reviewClient).shouldHaveNoInteractions();
+            }
+
+            @Test
             @DisplayName("Even if the movie does not exist adding it to watchlist will be success but movie will not return in response")
-            void addMovieToUserWatchList_absentMovie() {
+            void addMovieToUserWatchList_absentMovie_correctCustomerId() {
                 //given
                 int movieId = 12000;
                 WatchListInput watchListInput = new WatchListInput() {{
-                    setCustomerId(3);
+                    setCustomerId(1);
                     setMovieId(movieId);
                 }};
 
@@ -1394,6 +1430,24 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
                 then(reviewClient).shouldHaveNoInteractions();
             }
 
+        }
+
+        private void checkForbidden(GraphQlTester.Response response, String errorPath) {
+            response.errors()
+                    .satisfy(errs -> assertThat(errs).hasSize(1)
+                            .satisfies(
+                                    error -> assertAll(
+                                            () -> assertThat(error.getErrorType()).isEqualTo(ErrorType.FORBIDDEN),
+                                            () -> assertThat(error.getMessage()).isEqualTo("Forbidden"),
+                                            () -> assertThat(error.getPath()).isEqualTo(errorPath)
+                                    ),
+                                    Index.atIndex(0)
+                            )
+                    );
+
+            then(customerClient).shouldHaveNoInteractions();
+            then(movieClient).shouldHaveNoInteractions();
+            then(reviewClient).shouldHaveNoInteractions();
         }
     }
 

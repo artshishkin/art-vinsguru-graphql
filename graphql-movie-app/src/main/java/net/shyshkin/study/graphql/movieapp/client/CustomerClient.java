@@ -41,6 +41,7 @@ public class CustomerClient {
                 );
     }
 
+    @PreAuthorize("hasAnyRole('app_admin_role','app_super_user_role') or principal.getClaim('movie_app_user_id') == #customerInput.id")
     public Mono<Customer> updateCustomer(CustomerInput customerInput) {
         return webClient.put()
                 .uri("/{id}", customerInput.getId())
@@ -49,6 +50,7 @@ public class CustomerClient {
                 .bodyToMono(Customer.class);
     }
 
+    @PreAuthorize("hasAnyRole('app_admin_role','app_super_user_role') or principal.getClaim('movie_app_user_id') == #input.customerId")
     public Flux<Integer> addMovieToCustomerWatchlist(WatchListInput input) {
         return webClient.post()
                 .uri("/watchlist")
