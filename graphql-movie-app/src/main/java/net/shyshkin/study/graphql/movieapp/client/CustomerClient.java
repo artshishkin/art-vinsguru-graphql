@@ -1,16 +1,21 @@
 package net.shyshkin.study.graphql.movieapp.client;
 
+import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.movieapp.dto.Customer;
 import net.shyshkin.study.graphql.movieapp.dto.CustomerInput;
 import net.shyshkin.study.graphql.movieapp.dto.WatchListInput;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Component
 public class CustomerClient {
 
@@ -24,10 +29,17 @@ public class CustomerClient {
     }
 
     public Mono<Customer> getCustomerById(Integer id) {
-        return webClient.get()
-                .uri("/{id}", id)
-                .retrieve()
-                .bodyToMono(Customer.class);
+        SecurityContext context = SecurityContextHolder.getContext();
+        return ReactiveSecurityContextHolder.getContext()
+                .doOnNext(securityContext -> {
+                    log.debug("Security context: {}", securityContext);
+                })
+                .then(
+                        webClient.get()
+                                .uri("/{id}", id)
+                                .retrieve()
+                                .bodyToMono(Customer.class)
+                );
     }
 
     public Mono<Customer> updateCustomer(CustomerInput customerInput) {

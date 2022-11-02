@@ -119,7 +119,7 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
             //then
             assertThatThrownBy(execution)
                     .isInstanceOf(AssertionError.class)
-                    .hasMessageContaining("Status expected:<200 OK> but was:<403 FORBIDDEN>");
+                    .hasMessageContaining("Status expected:<200 OK> but was:<401 UNAUTHORIZED>");
 
             then(customerClient).shouldHaveNoInteractions();
             then(movieClient).shouldHaveNoInteractions();
