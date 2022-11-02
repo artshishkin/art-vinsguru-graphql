@@ -967,9 +967,10 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
             }
 
             @Test
-            void getUserProfileByIdCut_present() {
+            @DisplayName("When querying minimized profile info customer with role user should not have access to another users' accounts")
+            void getUserProfileByIdCut_present_differentId() {
                 //given
-                Integer userId = 1;
+                Integer userId = 2;
 
                 //when
                 graphQlSecuredTester.documentName("queries")
@@ -996,9 +997,35 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
             }
 
             @Test
-            void getUserProfileByIdFull_present() {
+            @DisplayName("When querying minimized profile info customer with role user should have access to his account")
+            void getUserProfileByIdCut_present_hisId() {
                 //given
                 Integer userId = 1;
+
+                //when
+                graphQlSecuredTester.documentName("queries")
+                        .operationName("getUserProfileCut")
+                        .variable("userId", userId)
+                        .execute()
+
+                        //then
+                        .path("userProfile").hasValue()
+                        .path("userProfile.id").entity(Integer.class).isEqualTo(userId)
+                        .path("userProfile.name").entity(String.class).satisfies(name -> assertThat(name).isNotEmpty())
+                        .path("userProfile.favoriteGenre").hasValue()
+                        .path("userProfile.watchList").pathDoesNotExist()
+                        .path("userProfile.recommended").pathDoesNotExist();
+
+                then(customerClient).should().getCustomerById(eq(userId));
+                then(movieClient).shouldHaveNoInteractions();
+                then(reviewClient).shouldHaveNoInteractions();
+            }
+
+            @Test
+            @DisplayName("When querying full profile info customer with role user should not have access to another users' accounts")
+            void getUserProfileByIdFull_present_differentId() {
+                //given
+                Integer userId = 2;
 
                 //when
                 GraphQlTester.Response response = graphQlSecuredTester.documentName("queries")
@@ -1021,6 +1048,41 @@ class GraphqlMovieApplicationSecurityTests extends BaseTest {
 
                 then(customerClient).shouldHaveNoInteractions();
                 then(movieClient).shouldHaveNoInteractions();
+                then(reviewClient).shouldHaveNoInteractions();
+            }
+
+            @Test
+            @DisplayName("When querying full profile info customer with role user should have access to his account")
+            void getUserProfileByIdFull_present_hisId() {
+                //given
+                Integer userId = 1;
+
+                //when
+                GraphQlTester.Response response = graphQlSecuredTester.documentName("queries")
+                        .operationName("getUserProfileFull")
+                        .variable("userId", userId)
+                        .execute();
+
+                //then
+                response.path("userProfile").hasValue()
+                        .path("userProfile.id").entity(Integer.class).isEqualTo(userId)
+                        .path("userProfile.name").entity(String.class).satisfies(name -> assertThat(name).isNotEmpty())
+                        .path("userProfile.favoriteGenre").hasValue();
+                response.path("userProfile.watchList")
+                        .hasValue()
+                        .entityList(Movie.class)
+                        .satisfies(movies -> assertThat(movies)
+                                .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties()));
+                response.path("userProfile.recommended")
+                        .hasValue()
+                        .entityList(Movie.class)
+                        .hasSizeGreaterThan(1)
+                        .satisfies(movies -> assertThat(movies)
+                                .allSatisfy(m -> assertThat(m).hasNoNullFieldsOrProperties()));
+
+                then(customerClient).should().getCustomerById(eq(userId));
+                then(movieClient).should().getMoviesByIds(any());
+                then(movieClient).should().getMovieRecommendationByGenre(any());
                 then(reviewClient).shouldHaveNoInteractions();
             }
 

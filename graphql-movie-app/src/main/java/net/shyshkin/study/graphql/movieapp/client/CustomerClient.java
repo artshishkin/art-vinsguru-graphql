@@ -27,7 +27,7 @@ public class CustomerClient {
                 .build();
     }
 
-    @PreAuthorize("hasAuthority('ROLE_app_admin_role') or hasRole('app_super_user_role')")
+    @PreAuthorize("hasAuthority('ROLE_app_admin_role') or hasRole('app_super_user_role') or principal.getClaim('movie_app_user_id') == #id")
     public Mono<Customer> getCustomerById(Integer id) {
         return ReactiveSecurityContextHolder.getContext()
                 .doOnNext(securityContext -> {
