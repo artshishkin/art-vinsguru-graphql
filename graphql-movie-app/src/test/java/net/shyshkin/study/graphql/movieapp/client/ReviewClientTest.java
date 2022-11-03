@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReviewClientTest extends BaseTest {
@@ -27,9 +29,9 @@ class ReviewClientTest extends BaseTest {
 
                 //then
                 .as(StepVerifier::create)
-                .consumeNextWith(review -> assertThat(review)
-                        .hasNoNullFieldsOrProperties())
+                .recordWith(ArrayList::new)
                 .thenConsumeWhile(r -> true, review -> assertThat(review).hasNoNullFieldsOrProperties())
+                .consumeRecordedWith(reviews -> assertThat(reviews).isNotEmpty())
                 .verifyComplete();
     }
 

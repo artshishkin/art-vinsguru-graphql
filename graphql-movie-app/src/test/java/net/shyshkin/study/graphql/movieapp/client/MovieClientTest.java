@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.test.StepVerifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,14 +32,12 @@ class MovieClientTest extends BaseTest {
 
                 //then
                 .as(StepVerifier::create)
-                .consumeNextWith(movie -> assertAll(
-                        () -> assertThat(movie).hasNoNullFieldsOrProperties(),
-                        () -> assertThat(movie.getId()).isIn(movieIds))
-                )
+                .recordWith(ArrayList::new)
                 .thenConsumeWhile(r -> true, movie -> assertAll(
                         () -> assertThat(movie).hasNoNullFieldsOrProperties(),
                         () -> assertThat(movie.getId()).isIn(movieIds))
                 )
+                .consumeRecordedWith(movies -> assertThat(movies).hasSize(3))
                 .verifyComplete();
     }
 
@@ -84,14 +83,12 @@ class MovieClientTest extends BaseTest {
 
                 //then
                 .as(StepVerifier::create)
-                .consumeNextWith(movie -> assertAll(
-                        () -> assertThat(movie).hasNoNullFieldsOrProperties(),
-                        () -> assertThat(movie.getGenre()).isEqualTo(genre))
-                )
+                .recordWith(ArrayList::new)
                 .thenConsumeWhile(r -> true, movie -> assertAll(
                         () -> assertThat(movie).hasNoNullFieldsOrProperties(),
                         () -> assertThat(movie.getGenre()).isEqualTo(genre))
                 )
+                .consumeRecordedWith(movies -> assertThat(movies).isNotEmpty())
                 .verifyComplete();
     }
 

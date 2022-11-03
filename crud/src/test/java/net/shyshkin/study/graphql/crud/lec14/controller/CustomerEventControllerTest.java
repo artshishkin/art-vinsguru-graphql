@@ -169,8 +169,8 @@ class CustomerEventControllerTest {
 
         //then
         subscriptionFlux()
-                .take(1).
-                as(StepVerifier::create)
+                .take(1)
+                .as(StepVerifier::create)
                 .consumeNextWith(event -> assertThat(event)
                         .hasNoNullFieldsOrProperties()
                         .hasFieldOrPropertyWithValue("action", Action.UPDATED)
