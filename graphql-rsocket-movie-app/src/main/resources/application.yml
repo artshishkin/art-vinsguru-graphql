@@ -5,7 +5,7 @@ logging:
 
 spring:
   application:
-    name: movie-app
+    name: graphql-rsocket-movie-app
   graphql:
     path: /graphql
     schema:
@@ -15,6 +15,11 @@ spring:
     graphiql:
       enabled: true
       path: /graphiql
+    rsocket:
+      mapping: graphql
+  rsocket:
+    server:
+      port: 6565
 
 app.service:
   review.base-url: http://localhost:8081/review
