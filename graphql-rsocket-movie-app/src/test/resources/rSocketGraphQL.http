@@ -1,0 +1,16 @@
+### Query ping through RSocket
+RSOCKET graphql
+Host: tcp://localhost:6565
+Content-Type: application/json
+
+{
+  "query": "query{ping}"
+}
+
+### Query ping through HTTP
+POST localhost:8080/graphql
+Content-Type: application/json
+
+{
+  "query": "query{ping}"
+}
