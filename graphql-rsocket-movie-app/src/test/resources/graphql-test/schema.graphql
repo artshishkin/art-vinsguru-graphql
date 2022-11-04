@@ -54,6 +54,8 @@ type Query {
     movieDetails(id: ID!): MovieDetails
     " scroll down - movies by genre - basic/summary"
     moviesByGenre(genre: Genre): [MovieSummary]!
+    " ping graphql service"
+    ping: String
     " load user profile - fav genre, watchlist"
     userProfile(id: ID!): UserProfile
 }

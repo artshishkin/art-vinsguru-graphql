@@ -6,6 +6,8 @@
 # update profile with fav genre
 
 type Query{
+    # ping graphql service
+    ping: String
     # load user profile - fav genre, watchlist
     userProfile(id: ID!): UserProfile
     # load movies by id - detailed - with reviews
