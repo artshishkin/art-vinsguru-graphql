@@ -21,6 +21,7 @@
         <module>error-handling</module>
         <module>client</module>
         <module>graphql-movie-app</module>
+        <module>graphql-rsocket-movie-app</module>
     </modules>
 
     <properties>

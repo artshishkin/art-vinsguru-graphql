@@ -1,0 +1,26 @@
+logging:
+  level:
+    net.shyshkin: debug
+#    root: debug
+
+spring:
+  application:
+    name: movie-app
+  graphql:
+    path: /graphql
+    schema:
+      locations: classpath:graphql
+      printer:
+        enabled: true
+    graphiql:
+      enabled: true
+      path: /graphiql
+
+app.service:
+  review.base-url: http://localhost:8081/review
+  movie.base-url: http://localhost:8081/movie
+  customer.base-url: http://localhost:8081/customer
+
+
+
+
