@@ -1,0 +1,12 @@
+{
+  "name": "graphql-introspection-sdl",
+  "version": "1.0.0",
+  "description": "Simple app which converts GraphQL introspection results to human-readable SDL",
+  "keywords": [],
+  "main": "index.js",
+  "dependencies": {
+    "graphql": "14.6.0",
+    "react": "15.5.3",
+    "react-dom": "15.5.3"
+  }
+}
