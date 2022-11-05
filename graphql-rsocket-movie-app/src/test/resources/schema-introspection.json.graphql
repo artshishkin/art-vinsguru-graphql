@@ -1,0 +1,93 @@
+# This file was generated based on "schema-introspection.json". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+interface Movie {
+    genre: Genre!
+    id: ID!
+    rating: String!
+    releaseYear: Int!
+    title: String!
+}
+
+type MovieDetails implements Movie {
+    genre: Genre!
+    id: ID!
+    rating: String!
+    releaseYear: Int!
+    reviews: [Review]!
+    title: String!
+}
+
+type MovieSummary implements Movie {
+    genre: Genre!
+    id: ID!
+    rating: String!
+    releaseYear: Int!
+    title: String!
+}
+
+type Mutation {
+    addToWatchList(input: WatchListInput!): WatchListResponse!
+    setProfile(input: CustomerInput!): UserProfile
+}
+
+type Query {
+    movieDetails(id: ID!): MovieDetails
+    moviesByGenre(genre: Genre): [MovieSummary]!
+    ping: String
+    userProfile(id: ID!): UserProfile
+}
+
+type Review {
+    comment: String
+    id: ID!
+    rating: Int
+    username: String
+}
+
+type UserProfile {
+    favoriteGenre: Genre!
+    id: ID!
+    name: String!
+    recommended: [MovieSummary]!
+    watchList: [MovieSummary]!
+}
+
+type WatchListResponse {
+    status: Status
+    watchList: [MovieSummary]!
+}
+
+enum Genre {
+    ACTION
+    ADVENTURE
+    ANIMATION
+    BIOGRAPHY
+    COMEDY
+    CRIME
+    DOCUMENTARY
+    DRAMA
+    FANTASY
+    HORROR
+    MYSTERY
+}
+
+enum Status {
+    FAILURE
+    SUCCESS
+}
+
+input CustomerInput {
+    favoriteGenre: Genre!
+    id: ID!
+    name: String!
+}
+
+input WatchListInput {
+    customerId: Int!
+    movieId: Int!
+}
