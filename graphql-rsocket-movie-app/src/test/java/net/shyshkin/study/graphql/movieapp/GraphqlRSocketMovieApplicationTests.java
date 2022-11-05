@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.rsocket.server.LocalRSocketServerPort;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.RSocketGraphQlTester;
+import org.springframework.test.context.TestPropertySource;
 import reactor.core.publisher.Flux;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,6 +22,9 @@ import static org.mockito.BDDMockito.then;
 
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(properties = {
+        "logging.level.io.rsocket: debug"
+})
 class GraphqlRSocketMovieApplicationTests extends BaseTest {
 
     GraphQlTester graphQlTester;
