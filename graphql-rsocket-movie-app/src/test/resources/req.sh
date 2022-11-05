@@ -22,4 +22,7 @@ rsc --request --route 'graphql' --load ./mutation-add-to-watchlist.json --debug 
 ### query schema with minimal info
 rsc --request --route 'graphql' --load ./query-schema-minimal.json --debug tcp://localhost:6565
 
+### query schema introspection
+rsc --request --route 'graphql' --load ./query-schema-introspection.json tcp://localhost:6565 > schema-introspection.json
+
 
