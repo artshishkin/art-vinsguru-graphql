@@ -9,3 +9,8 @@ rsc --request --route 'graphql' --load ./query-user-profile.json --debug tcp://l
 
 ### get movie details
 rsc --request --route 'graphql' --load ./query-movie-details.json --debug tcp://localhost:6565
+
+### get movies by genre
+rsc --request --route 'graphql' --load ./query-movies-by-genre.json --debug tcp://localhost:6565
+
+

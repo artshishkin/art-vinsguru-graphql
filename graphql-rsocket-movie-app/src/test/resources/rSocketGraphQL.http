@@ -47,3 +47,19 @@ Content-Type: application/json
     "movieId": 1
   }
 }
+
+### Query movies by genre
+RSOCKET graphql
+Host: tcp://localhost:6565
+Content-Type: application/json
+
+{
+  "query": "query getUserProfileCut($userId: ID!){\n    userProfile(id: $userId){\n        id\n        name\n        favoriteGenre\n    }\n}\n\nquery getUserProfileFull($userId: ID!){\n    userProfile(id: $userId){\n        id\n        name\n        favoriteGenre\n        watchList {\n            id\n            title\n            genre\n            rating\n            releaseYear\n        }\n        recommended {\n            id\n            title\n            genre\n            releaseYear\n            rating\n        }\n    }\n}\n\nquery getMovieDetailsCut($movieId: ID!){\n    movieDetails(id: $movieId){\n        id\n        rating\n        releaseYear\n        title\n        genre\n    }\n}\n\nquery getMovieDetailsFull($movieId: ID!){\n    movieDetails(id: $movieId){\n        id\n        rating\n        releaseYear\n        title\n        genre\n        reviews {\n            id\n            username\n            comment\n            rating\n        }\n    }\n}\n\nquery getMoviesByGenre($genre: Genre!){\n    moviesByGenre(genre: $genre){\n        id\n        title\n        genre\n        rating\n        releaseYear\n    }\n}\n",
+  "operationName": "getMoviesByGenre",
+  "variables": {
+    "genre": "ACTION"
+  }
+}
+
+
+
