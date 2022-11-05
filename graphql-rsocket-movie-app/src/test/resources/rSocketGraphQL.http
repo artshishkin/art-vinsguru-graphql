@@ -61,5 +61,39 @@ Content-Type: application/json
   }
 }
 
+### Mutation - Update user profile
+RSOCKET graphql
+Host: tcp://localhost:6565
+Content-Type: application/json
+
+{
+  "query": "mutation updateUserProfileCut( $customerInput: CustomerInput!){\n    result: setProfile(input: $customerInput){\n        id\n        name\n        favoriteGenre\n    }\n}\n\nmutation updateUserProfileFull( $customerInput: CustomerInput!){\n    result: setProfile(input: $customerInput){\n        id\n        name\n        favoriteGenre\n        watchList {\n            ...MovieSummaryFragment\n        }\n        recommended {\n            ...MovieSummaryFragment\n        }\n    }\n}\n\nfragment MovieSummaryFragment on MovieSummary{\n    id\n    title\n    genre\n    rating\n    releaseYear\n}\n\nmutation addMovieToUserWatchListSimple( $watchListInput: WatchListInput!){\n    result: addToWatchList(input: $watchListInput){\n        status\n    }\n}\n\nmutation addMovieToUserWatchListFull( $watchListInput: WatchListInput!){\n    result: addToWatchList(input: $watchListInput){\n        status\n        watchList {\n            ...MovieSummaryFragment\n        }\n    }\n}",
+  "operationName": "updateUserProfileCut",
+  "variables": {
+    "customerInput": {
+      "id": 1,
+      "name": "Nazar",
+      "favoriteGenre": "DRAMA"
+    }
+  }
+}
+
+### Mutation - Add to Watchlist
+RSOCKET graphql
+Host: tcp://localhost:6565
+Content-Type: application/json
+
+{
+  "query": "mutation updateUserProfileCut( $customerInput: CustomerInput!){\n    result: setProfile(input: $customerInput){\n        id\n        name\n        favoriteGenre\n    }\n}\n\nmutation updateUserProfileFull( $customerInput: CustomerInput!){\n    result: setProfile(input: $customerInput){\n        id\n        name\n        favoriteGenre\n        watchList {\n            ...MovieSummaryFragment\n        }\n        recommended {\n            ...MovieSummaryFragment\n        }\n    }\n}\n\nfragment MovieSummaryFragment on MovieSummary{\n    id\n    title\n    genre\n    rating\n    releaseYear\n}\n\nmutation addMovieToUserWatchListSimple( $watchListInput: WatchListInput!){\n    result: addToWatchList(input: $watchListInput){\n        status\n    }\n}\n\nmutation addMovieToUserWatchListFull( $watchListInput: WatchListInput!){\n    result: addToWatchList(input: $watchListInput){\n        status\n        watchList {\n            ...MovieSummaryFragment\n        }\n    }\n}",
+  "operationName": "addMovieToUserWatchListFull",
+  "variables": {
+    "watchListInput": {
+      "customerId": 2,
+      "movieId": 4
+    }
+  }
+}
+
+
 
 
