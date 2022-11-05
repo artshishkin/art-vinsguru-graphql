@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureH
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import reactor.core.publisher.Flux;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.*;
 
+@ActiveProfiles("webflux_enabled")
 @AutoConfigureHttpGraphQlTester
 @TestPropertySource(properties = {"spring.rsocket.server.port: 0"})
 class AddToWatchListErrorTest extends BaseTest {
