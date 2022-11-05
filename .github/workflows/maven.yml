@@ -3,11 +3,7 @@
 
 name: GitHub CI
 
-on:
-  push:
-    branches: [ * ]
-  pull_request:
-    branches: [ main ]
+on: [push]
 
 jobs:
   build:
