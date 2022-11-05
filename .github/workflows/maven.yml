@@ -5,7 +5,7 @@ name: GitHub CI
 
 on:
   push:
-    branches: [ main, security-keycloak ]
+    branches: [ main, graphql-rsocket ]
   pull_request:
     branches: [ main ]
 
