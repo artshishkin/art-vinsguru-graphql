@@ -1,0 +1,4 @@
+{
+  "query": "query{\n  __schema{\n    queryType{      \n      fields{\n        name\n      }\n    }\n    mutationType{\n      fields{\n        name\n      }\n    }\n    subscriptionType{\n      fields{\n        name\n      }\n    }\n  }\n}"
+}
+

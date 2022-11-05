@@ -19,4 +19,7 @@ rsc --request --route 'graphql' --load ./mutation-update-user-profile.json --deb
 ### mutation add to watchlist
 rsc --request --route 'graphql' --load ./mutation-add-to-watchlist.json --debug tcp://localhost:6565
 
+### query schema with minimal info
+rsc --request --route 'graphql' --load ./query-schema-minimal.json --debug tcp://localhost:6565
+
 
