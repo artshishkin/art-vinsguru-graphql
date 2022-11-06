@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: server-graphql-rsocket-movie-app
+  rsocket:
+    server:
+      transport: tcp
+      port: 7000
+  main:
+    web-application-type: none
+
+logging:
+  level:
+    net.shyshkin: debug
+
