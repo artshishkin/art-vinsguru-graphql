@@ -1,0 +1,41 @@
+logging:
+  level:
+    net.shyshkin: debug
+#    root: debug
+spring:
+  application:
+    name: client-graphql-rsocket-movie-app
+  graphql:
+    schema:
+      locations: classpath:graphql
+    rsocket:
+      mapping: graphql
+  rsocket:
+    server:
+      port: 6565
+  main:
+    web-application-type: none
+
+app.service:
+  review.base-url: http://localhost:8081/review
+  movie.base-url: http://localhost:8081/movie
+  customer.base-url: http://localhost:8081/customer
+
+---
+spring:
+  config:
+    activate:
+      on-profile: webflux_enabled
+  graphql:
+    path: /graphql
+    schema:
+      printer:
+        enabled: true
+    graphiql:
+      enabled: true
+      path: /graphiql
+  main:
+    web-application-type: reactive
+
+
+

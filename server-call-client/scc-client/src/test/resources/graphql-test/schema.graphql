@@ -1,0 +1,113 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+" Movie"
+interface Movie {
+    genre: Genre!
+    id: ID!
+    rating: String!
+    releaseYear: Int!
+    title: String!
+}
+
+" Movie Detailed Information"
+type MovieDetails implements Movie {
+    genre: Genre!
+    id: ID!
+    rating: String!
+    releaseYear: Int!
+    reviews: [Review]!
+    title: String!
+}
+
+" Movie Summary"
+type MovieSummary implements Movie {
+    genre: Genre!
+    id: ID!
+    rating: String!
+    releaseYear: Int!
+    title: String!
+}
+
+type Mutation {
+    " add movie into user watchlist"
+    addToWatchList(input: WatchListInput!): WatchListResponse!
+    " update profile with fav genre"
+    setProfile(input: CustomerInput!): UserProfile
+}
+
+"""
+
+home page - movies by genre - basic/summary
+scroll down - movies by genre - basic/summary
+load movies by id - detailed - with reviews
+load user profile - fav genre, watchlist
+add movie into user watchlist
+update profile with fav genre
+"""
+type Query {
+    " load movies by id - detailed - with reviews"
+    movieDetails(id: ID!): MovieDetails
+    " scroll down - movies by genre - basic/summary"
+    moviesByGenre(genre: Genre): [MovieSummary]!
+    " ping graphql service"
+    ping: String
+    " load user profile - fav genre, watchlist"
+    userProfile(id: ID!): UserProfile
+}
+
+" Review of the movie"
+type Review {
+    comment: String
+    id: ID!
+    rating: Int
+    username: String
+}
+
+type UserProfile {
+    favoriteGenre: Genre!
+    id: ID!
+    name: String!
+    recommended: [MovieSummary]!
+    watchList: [MovieSummary]!
+}
+
+type WatchListResponse {
+    status: Status
+    watchList: [MovieSummary]!
+}
+
+" Movie genre"
+enum Genre {
+    ACTION
+    ADVENTURE
+    ANIMATION
+    BIOGRAPHY
+    COMEDY
+    CRIME
+    DOCUMENTARY
+    DRAMA
+    FANTASY
+    HORROR
+    MYSTERY
+}
+
+enum Status {
+    FAILURE
+    SUCCESS
+}
+
+input CustomerInput {
+    favoriteGenre: Genre!
+    id: ID!
+    name: String!
+}
+
+input WatchListInput {
+    customerId: Int!
+    movieId: Int!
+}

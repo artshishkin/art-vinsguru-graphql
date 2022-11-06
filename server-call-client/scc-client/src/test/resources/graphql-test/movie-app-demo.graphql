@@ -1,0 +1,94 @@
+query HomePageOnLoad{
+    action: moviesByGenre(genre: ACTION){
+        ...movieDetails
+    }
+    adventure: moviesByGenre(genre: ADVENTURE){
+        ...movieDetails
+    }
+    animation: moviesByGenre(genre: ANIMATION){
+        ...movieDetails
+    }
+}
+
+query HomePageOnScroll($genre: Genre!){
+    action: moviesByGenre(genre: $genre){
+        ...movieDetails
+    }
+}
+
+query MovieWithReviews($movieId: ID!){
+    movieDetails(id: $movieId){
+        ...movieDetails
+    }
+}
+
+query LoadUserProfile($userId: ID!){
+    userProfile(id: $userId){
+        ...userDetails
+    }
+}
+
+mutation AddMovieToWatchList($watchListInput: WatchListInput!){
+    addToWatchList(input: $watchListInput){
+        status
+        watchList {
+            ...movieDetails
+        }
+    }
+}
+
+mutation AddMultipleMoviesToWatchList($userId: Int!){
+    step1: addToWatchList(input: {customerId: $userId, movieId: 100}){
+        status
+    }
+    step2: addToWatchList(input: {customerId: $userId, movieId: 101}){
+        status
+    }
+    step3: addToWatchList(input: {customerId: $userId, movieId: 102}){
+        status
+    }
+    step4: addToWatchList(input: {customerId: $userId, movieId: 103}){
+        status
+        watchList {
+            ...movieDetails
+        }
+    }
+}
+
+mutation UserProfileUpdate($customerInput: CustomerInput!){
+    setProfile(input: $customerInput){
+        ...userDetails
+    }
+}
+
+fragment movieDetails on Movie{
+    id
+    title
+    genre
+    releaseYear
+    overallRating: rating
+    ... on MovieDetails{
+        reviews {
+            ...reviewDetails
+        }
+    }
+}
+
+fragment reviewDetails on Review{
+    id
+    rating
+    username
+    comment
+}
+
+fragment userDetails on UserProfile{
+    id
+    name
+    favoriteGenre
+    recommended {
+        ...movieDetails
+    }
+    watchList {
+        ...movieDetails
+    }
+}

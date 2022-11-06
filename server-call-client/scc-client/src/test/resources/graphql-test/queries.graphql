@@ -1,0 +1,65 @@
+query getUserProfileCut($userId: ID!){
+    userProfile(id: $userId){
+        id
+        name
+        favoriteGenre
+    }
+}
+
+query getUserProfileFull($userId: ID!){
+    userProfile(id: $userId){
+        id
+        name
+        favoriteGenre
+        watchList {
+            id
+            title
+            genre
+            rating
+            releaseYear
+        }
+        recommended {
+            id
+            title
+            genre
+            releaseYear
+            rating
+        }
+    }
+}
+
+query getMovieDetailsCut($movieId: ID!){
+    movieDetails(id: $movieId){
+        id
+        rating
+        releaseYear
+        title
+        genre
+    }
+}
+
+query getMovieDetailsFull($movieId: ID!){
+    movieDetails(id: $movieId){
+        id
+        rating
+        releaseYear
+        title
+        genre
+        reviews {
+            id
+            username
+            comment
+            rating
+        }
+    }
+}
+
+query getMoviesByGenre($genre: Genre!){
+    moviesByGenre(genre: $genre){
+        id
+        title
+        genre
+        rating
+        releaseYear
+    }
+}
