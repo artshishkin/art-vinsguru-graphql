@@ -21,6 +21,13 @@ app.service:
   movie.base-url: http://localhost:8081/movie
   customer.base-url: http://localhost:8081/customer
 
+app:
+  server:
+    rsocket:
+      host: localhost
+      port: 7000
+      setup-route: movie-app-client
+
 ---
 spring:
   config:
