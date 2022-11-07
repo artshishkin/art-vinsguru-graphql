@@ -9,8 +9,11 @@ import org.springframework.boot.test.rsocket.server.LocalRSocketServerPort;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
@@ -38,7 +41,7 @@ class ServerApplicationTests {
     }
 
     @Test
-    void connectionTest() throws InterruptedException {
+    void connectionTest() {
 
         //given
         requester = builder
@@ -54,7 +57,10 @@ class ServerApplicationTests {
                 //then
                 .as(StepVerifier::create)
                 .verifyComplete();
-        Thread.sleep(100);
-        then(clientService).should().addClient(eq(CLIENT_ID), any());
+
+        await()
+                .timeout(2, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofMillis(50))
+                .untilAsserted(() -> then(clientService).should().addClient(eq(CLIENT_ID), any()));
     }
 }

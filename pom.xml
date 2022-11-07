@@ -36,6 +36,7 @@
         <mapstruct.version>1.5.1.Final</mapstruct.version>
         <testcontainers.version>1.17.3</testcontainers.version>
         <testcontainers-keycloak.version>2.3.0</testcontainers-keycloak.version>
+        <awaitility.version>4.2.0</awaitility.version>
     </properties>
     <dependencies>
         <dependency>
@@ -68,6 +69,11 @@
                 <groupId>com.github.dasniko</groupId>
                 <artifactId>testcontainers-keycloak</artifactId>
                 <version>${testcontainers-keycloak.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${awaitility.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
