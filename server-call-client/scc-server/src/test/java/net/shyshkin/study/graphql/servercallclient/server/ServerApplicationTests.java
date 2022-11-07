@@ -38,7 +38,7 @@ class ServerApplicationTests {
     }
 
     @Test
-    void connectionTest() {
+    void connectionTest() throws InterruptedException {
 
         //given
         requester = builder
@@ -47,12 +47,14 @@ class ServerApplicationTests {
                 .tcp("localhost", rSocketServerPort);
 
         //when
-        requester.route("fake") //just to connect to the server
+        requester.route("hello")
+                .data("Kate")
                 .send()
 
                 //then
                 .as(StepVerifier::create)
                 .verifyComplete();
+        Thread.sleep(100);
         then(clientService).should().addClient(eq(CLIENT_ID), any());
     }
 }

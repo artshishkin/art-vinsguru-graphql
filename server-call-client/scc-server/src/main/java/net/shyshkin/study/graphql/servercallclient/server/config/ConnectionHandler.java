@@ -9,6 +9,7 @@ import org.springframework.messaging.rsocket.annotation.ConnectMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -20,7 +21,12 @@ public class ConnectionHandler {
 
     @ConnectMapping("movie-app-client")
     Mono<Void> handleConnection(RSocketRequester requester, @Payload UUID clientId) {
-        return requester.rsocket()
+        return Mono.fromRunnable(() -> this.connectClient(clientId, requester));
+    }
+
+    private void connectClient(UUID clientId, RSocketRequester requester) {
+        Objects
+                .requireNonNull(requester.rsocket())
                 .onClose() // (1)
                 .log()
                 .doFirst(() -> {
@@ -28,12 +34,13 @@ public class ConnectionHandler {
                     clientService.addClient(clientId, requester); // (2)
                 })
                 .doOnError(error -> {
-                    log.warn("Channel to client {} CLOSED", clientId); // (3)
+                    log.error("Channel to client {} CLOSED", clientId, error); // (3)
                 })
                 .doFinally(consumer -> {
                     clientService.removeClient(clientId, requester);
                     log.debug("Client {} DISCONNECTED", clientId); // (4)
-                });
+                })
+                .subscribe();
     }
 
 }
