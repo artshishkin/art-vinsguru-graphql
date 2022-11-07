@@ -6,7 +6,7 @@ spring:
       transport: tcp
       port: 7000
   main:
-    web-application-type: none
+    web-application-type: reactive
 
 logging:
   level:

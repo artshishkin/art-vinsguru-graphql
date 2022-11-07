@@ -4,3 +4,16 @@ Host: 127.0.0.1:7000
 Content-Type: application/json
 
 Nazar
+
+### Ping to client
+RSOCKET graphql
+Host: 127.0.0.1:6565
+Content-Type: application/json
+
+{
+  "query": "query{ping}"
+}
+
+### REST ping over RSocker
+GET localhost:8080/rest/3014bdef-22e3-499b-bd17-0a6e7511621f/ping
+
