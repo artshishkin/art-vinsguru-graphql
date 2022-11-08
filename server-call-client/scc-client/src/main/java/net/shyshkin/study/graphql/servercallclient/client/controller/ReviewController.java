@@ -2,8 +2,8 @@ package net.shyshkin.study.graphql.servercallclient.client.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.servercallclient.client.client.ReviewClient;
-import net.shyshkin.study.graphql.servercallclient.client.dto.Movie;
-import net.shyshkin.study.graphql.servercallclient.client.dto.Review;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Review;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;

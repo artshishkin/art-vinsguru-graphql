@@ -1,7 +1,7 @@
 package net.shyshkin.study.graphql.servercallclient.client.client;
 
-import net.shyshkin.study.graphql.servercallclient.client.dto.Genre;
-import net.shyshkin.study.graphql.servercallclient.client.dto.Movie;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Genre;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

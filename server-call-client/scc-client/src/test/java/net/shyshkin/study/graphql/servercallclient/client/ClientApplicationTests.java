@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.servercallclient.client.client.CustomerClient;
 import net.shyshkin.study.graphql.servercallclient.client.client.MovieClient;
 import net.shyshkin.study.graphql.servercallclient.client.client.ReviewClient;
-import net.shyshkin.study.graphql.servercallclient.client.dto.*;
+import net.shyshkin.study.graphql.servercallclient.common.dto.*;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.rsocket.server.LocalRSocketServerPort;

@@ -66,6 +66,11 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>net.shyshkin.study.graphql</groupId>
+                <artifactId>scc-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.github.dasniko</groupId>
                 <artifactId>testcontainers-keycloak</artifactId>
                 <version>${testcontainers-keycloak.version}</version>

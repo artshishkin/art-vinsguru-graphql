@@ -1,9 +1,9 @@
 package net.shyshkin.study.graphql.servercallclient.client.client;
 
 import lombok.extern.slf4j.Slf4j;
-import net.shyshkin.study.graphql.servercallclient.client.dto.Customer;
-import net.shyshkin.study.graphql.servercallclient.client.dto.CustomerInput;
-import net.shyshkin.study.graphql.servercallclient.client.dto.WatchListInput;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Customer;
+import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
+import net.shyshkin.study.graphql.servercallclient.common.dto.WatchListInput;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

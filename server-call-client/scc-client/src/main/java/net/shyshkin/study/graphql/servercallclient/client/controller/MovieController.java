@@ -2,10 +2,10 @@ package net.shyshkin.study.graphql.servercallclient.client.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.servercallclient.client.client.MovieClient;
-import net.shyshkin.study.graphql.servercallclient.client.dto.Customer;
-import net.shyshkin.study.graphql.servercallclient.client.dto.Genre;
-import net.shyshkin.study.graphql.servercallclient.client.dto.Movie;
-import net.shyshkin.study.graphql.servercallclient.client.dto.WatchListResponse;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Customer;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Genre;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
+import net.shyshkin.study.graphql.servercallclient.common.dto.WatchListResponse;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;

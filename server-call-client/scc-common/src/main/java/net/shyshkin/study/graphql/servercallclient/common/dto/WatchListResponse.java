@@ -1,4 +1,4 @@
-package net.shyshkin.study.graphql.servercallclient.client.dto;
+package net.shyshkin.study.graphql.servercallclient.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

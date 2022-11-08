@@ -1,6 +1,6 @@
 package net.shyshkin.study.graphql.servercallclient.client.client;
 
-import net.shyshkin.study.graphql.servercallclient.client.dto.Review;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Review;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
