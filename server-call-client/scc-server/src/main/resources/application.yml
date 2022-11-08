@@ -11,4 +11,5 @@ spring:
 logging:
   level:
     net.shyshkin: debug
+    io.rsocket: debug
 

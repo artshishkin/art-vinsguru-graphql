@@ -17,3 +17,6 @@ Content-Type: application/json
 ### REST ping over RSocker
 GET localhost:8080/rest/3014bdef-22e3-499b-bd17-0a6e7511621f/ping
 
+### REST get movie details over RSocker
+GET localhost:8080/rest/3014bdef-22e3-499b-bd17-0a6e7511621f/movies/3
+
