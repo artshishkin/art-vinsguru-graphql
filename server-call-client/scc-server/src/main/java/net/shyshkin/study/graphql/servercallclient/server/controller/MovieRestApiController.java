@@ -23,7 +23,11 @@ public class MovieRestApiController {
     }
 
     @GetMapping("movies/{movieId}")
-    Mono<Movie> getMovieDetails(@RequestHeader("X-Client-Id") UUID requesterId, @PathVariable Integer movieId) {
+    Mono<? extends Movie> getMovieDetails(@RequestHeader("X-Client-Id") UUID requesterId,
+                                          @PathVariable Integer movieId,
+                                          @RequestParam(required = false) String details) {
+        if (details != null && details.equals("full"))
+            return movieService.getMovieDetailsFull(requesterId, movieId);
         return movieService.getMovieDetailsCut(requesterId, movieId);
     }
 

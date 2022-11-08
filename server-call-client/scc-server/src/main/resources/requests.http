@@ -18,6 +18,10 @@ Content-Type: application/json
 GET localhost:8080/rest/ping
 X-Client-Id: 3014bdef-22e3-499b-bd17-0a6e7511621f
 
-### REST get movie details over RSocker
+### REST get movie summary over RSocker
 GET localhost:8080/rest/movies/4
+X-Client-Id: 3014bdef-22e3-499b-bd17-0a6e7511621f
+
+### REST get movie details over RSocker
+GET localhost:8080/rest/movies/5?details=full
 X-Client-Id: 3014bdef-22e3-499b-bd17-0a6e7511621f
