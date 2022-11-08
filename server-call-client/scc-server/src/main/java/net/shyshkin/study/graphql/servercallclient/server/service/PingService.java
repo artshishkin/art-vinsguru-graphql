@@ -22,7 +22,8 @@ public class PingService {
         return Mono.justOrEmpty(requesterOptional)
                 .map(requester -> new CustomRSocketGraphQlClientBuilder(requester).build())
                 .flatMap(client -> client
-                                .document("query{ping}")
+//                                .document("query{ping}")
+                                .documentName("ping")
                                 .retrieve("ping")
                                 .toEntity(String.class)
                 );
