@@ -1,6 +1,8 @@
 package net.shyshkin.study.graphql.servercallclient.server.service;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -37,6 +40,9 @@ class PingServiceMockTest {
     @Mock
     RSocketRequester.RetrieveSpec retrieveSpec;
 
+    @Captor
+    ArgumentCaptor<Map<String, String>> requestDataCaptor;
+
     @Test
     void pingTest() {
         //given
@@ -56,9 +62,11 @@ class PingServiceMockTest {
 
         then(rSocketRequesterManager).should().getRequester(eq(requesterId));
         then(rSocketRequester).should().route(eq("graphql"));
-        then(requestSpec).should().data(eq(Map.of("query", "query{\r\n" +
-                "    ping\r\n" +
-                "}"))
-        );
+        then(requestSpec).should().data(requestDataCaptor.capture());
+        Map<String, String> requestData = requestDataCaptor.getValue();
+        assertThat(requestData).containsKey("query");
+        assertThat(requestData.get("query"))
+                .satisfies(query -> assertThat(query.replaceAll("\\s", ""))
+                        .isEqualTo("query{ping}"));
     }
 }
