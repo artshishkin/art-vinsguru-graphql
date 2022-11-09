@@ -1,5 +1,8 @@
 package net.shyshkin.study.graphql.servercallclient.server.controller;
 
+import net.shyshkin.study.graphql.servercallclient.common.dto.Genre;
+import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
+import net.shyshkin.study.graphql.servercallclient.server.dto.MovieDetails;
 import net.shyshkin.study.graphql.servercallclient.server.service.RSocketRequesterManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +24,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -80,6 +84,60 @@ class MovieRestApiControllerIT {
                 .expectStatus().isOk()
                 .expectBody(String.class)
                 .isEqualTo("pong");
+    }
+
+    @Test
+    void getMovieDetailsCutTest() {
+
+        //given
+        Integer movieId = 3;
+        Movie expectedMovie = new Movie() {{
+            setId(3);
+            setTitle("Titanic");
+            setReleaseYear(1997);
+            setGenre(Genre.DRAMA);
+            setRating(7.9);
+        }};
+
+        //when
+        webTestClient.get()
+                .uri("/rest/movies/{movieId}", movieId)
+                .header("X-Client-Id", CLIENT_ID.toString())
+                .exchange()
+
+                //then
+                .expectStatus().isOk()
+                .expectBody(Movie.class)
+                .isEqualTo(expectedMovie);
+    }
+
+    @Test
+    void getMovieDetailsFullTest() {
+
+        //given
+        Integer movieId = 5;
+
+        //when
+        webTestClient.get()
+                .uri("/rest/movies/{movieId}?detailsType=FULL", movieId)
+                .header("X-Client-Id", CLIENT_ID.toString())
+                .exchange()
+
+                //then
+                .expectStatus().isOk()
+                .expectBody(MovieDetails.class)
+                .value(movie -> assertAll(
+                                () -> assertThat(movie.getId()).isEqualTo(movieId),
+                                () -> assertThat(movie.getTitle()).isEqualTo("Avengers: Infinity War"),
+                                () -> assertThat(movie.getReleaseYear()).isEqualTo(2018),
+                                () -> assertThat(movie.getGenre()).isEqualTo(Genre.ACTION),
+                                () -> assertThat(movie.getRating()).isEqualTo(8.4),
+                                () -> assertThat(movie.getReviews())
+                                        .hasSizeGreaterThanOrEqualTo(1)
+                                        .allSatisfy(review -> assertThat(review)
+                                                .hasNoNullFieldsOrProperties())
+                        )
+                );
     }
 
     private void waitForClientConnection() {
