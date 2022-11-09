@@ -32,7 +32,7 @@ public class RSocketConfig {
                 .setupData(clientId)
                 .rsocketStrategies(strategies)
                 .rsocketConnector(connector -> connector
-//                        .reconnect(retryStrategy())
+                        .reconnect(retryStrategy())
 //                        .resume(resumeStrategy())
                         .acceptor(handler.responder()))
                 .tcp(configData.getHost(), configData.getPort());
