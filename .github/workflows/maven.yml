@@ -12,11 +12,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Print Docker version
+      run: docker --version
+    - name: Add domain host.testcontainers.internal
+      run: |
+        echo '127.0.0.1 host.testcontainers.internal' | sudo tee -a /etc/hosts
+        cat /etc/hosts
     - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+
+    - name: Install with Maven without testing
+      run: mvn -B clean install -DskipTests --file pom.xml
+
     - name: Build with Maven
       run: mvn -B verify --file pom.xml
