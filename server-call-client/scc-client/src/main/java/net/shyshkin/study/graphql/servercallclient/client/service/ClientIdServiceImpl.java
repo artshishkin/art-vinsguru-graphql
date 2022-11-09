@@ -26,11 +26,13 @@ public class ClientIdServiceImpl implements ClientIdService {
     @Value("${app.client-id.properties-location:client-id.properties}")
     private String clientIdLocation;
 
+    @Value("${app.client-id.value:#{null}}")
     private UUID clientId;
 
     @PostConstruct
     void init() {
-        clientId = readClientId();
+        if (clientId == null)
+            clientId = readClientId();
         if (clientId == null)
             clientId = createClientId();
     }
