@@ -25,3 +25,8 @@ X-Client-Id: {{clientId}}
 ### REST get movie details over RSocker
 GET localhost:8080/rest/movies/5?detailsType=FULL
 X-Client-Id: {{clientId}}
+
+### REST get movies by genre over RSocker
+GET localhost:8080/rest/movies?genre=ADVENTURE
+X-Client-Id: {{clientId}}
+

@@ -140,6 +140,32 @@ class MovieRestApiControllerIT {
                 );
     }
 
+    @Test
+    void getMoviesByGenreTest() {
+
+        //given
+        Genre genre = Genre.ACTION;
+
+        //when
+        webTestClient.get()
+                .uri("/rest/movies?genre=" + genre)
+                .header("X-Client-Id", CLIENT_ID.toString())
+                .exchange()
+
+                //then
+                .expectStatus().isOk()
+                .expectBodyList(Movie.class)
+                .value(movies -> assertThat(movies)
+                        .hasSizeGreaterThanOrEqualTo(1)
+                        .allSatisfy(movie ->
+                                assertAll(
+                                        () -> assertThat(movie.getGenre()).isEqualTo(genre),
+                                        () -> assertThat(movie).hasNoNullFieldsOrProperties()
+                                )
+                        )
+                );
+    }
+
     private void waitForClientConnection() {
         await()
                 .pollInterval(Duration.ofMillis(100))
