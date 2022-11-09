@@ -27,7 +27,7 @@ public class RSocketConfig {
         UUID clientId = clientIdService.getClientId();
         log.info("client ID {}", clientId);
 
-        return rsocketRequesterBuilder
+        RSocketRequester requester = rsocketRequesterBuilder
                 .setupRoute(configData.getSetupRoute())
                 .setupData(clientId)
                 .rsocketStrategies(strategies)
@@ -36,6 +36,10 @@ public class RSocketConfig {
 //                        .resume(resumeStrategy())
                         .acceptor(handler.responder()))
                 .tcp(configData.getHost(), configData.getPort());
+
+        eagerReconnect(requester);
+
+        return requester;
     }
 
     private Resume resumeStrategy() {
@@ -50,4 +54,15 @@ public class RSocketConfig {
                 .fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(1))
                 .doBeforeRetry(r -> log.debug("Retrying connection: retries in a row {}, total {}", r.totalRetriesInARow(), r.totalRetries()));
     }
+
+    private void eagerReconnect(RSocketRequester requester) {
+        requester
+                .rsocketClient()
+                .source()
+                .flatMap(rsocket -> rsocket.onClose())
+                .repeat()
+                .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(1)))
+                .subscribe();
+    }
+
 }
