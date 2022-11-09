@@ -40,6 +40,7 @@
         <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
         <docker.image.prefix>artarkatesoft</docker.image.prefix>
         <docker.image.name>art-vinsguru-graphql-${project.artifactId}</docker.image.name>
+        <spring.boot.version>2.7.4</spring.boot.version>
     </properties>
     <dependencies>
         <dependency>
