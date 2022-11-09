@@ -1,9 +1,9 @@
 package net.shyshkin.study.graphql.servercallclient.server.service;
 
 import net.shyshkin.study.graphql.servercallclient.common.dto.Genre;
-import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Review;
 import net.shyshkin.study.graphql.servercallclient.server.dto.MovieDetails;
+import net.shyshkin.study.graphql.servercallclient.server.dto.MovieDetailsType;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -58,7 +58,7 @@ class MovieServiceMockTest {
         given(rSocketRequester.route(any())).willReturn(requestSpec);
         given(requestSpec.data(any())).willReturn(retrieveSpec);
 
-        Movie expectedMovie = new Movie() {{
+        MovieDetails expectedMovie = new MovieDetails() {{
             setId(3);
             setTitle("Titanic");
             setReleaseYear(1997);
@@ -78,7 +78,7 @@ class MovieServiceMockTest {
         given(retrieveSpec.retrieveMono(any(ParameterizedTypeReference.class))).willReturn(Mono.just(Map.of("data", responseData)));
 
         //when
-        movieService.getMovieDetailsCut(requesterId, movieId)
+        movieService.getMovieDetails(requesterId, movieId, MovieDetailsType.CUT)
 
                 //then
                 .as(StepVerifier::create)
@@ -116,7 +116,7 @@ class MovieServiceMockTest {
         given(retrieveSpec.retrieveMono(any(ParameterizedTypeReference.class))).willReturn(Mono.just(Map.of("data", responseData)));
 
         //when
-        movieService.getMovieDetailsFull(requesterId, movieId)
+        movieService.getMovieDetails(requesterId, movieId, MovieDetailsType.FULL)
 
                 //then
                 .as(StepVerifier::create)

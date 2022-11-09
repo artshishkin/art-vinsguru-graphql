@@ -23,5 +23,5 @@ GET localhost:8080/rest/movies/4
 X-Client-Id: 3014bdef-22e3-499b-bd17-0a6e7511621f
 
 ### REST get movie details over RSocker
-GET localhost:8080/rest/movies/5?details=full
+GET localhost:8080/rest/movies/5?detailsType=FULL
 X-Client-Id: 3014bdef-22e3-499b-bd17-0a6e7511621f

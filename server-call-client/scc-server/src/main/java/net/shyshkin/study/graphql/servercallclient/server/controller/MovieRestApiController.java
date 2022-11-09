@@ -2,6 +2,7 @@ package net.shyshkin.study.graphql.servercallclient.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
+import net.shyshkin.study.graphql.servercallclient.server.dto.MovieDetailsType;
 import net.shyshkin.study.graphql.servercallclient.server.service.MovieService;
 import net.shyshkin.study.graphql.servercallclient.server.service.PingService;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,8 @@ public class MovieRestApiController {
     @GetMapping("movies/{movieId}")
     Mono<? extends Movie> getMovieDetails(@RequestHeader("X-Client-Id") UUID requesterId,
                                           @PathVariable Integer movieId,
-                                          @RequestParam(required = false) String details) {
-        if (details != null && details.equals("full"))
-            return movieService.getMovieDetailsFull(requesterId, movieId);
-        return movieService.getMovieDetailsCut(requesterId, movieId);
+                                          @RequestParam(name = "detailsType", defaultValue = "CUT") MovieDetailsType detailsType) {
+        return movieService.getMovieDetails(requesterId, movieId, detailsType);
     }
 
 }
