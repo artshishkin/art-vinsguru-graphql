@@ -37,6 +37,9 @@
         <testcontainers.version>1.17.3</testcontainers.version>
         <testcontainers-keycloak.version>2.3.0</testcontainers-keycloak.version>
         <awaitility.version>4.2.0</awaitility.version>
+        <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
+        <docker.image.prefix>artarkatesoft</docker.image.prefix>
+        <docker.image.name>art-vinsguru-graphql-${project.artifactId}</docker.image.name>
     </properties>
     <dependencies>
         <dependency>
@@ -201,7 +204,61 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker-maven-plugin.version}</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <containerNamePattern>%a</containerNamePattern>
+                    <images>
+                        <image>
+                            <name>${docker.image.prefix}/${docker.image.name}</name>
+                            <alias>${docker.image.name}</alias>
+                            <build>
+                                <assembly>
+                                    <descriptorRef>artifact</descriptorRef>
+                                </assembly>
+                                <dockerFile>Dockerfile</dockerFile>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>dockerbuild</id>
+            <activation>
+                <file>
+                    <exists>src/main/docker/Dockerfile</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>build-docker-image</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

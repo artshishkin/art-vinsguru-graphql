@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  external-services:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: artarkatesoft/art-vinsguru-graphql-external-services
+
+  scc-client:
+    image: artarkatesoft/art-vinsguru-graphql-scc-client
+    environment:
+      "app.service.review.base-url": http://external-services:7070/review
+      "app.service.movie.base-url": http://external-services:7070/movie
+      "app.service.customer.base-url": http ://external-services:7070/customer
+      "app.server.rsocket.host": host.docker.internal
+
+
