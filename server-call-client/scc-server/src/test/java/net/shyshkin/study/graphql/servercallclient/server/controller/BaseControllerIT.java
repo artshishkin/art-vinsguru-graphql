@@ -10,7 +10,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.net.InetAddress;
@@ -39,12 +38,10 @@ public abstract class BaseControllerIT {
 
     protected static Network network = Network.newNetwork();
 
-    @Container
     protected static GenericContainer<?> externalServices = new GenericContainer<>("artarkatesoft/art-vinsguru-graphql-external-services")
             .withNetwork(network)
             .withNetworkAliases("external-services");
 
-    @Container
     protected static GenericContainer<?> sccClient = new GenericContainer<>("artarkatesoft/art-vinsguru-graphql-scc-client")
             .dependsOn(externalServices)
             .withAccessToHost(true)
@@ -55,6 +52,11 @@ public abstract class BaseControllerIT {
             .withEnv("app.server.rsocket.host", "host.testcontainers.internal")
             .withEnv("app.client-id.value", CLIENT_ID.toString())
             .waitingFor(Wait.forLogMessage(".*Started ClientApplication in.*", 1));
+
+    static {
+        externalServices.start();
+        sccClient.start();
+    }
 
     @BeforeAll
     static void beforeAll() {
