@@ -53,4 +53,11 @@ public class UserRestApiController {
         return userService.complexWatchListUpdateRESTLike(requesterId, complexWatchListInput.getUpdates());
     }
 
+    @PostMapping(value = "complex/watch-list", params = "graphql")
+    public Flux<UserProfileDetails> complexWatchListUpdateGraphQLLike(
+            @RequestHeader("X-Client-Id") UUID requesterId,
+            @RequestBody ComplexWatchListInput complexWatchListInput) {
+        return userService.complexWatchListUpdateGraphQLLike(requesterId, complexWatchListInput.getUpdates());
+    }
+
 }

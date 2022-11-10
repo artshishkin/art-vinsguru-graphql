@@ -134,3 +134,52 @@ Content-Type: application/json
   ]
 }
 
+### REST complex adding movies to users' watchlists using GraphQL LIKE approach over RSocket
+POST localhost:8080/rest/users/complex/watch-list?graphql
+X-Client-Id: {{clientId}}
+Content-Type: application/json
+
+{
+  "updates": [
+    {
+      "customerId": 3,
+      "movieId": 1
+    },
+    {
+      "customerId": 3,
+      "movieId": 2
+    },
+    {
+      "customerId": 3,
+      "movieId": 3
+    },
+    {
+      "customerId": 3,
+      "movieId": 4
+    },
+    {
+      "customerId": 2,
+      "movieId": 5
+    },
+    {
+      "customerId": 2,
+      "movieId": 6
+    },
+    {
+      "customerId": 2,
+      "movieId": 7
+    },
+    {
+      "customerId": 2,
+      "movieId": 8
+    },
+    {
+      "customerId": 2,
+      "movieId": 9
+    },
+    {
+      "customerId": 2,
+      "movieId": 10
+    }
+  ]
+}

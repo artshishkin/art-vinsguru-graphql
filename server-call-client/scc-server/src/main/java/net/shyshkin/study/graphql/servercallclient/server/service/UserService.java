@@ -1,6 +1,8 @@
 package net.shyshkin.study.graphql.servercallclient.server.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Status;
 import net.shyshkin.study.graphql.servercallclient.common.dto.WatchListInput;
@@ -17,7 +19,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -95,6 +99,68 @@ public class UserService {
                         .retrieve("result")
                         .toEntity(UserProfileDetails.class)
                 );
+    }
+
+    public Flux<UserProfileDetails> complexWatchListUpdateGraphQLLike(UUID requesterId, List<WatchListInput> watchListUpdates) {
+
+        var rSocketRequesterOptional = rSocketRequesterManager
+                .getRequester(requesterId);
+        if (rSocketRequesterOptional.isEmpty()) return Flux.empty();
+        RSocketRequester requester = rSocketRequesterOptional.get();
+        RSocketGraphQlClient rSocketGraphQlClient = new CustomRSocketGraphQlClientBuilder(requester).build();
+
+        Flux<WatchListInput> watchListInputFlux = Flux.fromIterable(watchListUpdates);
+
+        Flux<Integer> customerIdFlux = watchListInputFlux
+                .map(WatchListInput::getCustomerId)
+                .distinct();
+
+        return watchListInputFlux
+                .distinct()
+                .map(this::watchListInputToMutation)
+                .collect(Collectors.joining("", "mutation {\n", "}"))
+                .doOnNext(mutation -> log.debug("Final mutation: {}", mutation))
+                .flatMap(mutation -> rSocketGraphQlClient
+                        .document(mutation)
+                        .retrieve("")
+                        .toEntity(JsonNode.class)
+                        .doOnNext(response -> log.debug("Response: {}", response))
+                )
+                .thenMany(customerIdFlux)
+                .map(this::queryUserDetails)
+                .collect(Collectors.joining("", "query{\n", "}"))
+//                .doOnNext(query -> log.debug("Final query: {}", query))
+                .flatMapMany(query -> rSocketGraphQlClient
+                        .document(query)
+                        .execute()
+                        .flatMapMany(response -> customerIdFlux
+                                .map(customerId -> String.format("customer%02d", customerId))
+                                .map(field -> response.field(field).toEntity(UserProfileDetails.class))
+                        )
+                );
+    }
+
+    private String watchListInputToMutation(WatchListInput input) {
+        Integer customerId = input.getCustomerId();
+        Integer movieId = input.getMovieId();
+        return String.format("c%02dm%03d: addToWatchList(input: {customerId:%d,movieId:%d}){status}\n",
+                customerId, movieId, customerId, movieId);
+    }
+
+    private String queryUserDetails(Integer customerId) {
+        return String.format("customer%02d: userProfile(id: %d){\n" +
+                        "        id\n" +
+                        "        name\n" +
+                        "        favoriteGenre\n" +
+                        "        watchList {\n" +
+                        "            id\n" +
+                        "            title\n" +
+                        "            genre\n" +
+                        "            rating\n" +
+                        "            releaseYear\n" +
+                        "        }\n" +
+                        "    }\n",
+                customerId, customerId);
     }
 
 }
