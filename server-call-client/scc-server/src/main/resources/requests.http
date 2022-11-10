@@ -30,3 +30,15 @@ X-Client-Id: {{clientId}}
 GET localhost:8080/rest/movies?genre=ADVENTURE
 X-Client-Id: {{clientId}}
 
+### REST get user profile summary over RSocker
+GET localhost:8080/rest/users/1
+X-Client-Id: {{clientId}}
+
+### REST get user profile summary with CUT over RSocker
+GET localhost:8080/rest/users/1?detailsType=CUT
+X-Client-Id: {{clientId}}
+
+### REST get user profile detailed over RSocker
+GET localhost:8080/rest/users/1?detailsType=FULL
+X-Client-Id: {{clientId}}
+

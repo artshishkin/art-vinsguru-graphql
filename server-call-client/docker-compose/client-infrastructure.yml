@@ -11,7 +11,7 @@ services:
     environment:
       "app.service.review.base-url": http://external-services:7070/review
       "app.service.movie.base-url": http://external-services:7070/movie
-      "app.service.customer.base-url": http ://external-services:7070/customer
+      "app.service.customer.base-url": http://external-services:7070/customer
       "app.server.rsocket.host": host.docker.internal
       "app.client-id.value": d58558b5-1604-455c-a0aa-faaf5e63875a
 
