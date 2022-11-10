@@ -1,6 +1,7 @@
 package net.shyshkin.study.graphql.servercallclient.server.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
 import net.shyshkin.study.graphql.servercallclient.server.dto.DetailsType;
 import net.shyshkin.study.graphql.servercallclient.server.dto.UserProfileDetails;
 import net.shyshkin.study.graphql.servercallclient.server.service.UserService;
@@ -21,6 +22,15 @@ public class UserRestApiController {
                                             @PathVariable Integer userId,
                                             @RequestParam(name = "detailsType", defaultValue = "CUT") DetailsType detailsType) {
         return userService.getUserProfile(requesterId, userId, detailsType);
+    }
+
+    @PutMapping("{userId}")
+    Mono<UserProfileDetails> getUserProfile(@RequestHeader("X-Client-Id") UUID requesterId,
+                                            @PathVariable Integer userId,
+                                            @RequestBody CustomerInput customerInput,
+                                            @RequestParam(name = "detailsType", defaultValue = "CUT") DetailsType detailsType) {
+        customerInput.setId(userId);
+        return userService.updateUserProfile(requesterId, customerInput, detailsType);
     }
 
 }
