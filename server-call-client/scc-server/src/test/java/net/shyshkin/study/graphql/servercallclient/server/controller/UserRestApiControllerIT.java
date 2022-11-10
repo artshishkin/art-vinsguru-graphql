@@ -1,9 +1,8 @@
 package net.shyshkin.study.graphql.servercallclient.server.controller;
 
-import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
-import net.shyshkin.study.graphql.servercallclient.common.dto.Genre;
-import net.shyshkin.study.graphql.servercallclient.common.dto.UserProfile;
+import net.shyshkin.study.graphql.servercallclient.common.dto.*;
 import net.shyshkin.study.graphql.servercallclient.server.dto.UserProfileDetails;
+import net.shyshkin.study.graphql.servercallclient.server.dto.WatchList;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -130,5 +129,65 @@ class UserRestApiControllerIT extends BaseControllerIT {
                 );
     }
 
+    @Test
+    void addMovieToUserWatchListSimplifiedTest() {
+
+        //given
+        Integer userId = 3;
+        Integer movieId = 55;
+        WatchListInput watchListInput = new WatchListInput() {{
+            setCustomerId(userId);
+            setMovieId(movieId);
+        }};
+
+        //when
+        webTestClient.post()
+                .uri("/rest/users/{userId}/watch-list", userId)
+                .header("X-Client-Id", CLIENT_ID.toString())
+                .bodyValue(watchListInput)
+                .exchange()
+
+                //then
+                .expectStatus().isOk()
+                .expectBody(WatchList.class)
+                .value(response -> assertAll(
+                                () -> assertThat(response.getStatus()).isEqualTo(Status.SUCCESS),
+                                () -> assertThat(response.getWatchList()).isNull()
+                        )
+                );
+    }
+
+    @Test
+    void addMovieToUserWatchListFullTest() {
+
+        //given
+        Integer userId = 3;
+        Integer movieId = 5;
+        WatchListInput watchListInput = new WatchListInput() {{
+            setCustomerId(userId);
+            setMovieId(movieId);
+        }};
+
+        //when
+        webTestClient.post()
+                .uri("/rest/users/{userId}/watch-list?detailsType=FULL", userId)
+                .header("X-Client-Id", CLIENT_ID.toString())
+                .bodyValue(watchListInput)
+                .exchange()
+
+                //then
+                .expectStatus().isOk()
+                .expectBody(WatchList.class)
+                .value(response -> assertAll(
+                                () -> assertThat(response).hasNoNullFieldsOrProperties(),
+                                () -> assertThat(response.getStatus()).isEqualTo(Status.SUCCESS),
+                                () -> assertThat(response.getWatchList())
+                                        .hasSizeGreaterThanOrEqualTo(1)
+                                        .anySatisfy(movie -> assertThat(movie)
+                                                .hasNoNullFieldsOrProperties()
+                                                .hasFieldOrPropertyWithValue("id", movieId))
+                        )
+                );
+    }
 
 }

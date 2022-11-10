@@ -2,8 +2,10 @@ package net.shyshkin.study.graphql.servercallclient.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
+import net.shyshkin.study.graphql.servercallclient.common.dto.WatchListInput;
 import net.shyshkin.study.graphql.servercallclient.server.dto.DetailsType;
 import net.shyshkin.study.graphql.servercallclient.server.dto.UserProfileDetails;
+import net.shyshkin.study.graphql.servercallclient.server.dto.WatchList;
 import net.shyshkin.study.graphql.servercallclient.server.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -25,12 +27,21 @@ public class UserRestApiController {
     }
 
     @PutMapping("{userId}")
-    Mono<UserProfileDetails> getUserProfile(@RequestHeader("X-Client-Id") UUID requesterId,
+    Mono<UserProfileDetails> updateUserProfile(@RequestHeader("X-Client-Id") UUID requesterId,
                                             @PathVariable Integer userId,
                                             @RequestBody CustomerInput customerInput,
                                             @RequestParam(name = "detailsType", defaultValue = "CUT") DetailsType detailsType) {
         customerInput.setId(userId);
         return userService.updateUserProfile(requesterId, customerInput, detailsType);
+    }
+
+    @PostMapping("{userId}/watch-list")
+    Mono<WatchList> addMovieToUserWatchList(@RequestHeader("X-Client-Id") UUID requesterId,
+                                   @PathVariable Integer userId,
+                                   @RequestBody WatchListInput watchListInput,
+                                   @RequestParam(name = "detailsType", defaultValue = "CUT") DetailsType detailsType) {
+        watchListInput.setCustomerId(userId);
+        return userService.addMovieToUserWatchList(requesterId, watchListInput, detailsType);
     }
 
 }

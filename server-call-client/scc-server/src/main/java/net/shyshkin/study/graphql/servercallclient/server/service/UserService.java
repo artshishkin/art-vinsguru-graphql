@@ -2,9 +2,11 @@ package net.shyshkin.study.graphql.servercallclient.server.service;
 
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
+import net.shyshkin.study.graphql.servercallclient.common.dto.WatchListInput;
 import net.shyshkin.study.graphql.servercallclient.server.client.CustomRSocketGraphQlClientBuilder;
 import net.shyshkin.study.graphql.servercallclient.server.dto.DetailsType;
 import net.shyshkin.study.graphql.servercallclient.server.dto.UserProfileDetails;
+import net.shyshkin.study.graphql.servercallclient.server.dto.WatchList;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -43,6 +45,20 @@ public class UserService {
                         .variable("customerInput", customerInput)
                         .retrieve("result")
                         .toEntity(UserProfileDetails.class)
+                );
+    }
+
+    public Mono<WatchList> addMovieToUserWatchList(UUID requesterId, WatchListInput watchListInput, DetailsType detailsType) {
+        String operationName = (detailsType == DetailsType.FULL) ? "addMovieToUserWatchListFull" : "addMovieToUserWatchListSimple";
+        Optional<RSocketRequester> requesterOptional = rSocketRequesterManager.getRequester(requesterId);
+        return Mono.justOrEmpty(requesterOptional)
+                .map(requester -> new CustomRSocketGraphQlClientBuilder(requester).build())
+                .flatMap(client -> client
+                        .documentName("mutations")
+                        .operationName(operationName)
+                        .variable("watchListInput", watchListInput)
+                        .retrieve("result")
+                        .toEntity(WatchList.class)
                 );
     }
 
