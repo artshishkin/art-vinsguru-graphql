@@ -42,3 +42,26 @@ X-Client-Id: {{clientId}}
 GET localhost:8080/rest/users/1?detailsType=FULL
 X-Client-Id: {{clientId}}
 
+### REST update user profile simplified over RSocker
+PUT localhost:8080/rest/users/3?detailsType=CUT
+X-Client-Id: {{clientId}}
+Content-Type: application/json
+
+{
+  "id":  3,
+  "name":  "Arina",
+  "favoriteGenre":  "MYSTERY"
+}
+
+### REST update user profile detailed over RSocker
+PUT localhost:8080/rest/users/2?detailsType=FULL
+X-Client-Id: {{clientId}}
+Content-Type: application/json
+
+{
+  "id":  2,
+  "name":  "Nazar",
+  "favoriteGenre":  "COMEDY"
+}
+
+
