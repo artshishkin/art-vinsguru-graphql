@@ -28,6 +28,21 @@ query getUserProfileFull($userId: ID!){
     }
 }
 
+query getUserProfileWatch($userId: ID!){
+    result: userProfile(id: $userId){
+        id
+        name
+        favoriteGenre
+        watchList {
+            id
+            title
+            genre
+            rating
+            releaseYear
+        }
+    }
+}
+
 query getMovieDetailsCut($movieId: ID!){
     movieDetails(id: $movieId){
         id

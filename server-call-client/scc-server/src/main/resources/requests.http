@@ -14,72 +14,123 @@ Content-Type: application/json
   "query": "query{ping}"
 }
 
-### REST ping over RSocker
+### REST ping over RSocket
 GET localhost:8080/rest/ping
 X-Client-Id: {{clientId}}
 
-### REST get movie summary over RSocker
+### REST get movie summary over RSocket
 GET localhost:8080/rest/movies/4
 X-Client-Id: {{clientId}}
 
-### REST get movie details over RSocker
+### REST get movie details over RSocket
 GET localhost:8080/rest/movies/5?detailsType=FULL
 X-Client-Id: {{clientId}}
 
-### REST get movies by genre over RSocker
+### REST get movies by genre over RSocket
 GET localhost:8080/rest/movies?genre=ADVENTURE
 X-Client-Id: {{clientId}}
 
-### REST get user profile summary over RSocker
+### REST get user profile summary over RSocket
 GET localhost:8080/rest/users/1
 X-Client-Id: {{clientId}}
 
-### REST get user profile summary with CUT over RSocker
+### REST get user profile summary with CUT over RSocket
 GET localhost:8080/rest/users/1?detailsType=CUT
 X-Client-Id: {{clientId}}
 
-### REST get user profile detailed over RSocker
+### REST get user profile detailed over RSocket
 GET localhost:8080/rest/users/1?detailsType=FULL
 X-Client-Id: {{clientId}}
 
-### REST update user profile simplified over RSocker
+### REST update user profile simplified over RSocket
 PUT localhost:8080/rest/users/3?detailsType=CUT
 X-Client-Id: {{clientId}}
 Content-Type: application/json
 
 {
-  "id":  3,
-  "name":  "Arina",
-  "favoriteGenre":  "MYSTERY"
+  "id": 3,
+  "name": "Arina",
+  "favoriteGenre": "MYSTERY"
 }
 
-### REST update user profile detailed over RSocker
+### REST update user profile detailed over RSocket
 PUT localhost:8080/rest/users/2?detailsType=FULL
 X-Client-Id: {{clientId}}
 Content-Type: application/json
 
 {
-  "id":  2,
-  "name":  "Nazar",
-  "favoriteGenre":  "COMEDY"
+  "id": 2,
+  "name": "Nazar",
+  "favoriteGenre": "COMEDY"
 }
 
-### REST add movie to user's watchlist simplified over RSocker
+### REST add movie to user's watchlist simplified over RSocket
 POST localhost:8080/rest/users/3/watch-list
 X-Client-Id: {{clientId}}
 Content-Type: application/json
 
 {
-  "customerId":  3,
+  "customerId": 3,
   "movieId": 4
 }
 
-### REST add movie to user's watchlist full over RSocker
+### REST add movie to user's watchlist full over RSocket
 POST localhost:8080/rest/users/2/watch-list?detailsType=FULL
 X-Client-Id: {{clientId}}
 Content-Type: application/json
 
 {
-  "customerId":  2,
+  "customerId": 2,
   "movieId": 33
 }
+
+### REST complex adding movies to users' watchlists using REST LIKE approach over RSocket
+POST localhost:8080/rest/users/complex/watch-list
+X-Client-Id: {{clientId}}
+Content-Type: application/json
+
+{
+  "updates": [
+    {
+      "customerId": 3,
+      "movieId": 1
+    },
+    {
+      "customerId": 3,
+      "movieId": 2
+    },
+    {
+      "customerId": 3,
+      "movieId": 3
+    },
+    {
+      "customerId": 3,
+      "movieId": 4
+    },
+    {
+      "customerId": 2,
+      "movieId": 5
+    },
+    {
+      "customerId": 2,
+      "movieId": 6
+    },
+    {
+      "customerId": 2,
+      "movieId": 7
+    },
+    {
+      "customerId": 2,
+      "movieId": 8
+    },
+    {
+      "customerId": 2,
+      "movieId": 9
+    },
+    {
+      "customerId": 2,
+      "movieId": 10
+    }
+  ]
+}
+
