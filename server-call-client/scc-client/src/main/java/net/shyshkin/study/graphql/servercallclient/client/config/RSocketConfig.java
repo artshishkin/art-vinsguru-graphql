@@ -1,8 +1,12 @@
 package net.shyshkin.study.graphql.servercallclient.client.config;
 
 import io.rsocket.core.Resume;
+import io.rsocket.loadbalance.LoadbalanceTarget;
+import io.rsocket.loadbalance.RoundRobinLoadbalanceStrategy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.servercallclient.client.service.ClientIdService;
+import org.reactivestreams.Publisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.rsocket.RSocketRequester;
@@ -11,21 +15,27 @@ import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHa
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class RSocketConfig {
+
+    private final RSocketServerConfigData configData;
 
     @Bean
     public RSocketRequester rsocketTcpRequester(RSocketRequester.Builder rsocketRequesterBuilder,
                                                 RSocketMessageHandler handler,
                                                 RSocketStrategies strategies,
                                                 ClientIdService clientIdService,
-                                                RSocketServerConfigData configData) {
+                                                Publisher<List<LoadbalanceTarget>> targets) {
 
         UUID clientId = clientIdService.getClientId();
         log.info("client ID {}", clientId);
+
+        var loadbalanceStrategy = new RoundRobinLoadbalanceStrategy();
 
         RSocketRequester requester = rsocketRequesterBuilder
                 .setupRoute(configData.getSetupRoute())
@@ -35,7 +45,7 @@ public class RSocketConfig {
                         .reconnect(retryStrategy())
 //                        .resume(resumeStrategy())
                         .acceptor(handler.responder()))
-                .tcp(configData.getHost(), configData.getPort());
+                .transports(targets, loadbalanceStrategy);
 
         eagerReconnect(requester);
 

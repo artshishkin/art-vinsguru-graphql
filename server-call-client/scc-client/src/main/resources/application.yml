@@ -25,9 +25,12 @@ app.service:
 app:
   server:
     rsocket:
-      host: localhost
-      port: 7000
       setup-route: movie-app-client
+      instances:
+        - host: localhost
+          port: 7000
+        - port: 7001
+        - port: 7002
 
 ---
 spring:
