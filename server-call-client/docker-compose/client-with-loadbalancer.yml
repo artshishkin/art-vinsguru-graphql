@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  external-services:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: artarkatesoft/art-vinsguru-graphql-external-services
+
+  scc-client:
+    image: artarkatesoft/art-vinsguru-graphql-scc-client
+    environment:
+      "app.service.review.base-url": http://external-services:7070/review
+      "app.service.movie.base-url": http://external-services:7070/movie
+      "app.service.customer.base-url": http://external-services:7070/customer
+      "app.server.rsocket.host": nginx
+      "app.server.rsocket.port": 6999
+      "app.client-id.value": d58558b5-1604-455c-a0aa-faaf5e63875a
+
+  nginx:
+    image: nginx:1.15-alpine
+    volumes:
+      - ./conf-lb:/etc/nginx/conf.d
+    command: "nginx -c /etc/nginx/conf.d/nginx.conf"
+
