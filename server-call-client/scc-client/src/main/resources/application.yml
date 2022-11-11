@@ -45,5 +45,14 @@ spring:
   main:
     web-application-type: reactive
 
+---
+spring:
+  config:
+    activate:
+      on-profile: server-loadbalance
+app:
+  server:
+    rsocket:
+      port: 6999
 
 
