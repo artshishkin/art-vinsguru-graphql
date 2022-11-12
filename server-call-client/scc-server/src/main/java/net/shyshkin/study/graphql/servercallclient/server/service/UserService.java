@@ -129,7 +129,7 @@ public class UserService {
                 .thenMany(customerIdFlux)
                 .map(this::queryUserDetails)
                 .collect(Collectors.joining("", "query{\n", "}"))
-//                .doOnNext(query -> log.debug("Final query: {}", query))
+                .doOnNext(query -> log.debug("Final query: {}", query))
                 .flatMapMany(query -> rSocketGraphQlClient
                         .document(query)
                         .execute()

@@ -1,17 +1,21 @@
 package net.shyshkin.study.graphql.servercallclient.server.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.servercallclient.server.service.RSocketRequesterManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -21,6 +25,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
+@Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @DisabledIf(
@@ -30,6 +35,7 @@ import static org.awaitility.Awaitility.await;
 @TestPropertySource(properties = {
         "logging.level.io.rsocket: info"
 })
+@DirtiesContext
 public abstract class BaseControllerIT {
 
     protected static final UUID CLIENT_ID = UUID.randomUUID();
@@ -48,23 +54,31 @@ public abstract class BaseControllerIT {
 
     protected static GenericContainer<?> sccClient = new GenericContainer<>("artarkatesoft/art-vinsguru-graphql-scc-client")
             .dependsOn(externalServices)
-            .withAccessToHost(true)
             .withNetwork(network)
             .withEnv("app.service.review.base-url", "http://external-services:7070/review")
             .withEnv("app.service.movie.base-url", "http://external-services:7070/movie")
             .withEnv("app.service.customer.base-url", "http://external-services:7070/customer")
-            .withEnv("app.server.rsocket.host", "host.testcontainers.internal")
+            .withEnv("app.server.rsocket.host", "nginx")
+            .withEnv("app.server.rsocket.port", "6999")
             .withEnv("app.client-id.value", CLIENT_ID.toString())
             .waitingFor(Wait.forLogMessage(".*Started ClientApplication in.*", 1));
 
+    protected static GenericContainer<?> nginx = new GenericContainer<>(DockerImageName.parse("nginx").withTag("1.15-alpine"))
+            .withAccessToHost(true)
+            .withNetwork(network)
+            .withNetworkAliases("nginx")
+            .withCopyFileToContainer(MountableFile.forClasspathResource("nginx-test.conf"), "/etc/nginx/conf.d/nginx.conf")
+            .withCommand("nginx -c /etc/nginx/conf.d/nginx.conf");
+
     static {
         externalServices.start();
+        nginx.start();
         sccClient.start();
     }
 
     @BeforeAll
     static void beforeAll() {
-        org.testcontainers.Testcontainers.exposeHostPorts(7000);
+        org.testcontainers.Testcontainers.exposeHostPorts(7003, 7001, 7002, 7000);
     }
 
     @BeforeEach
@@ -73,12 +87,13 @@ public abstract class BaseControllerIT {
     }
 
     private void waitForClientConnection() {
+        log.info("Waiting for client: {} ({})", CLIENT_ID, this.getClass().getSimpleName());
         await()
                 .pollInterval(Duration.ofMillis(100))
-                .timeout(Duration.ofSeconds(2))
-                .untilAsserted(
-                        () -> assertThat(requesterManager.getRequester(CLIENT_ID)).isPresent()
-                );
+                .timeout(Duration.ofSeconds(20))
+                .untilAsserted(() -> {
+                    assertThat(requesterManager.getRequester(CLIENT_ID)).isPresent();
+                });
     }
 
     static boolean hostTestcontainersInternalIsAbsent() {
