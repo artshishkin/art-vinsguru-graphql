@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @TestPropertySource(properties = {
         "spring.rsocket.server.port: 7001"
 })
-class MovieRestApiControllerIT extends BaseControllerIT {
+class MovieRestApiServersideLBIT extends BaseServersideLoadBalancedIT {
 
     @Test
     void pingTest() {

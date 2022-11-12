@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "logging.level.net.shyshkin: info",
         "spring.rsocket.server.port: 7002"
 })
-class ComplexQueriesIT extends BaseControllerIT {
+class ComplexQueriesServersideLBIT extends BaseServersideLoadBalancedIT {
 
     @ParameterizedTest
     @CsvSource({

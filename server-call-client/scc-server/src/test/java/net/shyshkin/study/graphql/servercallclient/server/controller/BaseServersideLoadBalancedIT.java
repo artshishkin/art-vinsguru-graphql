@@ -36,7 +36,7 @@ import static org.awaitility.Awaitility.await;
         "logging.level.io.rsocket: info"
 })
 @DirtiesContext
-public abstract class BaseControllerIT {
+public abstract class BaseServersideLoadBalancedIT {
 
     protected static final UUID CLIENT_ID = UUID.randomUUID();
 

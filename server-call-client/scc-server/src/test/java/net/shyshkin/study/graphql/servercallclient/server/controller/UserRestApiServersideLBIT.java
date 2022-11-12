@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @TestPropertySource(properties = {
         "spring.rsocket.server.port: 7003"
 })
-class UserRestApiControllerIT extends BaseControllerIT {
+class UserRestApiServersideLBIT extends BaseServersideLoadBalancedIT {
 
     @Test
     void getUserProfileCutTest() {
