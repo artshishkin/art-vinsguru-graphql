@@ -59,6 +59,8 @@ public class RSocketConfig {
         requester
                 .rsocketClient()
                 .source()
+                .doOnNext(rSocket -> log.debug("eager reconnect"))
+                .delayElement(Duration.ofMillis(100))
                 .flatMap(rsocket -> rsocket.onClose())
                 .repeat()
                 .retryWhen(Retry.fixedDelay(Long.MAX_VALUE, Duration.ofSeconds(1)))
