@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -21,7 +22,9 @@ public class LoadBalancedTargetConfig {
 
     @Bean
     public Flux<List<LoadbalanceTarget>> targetsFlux() {
-        return Flux.from(targets());
+        return Flux
+                .interval(Duration.ofMillis(500))
+                .flatMap(i -> targets());
     }
 
     private Mono<List<LoadbalanceTarget>> targets() {
