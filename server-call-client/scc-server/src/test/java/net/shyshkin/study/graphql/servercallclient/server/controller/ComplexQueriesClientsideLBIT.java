@@ -6,6 +6,7 @@ import net.shyshkin.study.graphql.servercallclient.server.dto.ComplexWatchListIn
 import net.shyshkin.study.graphql.servercallclient.server.dto.UserProfileDetails;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -17,7 +18,11 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-class ComplexQueriesIT extends BaseControllerIT {
+@TestPropertySource(properties = {
+        "logging.level.net.shyshkin: info",
+        "spring.rsocket.server.port: 7002"
+})
+class ComplexQueriesClientsideLBIT extends BaseClientsideLoadBalancedIT {
 
     @ParameterizedTest
     @CsvSource({
@@ -70,7 +75,7 @@ class ComplexQueriesIT extends BaseControllerIT {
         LocalDateTime endTime = LocalDateTime.now();
         Duration duration = Duration.between(startTime, endTime);
         System.out.println("-------------------------------");
-        log.debug("Duration of complexWatchListUpdate `{}`: {}", method, duration);
+        log.info("Duration of complexWatchListUpdate `{}`: {}", method, duration);
         System.out.println("-------------------------------");
     }
 

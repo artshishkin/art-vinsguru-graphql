@@ -30,7 +30,7 @@ import static org.awaitility.Awaitility.await;
 @TestPropertySource(properties = {
         "logging.level.io.rsocket: info"
 })
-public abstract class BaseControllerIT {
+public abstract class BaseClientsideLoadBalancedIT {
 
     protected static final UUID CLIENT_ID = UUID.randomUUID();
 
@@ -53,7 +53,12 @@ public abstract class BaseControllerIT {
             .withEnv("app.service.review.base-url", "http://external-services:7070/review")
             .withEnv("app.service.movie.base-url", "http://external-services:7070/movie")
             .withEnv("app.service.customer.base-url", "http://external-services:7070/customer")
-            .withEnv("app.server.rsocket.host", "host.testcontainers.internal")
+            .withEnv("app.server.rsocket.instances[0].host", "host.testcontainers.internal")
+            .withEnv("app.server.rsocket.instances[0].port", "7001")
+            .withEnv("app.server.rsocket.instances[1].host", "host.testcontainers.internal")
+            .withEnv("app.server.rsocket.instances[1].port", "7002")
+            .withEnv("app.server.rsocket.instances[2].host", "host.testcontainers.internal")
+            .withEnv("app.server.rsocket.instances[2].port", "7003")
             .withEnv("app.client-id.value", CLIENT_ID.toString())
             .waitingFor(Wait.forLogMessage(".*Started ClientApplication in.*", 1));
 
@@ -64,7 +69,7 @@ public abstract class BaseControllerIT {
 
     @BeforeAll
     static void beforeAll() {
-        org.testcontainers.Testcontainers.exposeHostPorts(7000);
+        org.testcontainers.Testcontainers.exposeHostPorts(7001, 7002, 7003);
     }
 
     @BeforeEach
@@ -75,7 +80,7 @@ public abstract class BaseControllerIT {
     private void waitForClientConnection() {
         await()
                 .pollInterval(Duration.ofMillis(100))
-                .timeout(Duration.ofSeconds(2))
+                .timeout(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> assertThat(requesterManager.getRequester(CLIENT_ID)).isPresent()
                 );

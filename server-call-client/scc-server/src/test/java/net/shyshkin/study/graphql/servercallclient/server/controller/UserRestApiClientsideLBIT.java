@@ -4,11 +4,15 @@ import net.shyshkin.study.graphql.servercallclient.common.dto.*;
 import net.shyshkin.study.graphql.servercallclient.server.dto.UserProfileDetails;
 import net.shyshkin.study.graphql.servercallclient.server.dto.WatchList;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class UserRestApiControllerIT extends BaseControllerIT {
+@TestPropertySource(properties = {
+        "spring.rsocket.server.port: 7003"
+})
+class UserRestApiClientsideLBIT extends BaseClientsideLoadBalancedIT {
 
     @Test
     void getUserProfileCutTest() {

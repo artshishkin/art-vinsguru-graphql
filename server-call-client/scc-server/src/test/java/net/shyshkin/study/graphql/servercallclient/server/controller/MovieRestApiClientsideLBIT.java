@@ -4,11 +4,15 @@ import net.shyshkin.study.graphql.servercallclient.common.dto.Genre;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
 import net.shyshkin.study.graphql.servercallclient.server.dto.MovieDetails;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class MovieRestApiControllerIT extends BaseControllerIT {
+@TestPropertySource(properties = {
+        "spring.rsocket.server.port: 7001"
+})
+class MovieRestApiClientsideLBIT extends BaseClientsideLoadBalancedIT {
 
     @Test
     void pingTest() {
