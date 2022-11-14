@@ -8,8 +8,50 @@ spring:
   main:
     web-application-type: reactive
 
+  # Consul configuration
+  cloud:
+    discovery:
+      enabled: false
+    consul:
+      discovery:
+        register: false
+management:
+  health:
+    consul:
+      enabled: false
+
 logging:
   level:
     net.shyshkin: debug
     io.rsocket: debug
 
+---
+spring:
+  config:
+    activate:
+      on-profile: service-discovery
+  # Consul configuration
+  cloud:
+    discovery:
+      enabled: true
+    consul:
+      discovery:
+        register: true
+        instance-id: ${spring.application.name}-${random.uuid}
+        prefer-ip-address: true
+        metadata:
+          rsocketPort: ${spring.rsocket.server.port}
+        tags:
+          - scc-app-server
+
+### management
+management:
+  #  endpoints:
+  #    web.exposure.include: *
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+  health:
+    consul:
+      enabled: true
