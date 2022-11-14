@@ -12,11 +12,32 @@ import java.util.List;
 public class RSocketServerConfigData {
 
     private String setupRoute;
-    private List<ServiceInstanceAddress> instances;
+    private Loadbalancer loadbalancer;
 
     @Data
-    public static class ServiceInstanceAddress{
-        private String host = "localhost";
-        private Integer port = 7000;
+    public static class Loadbalancer {
+
+        private StaticAddressesLB staticAddressesLB;
+        private DiscoveryServiceLB discoveryServiceLB;
+
+        @Data
+        public static class StaticAddressesLB {
+
+            private List<ServiceInstanceAddress> instances;
+
+            @Data
+            public static class ServiceInstanceAddress {
+                private String host = "localhost";
+                private Integer port = 7000;
+            }
+        }
+
+        @Data
+        public static class DiscoveryServiceLB {
+            private String serviceName;
+            private String rsocketPortMetadataField = "rsocketPort";
+        }
+
     }
+
 }

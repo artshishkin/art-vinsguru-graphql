@@ -53,12 +53,12 @@ public abstract class BaseClientsideLoadBalancedIT {
             .withEnv("app.service.review.base-url", "http://external-services:7070/review")
             .withEnv("app.service.movie.base-url", "http://external-services:7070/movie")
             .withEnv("app.service.customer.base-url", "http://external-services:7070/customer")
-            .withEnv("app.server.rsocket.instances[0].host", "host.testcontainers.internal")
-            .withEnv("app.server.rsocket.instances[0].port", "7001")
-            .withEnv("app.server.rsocket.instances[1].host", "host.testcontainers.internal")
-            .withEnv("app.server.rsocket.instances[1].port", "7002")
-            .withEnv("app.server.rsocket.instances[2].host", "host.testcontainers.internal")
-            .withEnv("app.server.rsocket.instances[2].port", "7003")
+            .withEnv("app.server.rsocket.loadbalancer.static-addresses-l-b.instances[0].host", "host.testcontainers.internal")
+            .withEnv("app.server.rsocket.loadbalancer.static-addresses-l-b.instances[0].port", "7001")
+            .withEnv("app.server.rsocket.loadbalancer.static-addresses-l-b.instances[1].host", "host.testcontainers.internal")
+            .withEnv("app.server.rsocket.loadbalancer.static-addresses-l-b.instances[1].port", "7002")
+            .withEnv("app.server.rsocket.loadbalancer.static-addresses-l-b.instances[2].host", "host.testcontainers.internal")
+            .withEnv("app.server.rsocket.loadbalancer.static-addresses-l-b.instances[2].port", "7003")
             .withEnv("app.client-id.value", CLIENT_ID.toString())
             .waitingFor(Wait.forLogMessage(".*Started ClientApplication in.*", 1));
 

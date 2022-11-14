@@ -6,6 +6,7 @@ import io.rsocket.transport.netty.client.TcpClientTransport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -15,8 +16,9 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Configuration
+@Profile("!service-discovery")
 @RequiredArgsConstructor
-public class LoadBalancedTargetConfig {
+public class StaticAddressesLoadBalancedTargetConfig {
 
     private final RSocketServerConfigData configData;
 
@@ -29,17 +31,17 @@ public class LoadBalancedTargetConfig {
 
     private Mono<List<LoadbalanceTarget>> targets() {
         return Flux
-                .fromIterable(configData.getInstances())
+                .fromIterable(configData.getLoadbalancer().getStaticAddressesLB().getInstances())
                 .map(server -> LoadbalanceTarget.from(key(server), transport(server)))
                 .collect(toList());
     }
 
-    private ClientTransport transport(RSocketServerConfigData.ServiceInstanceAddress address) {
+    private ClientTransport transport(RSocketServerConfigData.Loadbalancer.StaticAddressesLB.ServiceInstanceAddress address) {
         return TcpClientTransport.create(address.getHost(), address.getPort());
     }
 
     //can implement any algorithm but must generate unique and stable key
-    private String key(RSocketServerConfigData.ServiceInstanceAddress instanceCoordinate) {
+    private String key(RSocketServerConfigData.Loadbalancer.StaticAddressesLB.ServiceInstanceAddress instanceCoordinate) {
         return instanceCoordinate.getHost() + ":" + instanceCoordinate.getPort();
     }
 
