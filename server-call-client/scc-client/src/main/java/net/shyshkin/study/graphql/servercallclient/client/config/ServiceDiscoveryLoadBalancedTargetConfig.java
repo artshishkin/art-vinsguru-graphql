@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -30,6 +31,7 @@ public class ServiceDiscoveryLoadBalancedTargetConfig {
         return reactiveDiscoveryClient.getInstances(configData.getLoadbalancer().getDiscoveryServiceLB().getServiceName())
                 .map(si -> LoadbalanceTarget.from(key(si), transport(si)))
                 .collectList()
+                .doOnNext(this::logServers)
                 .repeatWhen(f -> f.delayElements(Duration.ofMillis(500)));
     }
 
@@ -45,6 +47,13 @@ public class ServiceDiscoveryLoadBalancedTargetConfig {
         String rsocketPort = serviceInstance.getMetadata()
                 .getOrDefault(configData.getLoadbalancer().getDiscoveryServiceLB().getRsocketPortMetadataField(), "7000");
         return Integer.parseInt(rsocketPort);
+    }
+
+    private void logServers(List<LoadbalanceTarget> servers) {
+        log.debug("RSocket servers: {}",
+                servers.stream()
+                        .map(LoadbalanceTarget::getKey)
+                        .collect(Collectors.toList()));
     }
 
 }
