@@ -1,4 +1,4 @@
-package net.shyshkin.study.graphql.servercallclient.server.controller;
+package net.shyshkin.study.graphql.servercallclient.server.loadbalanced.staticaddresses;
 
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.servercallclient.common.dto.WatchListInput;

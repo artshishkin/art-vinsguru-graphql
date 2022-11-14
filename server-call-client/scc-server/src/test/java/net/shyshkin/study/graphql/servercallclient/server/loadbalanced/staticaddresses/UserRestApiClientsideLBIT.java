@@ -1,4 +1,4 @@
-package net.shyshkin.study.graphql.servercallclient.server.controller;
+package net.shyshkin.study.graphql.servercallclient.server.loadbalanced.staticaddresses;
 
 import net.shyshkin.study.graphql.servercallclient.common.dto.*;
 import net.shyshkin.study.graphql.servercallclient.server.dto.UserProfileDetails;
