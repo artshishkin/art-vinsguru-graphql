@@ -26,6 +26,20 @@ public class RSocketConfig {
 
     private final RSocketServerConfigData configData;
 
+//    @Bean
+//    public RSocketStrategies rSocketStrategies() {
+//        return RSocketStrategies.builder()
+//                .encoders(encoders -> {
+//                    encoders.add(new Jackson2CborEncoder());
+//                    encoders.add(new Jackson2JsonEncoder());
+//                })
+//                .decoders(decoders -> {
+//                    decoders.add(new Jackson2CborDecoder());
+//                    decoders.add(new Jackson2JsonDecoder());
+//                })
+//                .build();
+//    }
+
     @Bean
     @Profile({"client-loadbalance-service-discovery", "client-loadbalance-static-addresses"})
     public RSocketRequester clientLoadBalancedRsocketTcpRequester(RSocketRequester.Builder rsocketRequesterBuilder,

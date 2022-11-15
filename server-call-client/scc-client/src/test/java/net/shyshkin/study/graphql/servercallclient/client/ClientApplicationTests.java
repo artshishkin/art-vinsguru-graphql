@@ -46,6 +46,7 @@ class ClientApplicationTests extends BaseTest {
         TcpClientTransport transport = TcpClientTransport.create(rSocketPort);
         graphQlTester = RSocketGraphQlTester.builder()
                 .clientTransport(transport)
+//                .dataMimeType(MediaType.APPLICATION_JSON)
                 .build();
     }
 
