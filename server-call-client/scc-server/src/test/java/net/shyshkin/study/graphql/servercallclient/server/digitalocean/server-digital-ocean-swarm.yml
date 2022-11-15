@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+
+  scc-server:
+    image: artarkatesoft/art-vinsguru-graphql-scc-server
+    ports:
+      - "7000:7000"
+      - "8090:8080"
+
