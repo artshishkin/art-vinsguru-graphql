@@ -17,6 +17,11 @@ spring:
   main:
     web-application-type: none
 
+  # Consul configuration
+  cloud:
+    discovery:
+      enabled: false
+
 app.service:
   review.base-url: http://localhost:8081/review
   movie.base-url: http://localhost:8081/movie
@@ -28,6 +33,13 @@ app:
       host: localhost
       port: 7000
       setup-route: movie-app-client
+      loadbalancer:
+        static-addresses-l-b:
+          instances:
+            - host: localhost
+              port: 7000
+            - port: 7001
+            - port: 7002
 
 ---
 spring:
@@ -54,5 +66,26 @@ app:
   server:
     rsocket:
       port: 6999
+---
+spring:
+  config:
+    activate:
+      on-profile: service-discovery
+  cloud:
+    discovery:
+      enabled: true
+    consul:
+      discovery:
+        enabled: true
+        register: false
+app:
+  server:
+    rsocket:
+      setup-route: movie-app-client
+      loadbalancer:
+        discovery-service-l-b:
+          service-name: server-graphql-rsocket-movie-app
+          rsocket-port-metadata-field: rsocketPort
+
 
 
