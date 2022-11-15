@@ -63,7 +63,7 @@ public abstract class BaseClientsideLoadBalancedDiscoveryIT {
             .withEnv("app.service.review.base-url", "http://external-services:7070/review")
             .withEnv("app.service.movie.base-url", "http://external-services:7070/movie")
             .withEnv("app.service.customer.base-url", "http://external-services:7070/customer")
-            .withEnv("spring.profiles.active", "service-discovery")
+            .withEnv("spring.profiles.active", "client-loadbalance-service-discovery")
             .withEnv("spring.cloud.consul.host", "discovery-service")
             .withEnv("logging.level.io.rsocket", "info")
             .withEnv("app.client-id.value", CLIENT_ID.toString())

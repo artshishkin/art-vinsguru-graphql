@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @TestPropertySource(properties = {
-        "spring.rsocket.server.port: 7003"
+        "spring.rsocket.server.port: 7009"
 })
 class UserRestApiClientsideLBIT extends BaseClientsideLoadBalancedIT {
 

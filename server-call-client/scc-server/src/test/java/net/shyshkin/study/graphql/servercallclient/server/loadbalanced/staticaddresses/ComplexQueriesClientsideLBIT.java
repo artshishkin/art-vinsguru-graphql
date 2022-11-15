@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 @TestPropertySource(properties = {
         "logging.level.net.shyshkin: info",
-        "spring.rsocket.server.port: 7002"
+        "spring.rsocket.server.port: 7007"
 })
 class ComplexQueriesClientsideLBIT extends BaseClientsideLoadBalancedIT {
 

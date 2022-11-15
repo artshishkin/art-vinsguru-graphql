@@ -58,8 +58,9 @@ public abstract class BaseServersideLoadBalancedIT {
             .withEnv("app.service.review.base-url", "http://external-services:7070/review")
             .withEnv("app.service.movie.base-url", "http://external-services:7070/movie")
             .withEnv("app.service.customer.base-url", "http://external-services:7070/customer")
-            .withEnv("app.server.rsocket.host", "nginx")
-            .withEnv("app.server.rsocket.port", "6999")
+            .withEnv("app.server.rsocket.loadbalancer.no-load-balancer.server.host", "nginx")
+            .withEnv("app.server.rsocket.loadbalancer.no-load-balancer.server.port", "6999")
+            .withEnv("spring.profiles.active", "server-loadbalance")
             .withEnv("app.client-id.value", CLIENT_ID.toString())
             .waitingFor(Wait.forLogMessage(".*Started ClientApplication in.*", 1));
 
@@ -78,7 +79,7 @@ public abstract class BaseServersideLoadBalancedIT {
 
     @BeforeAll
     static void beforeAll() {
-        org.testcontainers.Testcontainers.exposeHostPorts(7003, 7001, 7002, 7000);
+        org.testcontainers.Testcontainers.exposeHostPorts(7003, 7001, 7002);
     }
 
     @BeforeEach
