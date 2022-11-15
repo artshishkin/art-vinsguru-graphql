@@ -29,6 +29,15 @@ External Services
 
 ---
 
+#### Helpful merge command
+
+Merge without rename detection. It is helpful to two versions of renamed files (like tests for example)  
+
+```git
+git merge -s recursive -Xno-renames clientside-loadbalance
+```
+
+---
 ### _Certificate of Completion_
 
 ![Certificate of completion](Certificate/UC-GraphQLWebflux-Vinsguru.jpg "Certificate of Completion")
