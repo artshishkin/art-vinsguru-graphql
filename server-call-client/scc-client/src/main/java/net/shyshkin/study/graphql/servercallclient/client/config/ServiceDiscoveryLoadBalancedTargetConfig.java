@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
-@Profile("service-discovery")
+@Profile("client-loadbalance-service-discovery")
 @RequiredArgsConstructor
 public class ServiceDiscoveryLoadBalancedTargetConfig {
 

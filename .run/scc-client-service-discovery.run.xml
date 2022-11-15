@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="scc-client-service-discovery" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="scc-client-lb-service-discovery" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="scc-client" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
@@ -12,7 +12,7 @@
       </ENTRIES>
     </extension>
     <option name="SPRING_BOOT_MAIN_CLASS" value="net.shyshkin.study.graphql.servercallclient.client.ClientApplication" />
-    <option name="ACTIVE_PROFILES" value="service-discovery" />
+    <option name="ACTIVE_PROFILES" value="client-loadbalance-service-discovery" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />

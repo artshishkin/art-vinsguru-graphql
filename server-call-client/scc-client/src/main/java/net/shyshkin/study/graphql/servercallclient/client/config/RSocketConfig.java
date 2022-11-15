@@ -9,6 +9,7 @@ import net.shyshkin.study.graphql.servercallclient.client.service.ClientIdServic
 import org.reactivestreams.Publisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
@@ -26,11 +27,12 @@ public class RSocketConfig {
     private final RSocketServerConfigData configData;
 
     @Bean
-    public RSocketRequester rsocketTcpRequester(RSocketRequester.Builder rsocketRequesterBuilder,
-                                                RSocketMessageHandler handler,
-                                                RSocketStrategies strategies,
-                                                ClientIdService clientIdService,
-                                                Publisher<List<LoadbalanceTarget>> targets) {
+    @Profile({"client-loadbalance-service-discovery", "client-loadbalance-static-addresses"})
+    public RSocketRequester clientLoadBalancedRsocketTcpRequester(RSocketRequester.Builder rsocketRequesterBuilder,
+                                                                  RSocketMessageHandler handler,
+                                                                  RSocketStrategies strategies,
+                                                                  ClientIdService clientIdService,
+                                                                  Publisher<List<LoadbalanceTarget>> targets) {
 
         UUID clientId = clientIdService.getClientId();
         log.info("client ID {}", clientId);
@@ -46,6 +48,32 @@ public class RSocketConfig {
 //                        .resume(resumeStrategy())
                         .acceptor(handler.responder()))
                 .transports(targets, loadbalanceStrategy);
+
+        eagerReconnect(requester);
+
+        return requester;
+    }
+
+    @Bean
+    @Profile({"default", "server-loadbalance"})
+    public RSocketRequester defaultRsocketTcpRequester(RSocketRequester.Builder rsocketRequesterBuilder,
+                                                       RSocketMessageHandler handler,
+                                                       RSocketStrategies strategies,
+                                                       ClientIdService clientIdService) {
+
+        UUID clientId = clientIdService.getClientId();
+        log.info("client ID {}", clientId);
+
+        RSocketServerConfigData.Loadbalancer.NoLoadBalancer.ServerAddress server = configData.getLoadbalancer().getNoLoadBalancer().getServer();
+        RSocketRequester requester = rsocketRequesterBuilder
+                .setupRoute(configData.getSetupRoute())
+                .setupData(clientId)
+                .rsocketStrategies(strategies)
+                .rsocketConnector(connector -> connector
+                        .reconnect(retryStrategy())
+//                        .resume(resumeStrategy())
+                        .acceptor(handler.responder()))
+                .tcp(server.getHost(), server.getPort());
 
         eagerReconnect(requester);
 

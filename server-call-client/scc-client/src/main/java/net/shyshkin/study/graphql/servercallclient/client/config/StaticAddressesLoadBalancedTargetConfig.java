@@ -16,7 +16,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Configuration
-@Profile("!service-discovery")
+@Profile("client-loadbalance-static-addresses")
 @RequiredArgsConstructor
 public class StaticAddressesLoadBalancedTargetConfig {
 

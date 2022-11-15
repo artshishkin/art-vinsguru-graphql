@@ -30,16 +30,12 @@ app.service:
 app:
   server:
     rsocket:
-      host: localhost
-      port: 7000
       setup-route: movie-app-client
       loadbalancer:
-        static-addresses-l-b:
-          instances:
-            - host: localhost
-              port: 7000
-            - port: 7001
-            - port: 7002
+        no-load-balancer:
+          server:
+            host: localhost
+            port: 7000
 
 ---
 spring:
@@ -65,12 +61,33 @@ spring:
 app:
   server:
     rsocket:
-      port: 6999
+      loadbalancer:
+        no-load-balancer:
+          server:
+            port: 6999
+
 ---
 spring:
   config:
     activate:
-      on-profile: service-discovery
+      on-profile: client-loadbalance-static-addresses
+
+app:
+  server:
+    rsocket:
+      loadbalancer:
+        static-addresses-l-b:
+          instances:
+            - host: localhost
+              port: 7000
+            - port: 7001
+            - port: 7002
+
+---
+spring:
+  config:
+    activate:
+      on-profile: client-loadbalance-service-discovery
   cloud:
     discovery:
       enabled: true

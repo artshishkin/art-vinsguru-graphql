@@ -19,6 +19,7 @@ public class RSocketServerConfigData {
 
         private StaticAddressesLB staticAddressesLB;
         private DiscoveryServiceLB discoveryServiceLB;
+        private NoLoadBalancer noLoadBalancer;
 
         @Data
         public static class StaticAddressesLB {
@@ -27,6 +28,18 @@ public class RSocketServerConfigData {
 
             @Data
             public static class ServiceInstanceAddress {
+                private String host = "localhost";
+                private Integer port = 7000;
+            }
+        }
+
+        @Data
+        public static class NoLoadBalancer {
+
+            private ServerAddress server;
+
+            @Data
+            public static class ServerAddress {
                 private String host = "localhost";
                 private Integer port = 7000;
             }
