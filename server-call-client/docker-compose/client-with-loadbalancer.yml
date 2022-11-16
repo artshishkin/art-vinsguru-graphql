@@ -12,8 +12,9 @@ services:
       "app.service.review.base-url": http://external-services:7070/review
       "app.service.movie.base-url": http://external-services:7070/movie
       "app.service.customer.base-url": http://external-services:7070/customer
-      "app.server.rsocket.host": nginx
-      "app.server.rsocket.port": 6999
+      "app.server.rsocket.loadbalancer.no-load-balancer.server.host": nginx
+      "app.server.rsocket.loadbalancer.no-load-balancer.server.port": 6999
+      "spring.profile.active": server-loadbalance
       "app.client-id.value": d58558b5-1604-455c-a0aa-faaf5e63875a
 
   nginx:
