@@ -46,7 +46,7 @@ class ClientApplicationTests extends BaseTest {
         TcpClientTransport transport = TcpClientTransport.create(rSocketPort);
         graphQlTester = RSocketGraphQlTester.builder()
                 .clientTransport(transport)
-//                .dataMimeType(MediaType.APPLICATION_JSON)
+                //.dataMimeType(MediaType.APPLICATION_JSON)
                 .build();
     }
 
@@ -58,7 +58,7 @@ class ClientApplicationTests extends BaseTest {
     class QueryTests {
 
         @Test
-        void getUserProfileById_absent() {
+        void getUserProfileByIdWhenAbsent() {
             //given
             Integer userId = 1000;
 
@@ -77,7 +77,7 @@ class ClientApplicationTests extends BaseTest {
         }
 
         @Test
-        void getUserProfileByIdCut_present() {
+        void getUserProfileByIdCutWhenPresent() {
             //given
             Integer userId = 1;
 
@@ -101,7 +101,7 @@ class ClientApplicationTests extends BaseTest {
         }
 
         @Test
-        void getUserProfileByIdFull_present() {
+        void getUserProfileByIdFullWhenPresent() {
             //given
             Integer userId = 1;
 
@@ -135,7 +135,7 @@ class ClientApplicationTests extends BaseTest {
         }
 
         @Test
-        void getMovieDetails_absent() {
+        void getMovieDetailsWhenAbsent() {
             //given
             Integer movieId = 10000;
 
@@ -154,7 +154,7 @@ class ClientApplicationTests extends BaseTest {
         }
 
         @Test
-        void getMovieDetailsCut_present() {
+        void getMovieDetailsCutWhenPresent() {
             //given
             Integer movieId = 1;
 
@@ -175,7 +175,7 @@ class ClientApplicationTests extends BaseTest {
         }
 
         @Test
-        void getMovieDetailsFull_present() {
+        void getMovieDetailsFullWhenPresent() {
             //given
             Integer movieId = 1;
 
@@ -226,7 +226,7 @@ class ClientApplicationTests extends BaseTest {
     class MutationTests {
 
         @Test
-        void updateUserProfile_absent() {
+        void updateUserProfileWhenAbsent() {
             //given
             CustomerInput customerInput = new CustomerInput() {{
                 setId(1000);
@@ -250,7 +250,7 @@ class ClientApplicationTests extends BaseTest {
         }
 
         @Test
-        void updateUserProfileCut_present() {
+        void updateUserProfileCutWhenPresent() {
             //given
             CustomerInput customerInput = new CustomerInput() {{
                 setId(1);
@@ -279,7 +279,7 @@ class ClientApplicationTests extends BaseTest {
         }
 
         @Test
-        void updateUserProfileFull_present() {
+        void updateUserProfileFullWhenPresent() {
             //given
             CustomerInput customerInput = new CustomerInput() {{
                 setId(2);
@@ -319,7 +319,7 @@ class ClientApplicationTests extends BaseTest {
 
         @Test
         @DisplayName("Even if the customer does not exist adding movie to his list will be success???")
-        void addMovieToUserWatchList_absentUser() {
+        void addMovieToUserWatchListWhenAbsentUser() {
             //given
             WatchListInput watchListInput = new WatchListInput() {{
                 setCustomerId(1000);
@@ -405,7 +405,7 @@ class ClientApplicationTests extends BaseTest {
 
         @Test
         @DisplayName("Even if the movie does not exist adding it to watchlist will be success but movie will not return in response")
-        void addMovieToUserWatchList_absentMovie() {
+        void addMovieToUserWatchListWhenAbsentMovie() {
             //given
             int movieId = 12000;
             WatchListInput watchListInput = new WatchListInput() {{
@@ -441,7 +441,7 @@ class ClientApplicationTests extends BaseTest {
         @Test
         @Disabled("Can not work with SpyBean. Use separate AddToWatchListErrorTest with SpyBean")
         @DisplayName("When CustomerClient returns error then addingToWatchlist should have FAILURE status")
-        void addMovieToUserWatchList_errorInCustomerClient() {
+        void addMovieToUserWatchListWhenErrorInCustomerClient() {
             //given
             int movieId = 120;
             WatchListInput watchListInput = new WatchListInput();

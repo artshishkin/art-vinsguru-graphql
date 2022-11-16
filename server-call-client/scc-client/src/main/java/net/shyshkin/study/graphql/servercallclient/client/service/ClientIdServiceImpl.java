@@ -31,10 +31,12 @@ public class ClientIdServiceImpl implements ClientIdService {
 
     @PostConstruct
     void init() {
-        if (clientId == null)
+        if (clientId == null) {
             clientId = readClientId();
-        if (clientId == null)
+        }
+        if (clientId == null) {
             clientId = createClientId();
+        }
     }
 
     @Override

@@ -26,5 +26,4 @@ public class ReviewClient {
                 .bodyToFlux(Review.class);
     }
 
-
 }
