@@ -2,6 +2,6 @@ version: "3.8"
 
 services:
   consul:
-    image: consul:1.9.3
+    image: consul:${CONSUL_VERSION:1.9.3}
     ports:
       - "8500:8500"

@@ -18,7 +18,7 @@ services:
       "app.client-id.value": d58558b5-1604-455c-a0aa-faaf5e63875a
 
   nginx:
-    image: nginx:1.15-alpine
+    image: nginx:${NGINX_VERSION:1.15-alpine}
     volumes:
       - ./conf-lb:/etc/nginx/conf.d
     command: "nginx -c /etc/nginx/conf.d/nginx.conf"
