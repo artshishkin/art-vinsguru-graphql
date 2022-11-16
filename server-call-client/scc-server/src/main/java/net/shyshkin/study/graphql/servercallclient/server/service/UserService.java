@@ -6,12 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Status;
 import net.shyshkin.study.graphql.servercallclient.common.dto.WatchListInput;
-import net.shyshkin.study.graphql.servercallclient.server.client.CustomRSocketGraphQlClientBuilder;
 import net.shyshkin.study.graphql.servercallclient.server.dto.DetailsType;
 import net.shyshkin.study.graphql.servercallclient.server.dto.UserProfileDetails;
 import net.shyshkin.study.graphql.servercallclient.server.dto.WatchList;
 import org.springframework.graphql.client.RSocketGraphQlClient;
-import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,13 +24,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final RSocketRequesterManager rSocketRequesterManager;
+    private final RSocketGraphQlClientManager rSocketGraphQlClientManager;
 
     public Mono<UserProfileDetails> getUserProfile(UUID requesterId, Integer userId, DetailsType detailsType) {
         String operationName = (detailsType == DetailsType.FULL) ? "getUserProfileFull" : "getUserProfileCut";
-        Optional<RSocketRequester> requesterOptional = rSocketRequesterManager.getRequester(requesterId);
-        return Mono.justOrEmpty(requesterOptional)
-                .map(requester -> new CustomRSocketGraphQlClientBuilder(requester).build())
+        return Mono.justOrEmpty(rSocketGraphQlClientManager.getGraphQlClient(requesterId))
                 .flatMap(client -> client
                         .documentName("queries")
                         .operationName(operationName)
@@ -44,9 +40,7 @@ public class UserService {
 
     public Mono<UserProfileDetails> updateUserProfile(UUID requesterId, CustomerInput customerInput, DetailsType detailsType) {
         String operationName = (detailsType == DetailsType.FULL) ? "updateUserProfileFull" : "updateUserProfileCut";
-        Optional<RSocketRequester> requesterOptional = rSocketRequesterManager.getRequester(requesterId);
-        return Mono.justOrEmpty(requesterOptional)
-                .map(requester -> new CustomRSocketGraphQlClientBuilder(requester).build())
+        return Mono.justOrEmpty(rSocketGraphQlClientManager.getGraphQlClient(requesterId))
                 .flatMap(client -> client
                         .documentName("mutations")
                         .operationName(operationName)
@@ -58,9 +52,7 @@ public class UserService {
 
     public Mono<WatchList> addMovieToUserWatchList(UUID requesterId, WatchListInput watchListInput, DetailsType detailsType) {
         String operationName = (detailsType == DetailsType.FULL) ? "addMovieToUserWatchListFull" : "addMovieToUserWatchListSimple";
-        Optional<RSocketRequester> requesterOptional = rSocketRequesterManager.getRequester(requesterId);
-        return Mono.justOrEmpty(requesterOptional)
-                .map(requester -> new CustomRSocketGraphQlClientBuilder(requester).build())
+        return Mono.justOrEmpty(rSocketGraphQlClientManager.getGraphQlClient(requesterId))
                 .flatMap(client -> client
                         .documentName("mutations")
                         .operationName(operationName)
@@ -74,9 +66,8 @@ public class UserService {
 
         Flux<WatchListInput> watchListInputFlux = Flux.fromIterable(watchListUpdates);
 
-        Optional<RSocketGraphQlClient> rSocketGraphQlClientOptional = rSocketRequesterManager
-                .getRequester(requesterId)
-                .map(requester -> new CustomRSocketGraphQlClientBuilder(requester).build());
+        Optional<RSocketGraphQlClient> rSocketGraphQlClientOptional = rSocketGraphQlClientManager
+                .getGraphQlClient(requesterId);
         if (rSocketGraphQlClientOptional.isEmpty()) return Flux.empty();
 
         RSocketGraphQlClient rSocketGraphQlClient = rSocketGraphQlClientOptional.get();
@@ -103,11 +94,10 @@ public class UserService {
 
     public Flux<UserProfileDetails> complexWatchListUpdateGraphQLLike(UUID requesterId, List<WatchListInput> watchListUpdates) {
 
-        var rSocketRequesterOptional = rSocketRequesterManager
-                .getRequester(requesterId);
-        if (rSocketRequesterOptional.isEmpty()) return Flux.empty();
-        RSocketRequester requester = rSocketRequesterOptional.get();
-        RSocketGraphQlClient rSocketGraphQlClient = new CustomRSocketGraphQlClientBuilder(requester).build();
+        var graphQlClientOptional = rSocketGraphQlClientManager
+                .getGraphQlClient(requesterId);
+        if (graphQlClientOptional.isEmpty()) return Flux.empty();
+        RSocketGraphQlClient rSocketGraphQlClient =graphQlClientOptional.get();
 
         Flux<WatchListInput> watchListInputFlux = Flux.fromIterable(watchListUpdates);
 

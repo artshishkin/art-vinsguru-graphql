@@ -3,15 +3,12 @@ package net.shyshkin.study.graphql.servercallclient.server.service;
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Genre;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
-import net.shyshkin.study.graphql.servercallclient.server.client.CustomRSocketGraphQlClientBuilder;
 import net.shyshkin.study.graphql.servercallclient.server.dto.DetailsType;
 import net.shyshkin.study.graphql.servercallclient.server.dto.MovieDetails;
-import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -19,13 +16,11 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class MovieService {
 
-    private final RSocketRequesterManager rSocketRequesterManager;
+    private final RSocketGraphQlClientManager rSocketGraphQlClientManager;
 
     public Mono<MovieDetails> getMovieDetails(UUID requesterId, Integer movieId, DetailsType detailsType) {
         String operationName = (detailsType == DetailsType.FULL) ? "getMovieDetailsFull" : "getMovieDetailsCut";
-        Optional<RSocketRequester> requesterOptional = rSocketRequesterManager.getRequester(requesterId);
-        return Mono.justOrEmpty(requesterOptional)
-                .map(requester -> new CustomRSocketGraphQlClientBuilder(requester).build())
+        return Mono.justOrEmpty(rSocketGraphQlClientManager.getGraphQlClient(requesterId))
                 .flatMap(client -> client
                         .documentName("queries")
                         .operationName(operationName)
@@ -36,10 +31,8 @@ public class MovieService {
     }
 
     public Flux<Movie> getMoviesByGenre(UUID requesterId, Genre genre) {
-        Optional<RSocketRequester> requesterOptional = rSocketRequesterManager.getRequester(requesterId);
-        return Mono.justOrEmpty(requesterOptional)
+        return Mono.justOrEmpty(rSocketGraphQlClientManager.getGraphQlClient(requesterId))
                 .switchIfEmpty(Mono.error(new RuntimeException("Client not found")))
-                .map(requester -> new CustomRSocketGraphQlClientBuilder(requester).build())
                 .flatMap(client -> client
                         .documentName("queries")
                         .operationName("getMoviesByGenre")

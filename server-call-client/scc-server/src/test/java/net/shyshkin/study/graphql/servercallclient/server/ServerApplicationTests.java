@@ -1,6 +1,6 @@
 package net.shyshkin.study.graphql.servercallclient.server;
 
-import net.shyshkin.study.graphql.servercallclient.server.service.RSocketRequesterManager;
+import net.shyshkin.study.graphql.servercallclient.server.service.RSocketGraphQlClientManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +34,7 @@ class ServerApplicationTests {
     RSocketRequester requester;
 
     @SpyBean
-    RSocketRequesterManager RSocketRequesterManager;
+    RSocketGraphQlClientManager rSocketGraphQlClientManager;
 
     @Test
     void contextLoads() {
@@ -61,6 +61,6 @@ class ServerApplicationTests {
         await()
                 .timeout(2, TimeUnit.SECONDS)
                 .pollInterval(Duration.ofMillis(50))
-                .untilAsserted(() -> then(RSocketRequesterManager).should().addRequester(eq(CLIENT_ID), any()));
+                .untilAsserted(() -> then(rSocketGraphQlClientManager).should().addRequester(eq(CLIENT_ID), any()));
     }
 }

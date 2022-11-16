@@ -2,7 +2,7 @@ package net.shyshkin.study.graphql.servercallclient.server.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.shyshkin.study.graphql.servercallclient.server.service.RSocketRequesterManager;
+import net.shyshkin.study.graphql.servercallclient.server.service.RSocketGraphQlClientManager;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.annotation.ConnectMapping;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ConnectionHandler {
 
-    private final RSocketRequesterManager rSocketRequesterManager;
+    private final RSocketGraphQlClientManager rSocketGraphQlClientManager;
 
     @ConnectMapping("movie-app-client")
     Mono<Void> handleConnection(RSocketRequester requester, @Payload UUID requesterId) {
@@ -31,13 +31,13 @@ public class ConnectionHandler {
                 .log()
                 .doFirst(() -> {
                     log.debug("Client: {} CONNECTED.", clientId);
-                    rSocketRequesterManager.addRequester(clientId, requester); // (2)
+                    rSocketGraphQlClientManager.addRequester(clientId, requester); // (2)
                 })
                 .doOnError(error -> {
                     log.error("Channel to client {} CLOSED", clientId, error); // (3)
                 })
                 .doFinally(consumer -> {
-                    rSocketRequesterManager.removeRequester(clientId, requester);
+                    rSocketGraphQlClientManager.removeRequester(clientId, requester);
                     log.debug("Client {} DISCONNECTED", clientId); // (4)
                 })
                 .subscribe();

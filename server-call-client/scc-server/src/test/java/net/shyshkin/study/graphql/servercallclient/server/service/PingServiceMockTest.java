@@ -1,5 +1,6 @@
 package net.shyshkin.study.graphql.servercallclient.server.service;
 
+import net.shyshkin.study.graphql.servercallclient.server.client.CustomRSocketGraphQlClientBuilder;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.graphql.client.RSocketGraphQlClient;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -29,7 +31,7 @@ class PingServiceMockTest {
     PingService pingService;
 
     @MockBean
-    RSocketRequesterManager rSocketRequesterManager;
+    RSocketGraphQlClientManager rSocketGraphQlClientManager;
 
     @Mock
     RSocketRequester rSocketRequester;
@@ -47,7 +49,8 @@ class PingServiceMockTest {
     void pingTest() {
         //given
         UUID requesterId = UUID.randomUUID();
-        given(rSocketRequesterManager.getRequester(any())).willReturn(Optional.of(rSocketRequester));
+        RSocketGraphQlClient mockRSocketGraphQlClient = new CustomRSocketGraphQlClientBuilder(rSocketRequester).build();
+        given(rSocketGraphQlClientManager.getGraphQlClient(any())).willReturn(Optional.of(mockRSocketGraphQlClient));
         given(rSocketRequester.route(any())).willReturn(requestSpec);
         given(requestSpec.data(any())).willReturn(retrieveSpec);
         given(retrieveSpec.retrieveMono(any(ParameterizedTypeReference.class))).willReturn(Mono.just(Map.of("data", Map.of("ping", "pong"))));
@@ -60,7 +63,7 @@ class PingServiceMockTest {
                 .expectNext("pong")
                 .verifyComplete();
 
-        then(rSocketRequesterManager).should().getRequester(eq(requesterId));
+        then(rSocketGraphQlClientManager).should().getGraphQlClient(eq(requesterId));
         then(rSocketRequester).should().route(eq("graphql"));
         then(requestSpec).should().data(requestDataCaptor.capture());
         Map<String, String> requestData = requestDataCaptor.getValue();

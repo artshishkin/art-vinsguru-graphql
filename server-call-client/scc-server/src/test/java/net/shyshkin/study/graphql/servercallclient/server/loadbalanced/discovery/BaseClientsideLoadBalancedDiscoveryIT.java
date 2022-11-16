@@ -1,6 +1,6 @@
 package net.shyshkin.study.graphql.servercallclient.server.loadbalanced.discovery;
 
-import net.shyshkin.study.graphql.servercallclient.server.service.RSocketRequesterManager;
+import net.shyshkin.study.graphql.servercallclient.server.service.RSocketGraphQlClientManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.condition.DisabledIf;
@@ -43,7 +43,7 @@ public abstract class BaseClientsideLoadBalancedDiscoveryIT {
     protected WebTestClient webTestClient;
 
     @Autowired
-    protected RSocketRequesterManager requesterManager;
+    protected RSocketGraphQlClientManager rSocketGraphQlClientManager;
 
     protected static Network network = Network.newNetwork();
 
@@ -89,7 +89,7 @@ public abstract class BaseClientsideLoadBalancedDiscoveryIT {
                 .pollInterval(Duration.ofMillis(100))
                 .timeout(Duration.ofSeconds(10))
                 .untilAsserted(
-                        () -> assertThat(requesterManager.getRequester(CLIENT_ID)).isPresent()
+                        () -> assertThat(rSocketGraphQlClientManager.getGraphQlClient(CLIENT_ID)).isPresent()
                 );
     }
 
