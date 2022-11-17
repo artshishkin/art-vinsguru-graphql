@@ -26,19 +26,21 @@ public class RSocketConfig {
 
     private final RSocketServerConfigData configData;
 
-//    @Bean
-//    public RSocketStrategies rSocketStrategies() {
-//        return RSocketStrategies.builder()
-//                .encoders(encoders -> {
-//                    encoders.add(new Jackson2CborEncoder());
-//                    encoders.add(new Jackson2JsonEncoder());
-//                })
-//                .decoders(decoders -> {
-//                    decoders.add(new Jackson2CborDecoder());
-//                    decoders.add(new Jackson2JsonDecoder());
-//                })
-//                .build();
-//    }
+    /*
+    @Bean
+    public RSocketStrategies rSocketStrategies() {
+        return RSocketStrategies.builder()
+                .encoders(encoders -> {
+                    encoders.add(new Jackson2CborEncoder());
+                    encoders.add(new Jackson2JsonEncoder());
+                })
+                .decoders(decoders -> {
+                    decoders.add(new Jackson2CborDecoder());
+                    decoders.add(new Jackson2JsonDecoder());
+                })
+                .build();
+    }
+    */
 
     @Bean
     @Profile({"client-loadbalance-service-discovery", "client-loadbalance-static-addresses"})
@@ -59,7 +61,7 @@ public class RSocketConfig {
                 .rsocketStrategies(strategies)
                 .rsocketConnector(connector -> connector
                         .reconnect(retryStrategy())
-//                        .resume(resumeStrategy())
+                        //.resume(resumeStrategy())
                         .acceptor(handler.responder()))
                 .transports(targets, loadbalanceStrategy);
 
@@ -85,7 +87,7 @@ public class RSocketConfig {
                 .rsocketStrategies(strategies)
                 .rsocketConnector(connector -> connector
                         .reconnect(retryStrategy())
-//                        .resume(resumeStrategy())
+                        //.resume(resumeStrategy())
                         .acceptor(handler.responder()))
                 .tcp(server.getHost(), server.getPort());
 

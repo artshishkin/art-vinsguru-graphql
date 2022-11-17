@@ -28,8 +28,9 @@ public class ExceptionResolver implements DataFetcherExceptionResolver {
     }
 
     private ApplicationException toApplicationException(Throwable throwable) {
-        if (throwable instanceof ApplicationException)
+        if (throwable instanceof ApplicationException) {
             return (ApplicationException) throwable;
+        }
         return new ApplicationException(ErrorType.INTERNAL_ERROR, throwable.getMessage(), Collections.emptyMap());
     }
 
