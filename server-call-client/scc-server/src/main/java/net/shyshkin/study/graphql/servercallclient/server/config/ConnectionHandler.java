@@ -1,5 +1,7 @@
 package net.shyshkin.study.graphql.servercallclient.server.config;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.rsocket.RSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.servercallclient.server.service.RSocketGraphQlClientManager;
@@ -9,9 +11,9 @@ import org.springframework.messaging.rsocket.annotation.ConnectMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
 import java.util.UUID;
 
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -25,9 +27,9 @@ public class ConnectionHandler {
     }
 
     private void connectRequester(UUID clientId, RSocketRequester requester) {
-        Objects
-                .requireNonNull(requester.rsocket())
-                .onClose() // (1)
+        Mono.justOrEmpty(requester)
+                .mapNotNull(RSocketRequester::rsocket)
+                .flatMap(RSocket::onClose)
                 .log()
                 .doFirst(() -> {
                     log.debug("Client: {} CONNECTED.", clientId);
