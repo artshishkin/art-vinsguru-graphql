@@ -1,5 +1,6 @@
 package net.shyshkin.study.graphql.servercallclient.server.service;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Genre;
 import net.shyshkin.study.graphql.servercallclient.common.dto.Movie;
@@ -12,6 +13,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 import java.util.function.Function;
 
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 @Service
 @RequiredArgsConstructor
 public class MovieService {

@@ -1,5 +1,6 @@
 package net.shyshkin.study.graphql.servercallclient.server.controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
 import net.shyshkin.study.graphql.servercallclient.common.dto.WatchListInput;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 @RestController
 @RequestMapping("rest/users")
 @RequiredArgsConstructor

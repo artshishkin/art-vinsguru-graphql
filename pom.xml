@@ -42,8 +42,9 @@
         <docker.image.name>art-vinsguru-graphql-${project.artifactId}</docker.image.name>
         <spring.boot.version>2.7.4</spring.boot.version>
         <spring-cloud.version>2021.0.5</spring-cloud.version>
+        <findbugs.maven.plugin.version>3.0.5</findbugs.maven.plugin.version>
+        <spotbugs.maven.plugin.version>4.7.3.0</spotbugs.maven.plugin.version>
         <checkstyle.plugin.version>3.1.0</checkstyle.plugin.version>
-
     </properties>
     <dependencies>
         <dependency>
@@ -245,6 +246,16 @@
 
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>${findbugs.maven.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.maven.plugin.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>

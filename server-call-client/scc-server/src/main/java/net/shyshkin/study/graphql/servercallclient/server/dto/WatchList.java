@@ -1,6 +1,7 @@
 package net.shyshkin.study.graphql.servercallclient.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,7 @@ import net.shyshkin.study.graphql.servercallclient.common.dto.Status;
 
 import java.util.List;
 
+@SuppressFBWarnings("EI_EXPOSE_REP")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

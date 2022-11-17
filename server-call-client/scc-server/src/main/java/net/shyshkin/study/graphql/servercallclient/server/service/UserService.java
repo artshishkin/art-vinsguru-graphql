@@ -1,6 +1,7 @@
 package net.shyshkin.study.graphql.servercallclient.server.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.shyshkin.study.graphql.servercallclient.common.dto.CustomerInput;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@SuppressFBWarnings("EI_EXPOSE_REP2")
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -133,23 +135,23 @@ public class UserService {
     private String watchListInputToMutation(WatchListInput input) {
         Integer customerId = input.getCustomerId();
         Integer movieId = input.getMovieId();
-        return String.format("c%02dm%03d: addToWatchList(input: {customerId:%d,movieId:%d}){status}\n",
+        return String.format("c%02dm%03d: addToWatchList(input: {customerId:%d,movieId:%d}){status}%n",
                 customerId, movieId, customerId, movieId);
     }
 
     private String queryUserDetails(Integer customerId) {
-        return String.format("customer%02d: userProfile(id: %d){\n" +
-                        "        id\n" +
-                        "        name\n" +
-                        "        favoriteGenre\n" +
-                        "        watchList {\n" +
-                        "            id\n" +
-                        "            title\n" +
-                        "            genre\n" +
-                        "            rating\n" +
-                        "            releaseYear\n" +
-                        "        }\n" +
-                        "    }\n",
+        return String.format("customer%02d: userProfile(id: %d){%n" +
+                        "        id%n" +
+                        "        name%n" +
+                        "        favoriteGenre%n" +
+                        "        watchList {%n" +
+                        "            id%n" +
+                        "            title%n" +
+                        "            genre%n" +
+                        "            rating%n" +
+                        "            releaseYear%n" +
+                        "        }%n" +
+                        "    }",
                 customerId, customerId);
     }
 
