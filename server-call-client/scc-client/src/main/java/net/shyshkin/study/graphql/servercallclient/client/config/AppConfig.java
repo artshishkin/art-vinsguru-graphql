@@ -8,7 +8,7 @@ import org.springframework.util.DefaultPropertiesPersister;
 public class AppConfig {
 
     @Bean
-    DefaultPropertiesPersister defaultPropertiesPersister(){
+    DefaultPropertiesPersister defaultPropertiesPersister() {
         return new DefaultPropertiesPersister();
     }
 

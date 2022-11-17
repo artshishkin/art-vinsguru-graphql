@@ -43,5 +43,4 @@ public class MovieClient {
                 .bodyToFlux(Movie.class);
     }
 
-
 }

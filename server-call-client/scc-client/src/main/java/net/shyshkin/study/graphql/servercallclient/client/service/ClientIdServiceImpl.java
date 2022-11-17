@@ -7,7 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DefaultPropertiesPersister;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,10 +36,12 @@ public class ClientIdServiceImpl implements ClientIdService {
 
     @PostConstruct
     void init() {
-        if (clientId == null)
+        if (clientId == null) {
             clientId = readClientId();
-        if (clientId == null)
+        }
+        if (clientId == null) {
             clientId = createClientId();
+        }
     }
 
     @Override
